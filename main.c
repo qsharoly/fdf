@@ -45,8 +45,11 @@ typedef	struct	s_float3
 typedef struct	s_cam
 {
 	t_float3	dir;
+	t_float3	up;
+	t_float3	right;
 	t_float3	proj_dir;
 	float		dist;
+	float		fov;
 }				t_cam;
 
 typedef struct	s_bitmap
@@ -281,7 +284,17 @@ float		dot(t_float3 a, t_float3 b)
 	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }
 
-t_float3	mul(t_float3 vec, float s)
+t_float3	cross(t_float3 a, t_float3 b)
+{
+	t_float3	c;
+
+	c.x = a.y * b.z - a.z * b.y;
+	c.y = a.z * b.x - a.x * b.z;
+	c.z = a.x * b.y - a.y * b.x;
+	return (c);
+}
+
+t_float3	scale(t_float3 vec, float s)
 {
 	vec.x *= s;
 	vec.y *= s;
@@ -294,19 +307,19 @@ float	length3(t_float3 vec)
 	return (sqrt(dot(vec, vec)));
 }
 
-t_float2	project(t_float3 point, t_float3 eye_dir, float eye_dist, t_float3 projection_dir)
+t_float2	project(t_float3 point, t_cam cam)
 {
 	t_float3	proj;
 	t_float2	screen;
 	float		coeff;
 
-	coeff = (eye_dist - dot(point, eye_dir)) / dot(eye_dir, projection_dir);
-	proj.x = point.x + coeff * projection_dir.x;
-	proj.y = point.y + coeff * projection_dir.y;
-	proj.z = point.z + coeff * projection_dir.z;
+	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
+	proj.x = point.x + coeff * cam.proj_dir.x;// - cam.dir.x * cam.dist;
+	proj.y = point.y + coeff * cam.proj_dir.y;// - cam.dir.y * cam.dist;
+	proj.z = point.z + coeff * cam.proj_dir.z;// - cam.dir.z * cam.dist;
 
-	screen.x = proj.x + 0.5 * LIMX;
-	screen.y = proj.y + 0.5 * LIMY;
+	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * LIMX;
+	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * LIMY;
 	return (screen);
 }
 
@@ -315,9 +328,34 @@ void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba color)
 	t_float2	proj1;
 	t_float2	proj2;
 
-	proj1 = project(v1, cam.dir, cam.dist, cam.proj_dir);
-	proj2 = project(v2, cam.dir, cam.dist, cam.proj_dir);
+	proj1 = project(v1, cam);
+	proj2 = project(v2, cam);
 	draw_line(bmp, proj1, proj2, color);
+}
+
+void	draw_grid(t_bitmap *bmp, t_cam cam, t_float3 mesh[4][4], int row_size, int n_rows)
+{
+	int		i;
+	int		j;
+	t_rgba	color;
+
+	j = 0;
+	while (j < n_rows)
+	{
+		i = 0;
+		while (i < row_size)
+		{
+			color.r = 255 * mesh[j][i].z;
+			color.g = 255 * (1 - mesh[j][i].z);
+			color.b = 255 * (1 - mesh[j][i].z);
+			if (j != n_rows - 1)
+				draw_edge(bmp, cam, mesh[j][i], mesh[j + 1][i], color);
+			if (i != row_size - 1)
+				draw_edge(bmp, cam, mesh[j][i], mesh[j][i + 1], color);
+			i++;
+		}
+		j++;
+	}
 }
 
 int		the_loop(void *param)
@@ -341,17 +379,36 @@ int		the_loop(void *param)
 	t_float3	z = {0.0, 0.0, 1.0};
 	t_float3	y = {0.0, 1.0, 0.0};
 	t_float3	x = {1.0, 0.0, 0.0};
-	t_float3	dir = {0.0, 0.0, 1.0};
+	t_float3	dir;
+	t_float3	up;
+	t_float3	right;
 	static t_cam	cam;
 	static t_float3	pir[4] = {{0.0, 0.0, 0.0}, {0.5, 0.0, 0.0},
 		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
+	static t_float3 mesh[4][4] = {
+		{{0.0, 0.0, 0.1}, {0.1, 0.0, 0.0}, {0.2, 0.0, 0.3}, {0.3, 0.0, 0.0}},
+		{{0.0, 0.1, 0.3}, {0.1, 0.1, 0.2}, {0.2, 0.1, 0.2}, {0.3, 0.1, 0.0}},
+		{{0.0, 0.2, 0.1}, {0.1, 0.2, 0.3}, {0.2, 0.2, 0.7}, {0.3, 0.2, 0.0}},
+		{{0.0, 0.3, 0.7}, {0.1, 0.3, 0.1}, {0.2, 0.3, 0.5}, {0.3, 0.3, 0.0}}};
 
 	dir.x = sin(frame * 0.5 * M_PI / 100);
 	dir.y = cos(frame * 0.5 * M_PI / 100);
-	dir.z = 0.0;
-	cam.dir = mul(dir, length3(dir));
+	dir.z = 0.5;
+	dir = scale(dir, 1 / length3(dir));
+	right.x = dir.y;
+	right.y = -dir.x;
+	right.z = 0;
+	right = scale(right, 1 / length3(right));
+	up = cross(dir, right);
+	up = scale(up, 1 / length3(up));
+	cam.dir = dir;
+	cam.up = up;
+	cam.right = right;
 	cam.proj_dir = cam.dir;
-	cam.dist = 0.3;
+	//cam.dist doesnt influence parallel projections
+	cam.dist = 1;
+	//cam.fov right now is just a screen space scale multiplier
+	cam.fov = 0.25;
 
 	clock_gettime(CLOCK_MONOTONIC, &frame_start);
 	//inputs
@@ -380,6 +437,8 @@ int		the_loop(void *param)
 	draw_edge(my->bitmap, cam, pir[1], pir[2], mellow1);
 	draw_edge(my->bitmap, cam, pir[1], pir[3], mellow2);
 	draw_edge(my->bitmap, cam, pir[2], pir[3], mellow3);
+	//---wire mesh
+	draw_grid(my->bitmap, cam, mesh, 4, 4);
 	//---axes;
 	draw_edge(my->bitmap, cam, origin, x, full_blue);
 	draw_edge(my->bitmap, cam, origin, y, full_green);
