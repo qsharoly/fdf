@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -6,6 +7,9 @@
 #include <stdio.h>
 #include <signal.h>
 #include "mlx.h"
+#include "vertex.h"
+#include "fdf.h"
+#include "libft.h"
 #define XDIM 320
 #define YDIM 240
 #define LIMX 1.0
@@ -36,12 +40,6 @@ typedef struct	s_float2
 	float	x;
 	float	y;
 }				t_float2;
-typedef	struct	s_float3
-{
-	float	x;
-	float	y;
-	float	z;
-}				t_float3;
 typedef struct	s_cam
 {
 	t_float3	dir;
@@ -80,6 +78,8 @@ typedef struct	s_things
 	void		*mlx_image;
 	t_bitmap	*bitmap;
 	t_my_state	*state;
+	t_list		*mesh;
+	int			mesh_row_size;
 }				t_things;
 
 unsigned int	rgba_to_int(t_rgba color)
@@ -194,6 +194,44 @@ void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 	}
 }
 
+/*
+** gradient: interpolate between colors
+** mix is expected to be in range [0.0, 1.0]
+*/
+
+t_rgba	gradient(t_rgba col1, t_rgba col2, float mix)
+{
+	t_rgba	color;
+	float	inv;
+
+	inv = 1 - mix;
+	color.r = col2.r * mix + col1.r * inv;
+	color.g = col2.g * mix + col1.g * inv;
+	color.b = col2.b * mix + col1.b * inv;
+	color.a = col2.a * mix + col1.a * inv;
+	return (color);
+}
+
+void	draw_line_gradient(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba a_color, t_rgba b_color)
+{
+	t_float2	pixel_size = {LIMX / bmp->x_dim, LIMY / bmp->y_dim};
+	t_float2	zero = {0.0, 0.0};
+	float		pixel_diameter = distance(zero, pixel_size);
+	float		length = distance(a, b);
+	t_float2	p;
+	float		dt = 0.5 * pixel_diameter / length;
+	float		t;
+
+	t = 0;
+	while (t < 1)
+	{
+		p.x = a.x + t * (b.x - a.x);
+		p.y = a.y + t * (b.y - a.y);
+		do_blend(bmp, p, gradient(a_color, b_color, t));
+		t += dt;
+	}
+}
+
 void	fill_rect(t_bitmap *bmp, t_uint x, t_uint y, t_uint width, t_uint height, t_rgba color)
 {
 	t_uint i;
@@ -228,6 +266,117 @@ t_float2	add_float2(t_float2 a, t_float2 b)
 	sum.x = a.x + b.x;
 	sum.y = a.y + b.y;
 	return (sum);
+}
+
+
+float		dot(t_float3 a, t_float3 b)
+{
+	return (a.x * b.x + a.y * b.y + a.z * b.z);
+}
+
+t_float3	cross(t_float3 a, t_float3 b)
+{
+	t_float3	c;
+
+	c.x = a.y * b.z - a.z * b.y;
+	c.y = a.z * b.x - a.x * b.z;
+	c.z = a.x * b.y - a.y * b.x;
+	return (c);
+}
+
+t_float3	scalar_mul_3(t_float3 vec, float s)
+{
+	vec.x *= s;
+	vec.y *= s;
+	vec.x *= s;
+	return (vec);
+}
+
+float	length3(t_float3 vec)
+{
+	return (sqrt(dot(vec, vec)));
+}
+
+t_float2	project(t_float3 point, t_cam cam)
+{
+	t_float3	proj;
+	t_float2	screen;
+	float		coeff;
+
+	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
+	proj.x = point.x + coeff * cam.proj_dir.x;// - cam.dir.x * cam.dist;
+	proj.y = point.y + coeff * cam.proj_dir.y;// - cam.dir.y * cam.dist;
+	proj.z = point.z + coeff * cam.proj_dir.z;// - cam.dir.z * cam.dist;
+
+	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * LIMX;
+	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * LIMY;
+	return (screen);
+}
+
+void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba color)
+{
+	t_float2	proj1;
+	t_float2	proj2;
+
+	proj1 = project(v1, cam);
+	proj2 = project(v2, cam);
+	draw_line(bmp, proj1, proj2, color);
+}
+
+void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba col1, t_rgba col2)
+{
+	t_float2	proj1;
+	t_float2	proj2;
+
+	proj1 = project(v1, cam);
+	proj2 = project(v2, cam);
+	draw_line_gradient(bmp, proj1, proj2, col1, col2);
+}
+
+t_rgba	color_from_z(t_float3 vertex)
+{
+	t_rgba	color;
+
+	color.r = 255 * vertex.z;
+	color.g = 255 * (1 - vertex.z);
+	color.b = 255 * (1 - vertex.z);
+	return (color);
+}
+
+void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *mesh, int row_size)
+{
+	int		i;
+	int		j;
+	t_rgba	color1;
+	t_rgba	color2;
+	t_float3 vertex1;
+	t_float3 vertex2;
+
+	j = 0;
+	while (mesh)
+	{
+		i = 0;
+		while (i < row_size)
+		{
+			vertex1 = ((t_float3 *)mesh->content)[i];
+			color1 = color_from_z(vertex1);
+			if (mesh->next)
+			{
+				vertex2 = ((t_float3 *)mesh->next->content)[i];
+				color2 = color_from_z(vertex2);
+				draw_edge_gradient(bmp, cam, vertex1, vertex2, color1, color2);
+			}
+			if (i < row_size - 1)
+			{
+				vertex2 = ((t_float3 *)mesh->content)[i + 1];
+				color2 = color_from_z(vertex2);
+				draw_edge_gradient(bmp, cam, vertex1, vertex2, color1, color2);
+			}
+			i++;
+		}
+		mesh = mesh->next;
+		j++;
+	}
 }
 
 void	toggle(int *var)
@@ -278,86 +427,6 @@ int		draw_controls(void *mlx_ptr, void *mlx_window)
 	mlx_string_put(mlx_ptr, mlx_window, 20, 180, 0x00FFFFFF, "    q = quit");
 	return (0);
 }
-
-float		dot(t_float3 a, t_float3 b)
-{
-	return (a.x * b.x + a.y * b.y + a.z * b.z);
-}
-
-t_float3	cross(t_float3 a, t_float3 b)
-{
-	t_float3	c;
-
-	c.x = a.y * b.z - a.z * b.y;
-	c.y = a.z * b.x - a.x * b.z;
-	c.z = a.x * b.y - a.y * b.x;
-	return (c);
-}
-
-t_float3	scale(t_float3 vec, float s)
-{
-	vec.x *= s;
-	vec.y *= s;
-	vec.x *= s;
-	return (vec);
-}
-
-float	length3(t_float3 vec)
-{
-	return (sqrt(dot(vec, vec)));
-}
-
-t_float2	project(t_float3 point, t_cam cam)
-{
-	t_float3	proj;
-	t_float2	screen;
-	float		coeff;
-
-	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
-	proj.x = point.x + coeff * cam.proj_dir.x;// - cam.dir.x * cam.dist;
-	proj.y = point.y + coeff * cam.proj_dir.y;// - cam.dir.y * cam.dist;
-	proj.z = point.z + coeff * cam.proj_dir.z;// - cam.dir.z * cam.dist;
-
-	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * LIMX;
-	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * LIMY;
-	return (screen);
-}
-
-void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba color)
-{
-	t_float2	proj1;
-	t_float2	proj2;
-
-	proj1 = project(v1, cam);
-	proj2 = project(v2, cam);
-	draw_line(bmp, proj1, proj2, color);
-}
-
-void	draw_grid(t_bitmap *bmp, t_cam cam, t_float3 mesh[4][4], int row_size, int n_rows)
-{
-	int		i;
-	int		j;
-	t_rgba	color;
-
-	j = 0;
-	while (j < n_rows)
-	{
-		i = 0;
-		while (i < row_size)
-		{
-			color.r = 255 * mesh[j][i].z;
-			color.g = 255 * (1 - mesh[j][i].z);
-			color.b = 255 * (1 - mesh[j][i].z);
-			if (j != n_rows - 1)
-				draw_edge(bmp, cam, mesh[j][i], mesh[j + 1][i], color);
-			if (i != row_size - 1)
-				draw_edge(bmp, cam, mesh[j][i], mesh[j][i + 1], color);
-			i++;
-		}
-		j++;
-	}
-}
-
 int		the_loop(void *param)
 {
 	t_things	*my = (t_things *)param;
@@ -385,22 +454,24 @@ int		the_loop(void *param)
 	static t_cam	cam;
 	static t_float3	pir[4] = {{0.0, 0.0, 0.0}, {0.5, 0.0, 0.0},
 		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
+	/*
 	static t_float3 mesh[4][4] = {
 		{{0.0, 0.0, 0.1}, {0.1, 0.0, 0.0}, {0.2, 0.0, 0.3}, {0.3, 0.0, 0.0}},
 		{{0.0, 0.1, 0.3}, {0.1, 0.1, 0.2}, {0.2, 0.1, 0.2}, {0.3, 0.1, 0.0}},
 		{{0.0, 0.2, 0.1}, {0.1, 0.2, 0.3}, {0.2, 0.2, 0.7}, {0.3, 0.2, 0.0}},
 		{{0.0, 0.3, 0.7}, {0.1, 0.3, 0.1}, {0.2, 0.3, 0.5}, {0.3, 0.3, 0.0}}};
+		*/
 
 	dir.x = sin(frame * 0.5 * M_PI / 100);
 	dir.y = cos(frame * 0.5 * M_PI / 100);
 	dir.z = 0.5;
-	dir = scale(dir, 1 / length3(dir));
+	dir = scalar_mul_3(dir, 1 / length3(dir));
 	right.x = dir.y;
 	right.y = -dir.x;
 	right.z = 0;
-	right = scale(right, 1 / length3(right));
+	right = scalar_mul_3(right, 1 / length3(right));
 	up = cross(dir, right);
-	up = scale(up, 1 / length3(up));
+	up = scalar_mul_3(up, 1 / length3(up));
 	cam.dir = dir;
 	cam.up = up;
 	cam.right = right;
@@ -408,7 +479,7 @@ int		the_loop(void *param)
 	//cam.dist doesnt influence parallel projections
 	cam.dist = 1;
 	//cam.fov right now is just a screen space scale multiplier
-	cam.fov = 0.25;
+	cam.fov = 0.5 * LIMX / my->mesh_row_size;
 
 	clock_gettime(CLOCK_MONOTONIC, &frame_start);
 	//inputs
@@ -438,7 +509,7 @@ int		the_loop(void *param)
 	draw_edge(my->bitmap, cam, pir[1], pir[3], mellow2);
 	draw_edge(my->bitmap, cam, pir[2], pir[3], mellow3);
 	//---wire mesh
-	draw_grid(my->bitmap, cam, mesh, 4, 4);
+	draw_grid(my->bitmap, cam, my->mesh, my->mesh_row_size);
 	//---axes;
 	draw_edge(my->bitmap, cam, origin, x, full_blue);
 	draw_edge(my->bitmap, cam, origin, y, full_green);
@@ -469,7 +540,7 @@ int		the_loop(void *param)
 	return (0);
 }
 
-int		main(void)
+int		main(int argc, char **argv)
 {
 	t_my_state	state;
 	t_things	things;
@@ -477,7 +548,15 @@ int		main(void)
 	int			my_bpp;
 	int			my_image_size_line;
 	int			my_endianness;
+	int			fd;
 
+	things.mesh = NULL;
+	if (argc == 2)
+	{
+		fd = open(argv[1], O_RDONLY);
+		things.mesh_row_size = read_grid(fd, &things.mesh);
+		close(fd);
+	}
 	state.stop_program = 0;
 	state.frame_advance = 0;
 	state.do_step = 0;

@@ -1,0 +1,5 @@
+libft.a
+objects
+deps
+*.out
+test*
