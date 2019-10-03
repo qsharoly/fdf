@@ -1,23 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vertex.h                                           :+:      :+:    :+:   */
+/*   ft_fmin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/03 18:13:33 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/03 18:14:50 by qsharoly         ###   ########.fr       */
+/*   Created: 2019/10/03 18:53:10 by qsharoly          #+#    #+#             */
+/*   Updated: 2019/10/03 18:53:40 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef VERTEX_H
-# define VERTEX_H
-
-typedef struct	s_float3
+float	ft_fmin(float a, float b)
 {
-	float	x;
-	float	y;
-	float	z;
-}				t_float3;
-
-#endif
+	return (a < b ? a : b);
+}

@@ -6,13 +6,13 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/03 18:26:24 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/03 19:00:23 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "get_next_line.h"
-#include "vertex.h"
+#include "fdf.h"
 
 int		read_grid(int fd, t_list **rows)
 {
@@ -34,12 +34,9 @@ int		read_grid(int fd, t_list **rows)
 			row[i].x = i;
 			row[i].y = j;
 			row[i].z = ft_atoi(words[i]);
-			ft_putstr(words[i]);
-			ft_putchar(' ');
 			free(words[i]);
 			i++;
 		}
-		ft_putchar('\n');
 		ft_lstadd(rows, ft_lstnew(row, sizeof(t_float3) * count));
 		free(line);
 		free(words);

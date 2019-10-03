@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include <signal.h>
 #include "mlx.h"
-#include "vertex.h"
 #include "fdf.h"
 #include "libft.h"
 #define XDIM 320
@@ -35,11 +34,6 @@ typedef struct	s_rgba
 	t_uchar b;
 	t_uchar a;
 }				t_rgba;
-typedef struct	s_float2
-{
-	float	x;
-	float	y;
-}				t_float2;
 typedef struct	s_cam
 {
 	t_float3	dir;
@@ -80,6 +74,7 @@ typedef struct	s_things
 	t_my_state	*state;
 	t_list		*mesh;
 	int			mesh_row_size;
+	t_float2	mesh_z_range;
 }				t_things;
 
 unsigned int	rgba_to_int(t_rgba color)
@@ -333,17 +328,17 @@ void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rg
 	draw_line_gradient(bmp, proj1, proj2, col1, col2);
 }
 
-t_rgba	color_from_z(t_float3 vertex)
+t_rgba	color_from_z(t_float3 vertex, float z_range)
 {
 	t_rgba	color;
 
-	color.r = 255 * vertex.z;
-	color.g = 255 * (1 - vertex.z);
-	color.b = 255 * (1 - vertex.z);
+	color.r = 255 * vertex.z / z_range;
+	color.g = 255 * (z_range - vertex.z) / z_range;
+	color.b = 255 * (z_range - vertex.z) / z_range;
 	return (color);
 }
 
-void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *mesh, int row_size)
+void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *mesh, int row_size, float z_range)
 {
 	int		i;
 	int		j;
@@ -359,17 +354,17 @@ void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *mesh, int row_size)
 		while (i < row_size)
 		{
 			vertex1 = ((t_float3 *)mesh->content)[i];
-			color1 = color_from_z(vertex1);
+			color1 = color_from_z(vertex1, z_range);
 			if (mesh->next)
 			{
 				vertex2 = ((t_float3 *)mesh->next->content)[i];
-				color2 = color_from_z(vertex2);
+				color2 = color_from_z(vertex2, z_range);
 				draw_edge_gradient(bmp, cam, vertex1, vertex2, color1, color2);
 			}
 			if (i < row_size - 1)
 			{
 				vertex2 = ((t_float3 *)mesh->content)[i + 1];
-				color2 = color_from_z(vertex2);
+				color2 = color_from_z(vertex2, z_range);
 				draw_edge_gradient(bmp, cam, vertex1, vertex2, color1, color2);
 			}
 			i++;
@@ -479,7 +474,7 @@ int		the_loop(void *param)
 	//cam.dist doesnt influence parallel projections
 	cam.dist = 1;
 	//cam.fov right now is just a screen space scale multiplier
-	cam.fov = 0.5 * LIMX / my->mesh_row_size;
+	cam.fov = LIMX / my->mesh_row_size;
 
 	clock_gettime(CLOCK_MONOTONIC, &frame_start);
 	//inputs
@@ -509,7 +504,7 @@ int		the_loop(void *param)
 	draw_edge(my->bitmap, cam, pir[1], pir[3], mellow2);
 	draw_edge(my->bitmap, cam, pir[2], pir[3], mellow3);
 	//---wire mesh
-	draw_grid(my->bitmap, cam, my->mesh, my->mesh_row_size);
+	draw_grid(my->bitmap, cam, my->mesh, my->mesh_row_size, my->mesh_z_range.y - my->mesh_z_range.x);
 	//---axes;
 	draw_edge(my->bitmap, cam, origin, x, full_blue);
 	draw_edge(my->bitmap, cam, origin, y, full_green);
@@ -556,6 +551,7 @@ int		main(int argc, char **argv)
 		fd = open(argv[1], O_RDONLY);
 		things.mesh_row_size = read_grid(fd, &things.mesh);
 		close(fd);
+		things.mesh_z_range = grid_z_range(things.mesh, things.mesh_row_size);
 	}
 	state.stop_program = 0;
 	state.frame_advance = 0;

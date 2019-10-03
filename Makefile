@@ -6,8 +6,8 @@ MLX_DIR = minilibx_macos
 MLX = $(MLX_DIR)/libmlx.a
 
 WFLAGS = -Wall -Wextra -Werror
-SRC = main.c read_grid.c
-OBJ = main.o read_grid.o
+SRC = main.c read_grid.c grid_z_range.c ft_fmax.c ft_fmin.c
+OBJ = $(SRC:%.c=%.o)
 
 all: $(NAME)
 
