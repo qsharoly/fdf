@@ -18,9 +18,9 @@
 ** put minimal z value into range.x, maximal z value into range.y
 */
 
-t_float2	grid_z_range(t_list *rows, int row_size)
+t_float3	grid_z_range(t_list *rows, int row_size)
 {
-	t_float2	range;
+	t_float3	range;
 	int			i;
 	float		z;
 
@@ -38,5 +38,6 @@ t_float2	grid_z_range(t_list *rows, int row_size)
 		}
 		rows = rows->next;
 	}
+	range.z = range.y - range.x;
 	return (range);
 }

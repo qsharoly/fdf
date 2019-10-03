@@ -31,6 +31,6 @@ typedef struct	s_float3
 float			ft_fmax(float a, float b);
 float			ft_fmin(float a, float b);
 int				read_grid(int fd, t_list **rows);
-t_float2		grid_z_range(t_list *rows, int row_size);
+t_float3		grid_z_range(t_list *rows, int row_size);
 
 #endif
