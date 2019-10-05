@@ -12,8 +12,19 @@ OBJ = $(SRC:%.c=%.o)
 all: $(NAME)
 
 $(NAME): $(OBJ) $(MLX)
-	make -C $(MLX_DIR)
 	gcc -o $(NAME) $(OBJ) -L $(MLX_DIR) -L $(LFT_DIR) -I $(MLX_DIR) -I $(LFT_INC) -lmlx -lft -framework OpenGL -framework AppKit
 
 %.o: %.c
 	gcc $(WFLAGS) -g -c -o $@ $< -I $(MLX_DIR) -I $(LFT_INC)
+
+$(MLX):
+	make -C $(MLX_DIR)
+
+.PHONY: all clean fclean re
+
+clean:
+	rm -rf $(OBJ)
+fclean: clean
+	rm -rf $(NAME)
+re: fclean
+	make all
