@@ -11,8 +11,6 @@
 #include "libft.h"
 #define XDIM 640
 #define YDIM 480
-#define LIMX 1.0
-#define LIMY 1.0
 
 typedef unsigned int	t_uint;
 typedef unsigned char	t_uchar;
@@ -114,6 +112,24 @@ void	set_pixel(t_bitmap *bmp, t_uint x, t_uint y, t_rgba color)
 	*(bmp->data + x + y * bmp->x_dim) = rgba_to_int(color);
 }
 
+void	fill_rect(t_bitmap *bmp, t_uint x, t_uint y, t_uint width, t_uint height, t_rgba color)
+{
+	t_uint i;
+	t_uint j;
+
+	j = 0;
+	while (j < height)
+	{
+		i = 0;
+		while (i < width)
+		{
+			set_pixel(bmp, x + i, y + j, color);
+			i++;
+		}
+		j++;
+	}
+}
+
 t_bitmap	*bitmap_init(t_bitmap *bmp, t_uint x_dim, t_uint y_dim)
 {
 	bmp->data = malloc(x_dim * y_dim * sizeof(t_rgba));
@@ -157,67 +173,48 @@ t_rgba	lazy_mix(t_rgba col1, t_rgba col2, float ratio)
 	return (bad);
 }
 
+int		inbounds(t_float2 point, t_bitmap *bmp)
+{
+	return (point.x >= 0.0 && point.x <= bmp->x_dim && point.y >= 0.0 && point.y <= bmp->y_dim);
+}
+
 void	do_blend(t_bitmap *bmp, t_float2 p, t_rgba color)
 {
-	float	pixel_size = sqrt(squared(LIMX / bmp->x_dim)
-			+ squared(LIMY /  bmp->y_dim));
-	t_uint	x_index;
-	t_uint	y_index;
-	t_uint	floor_x;
-	t_uint	floor_y;
 	t_uint	i;
 	t_uint	j;
-	t_float2	pixel_geom;
+	t_float2 pixel;
 	float	ratio;
 	float	dist;
 
-	floor_x = floor((p.x / LIMX) * (float)bmp->x_dim);
-	floor_y = floor((p.y / LIMY) * (float)bmp->y_dim);
 	j = 0;
 	while (j < 2)
 	{
-		if ((floor_y + j) >= bmp->y_dim)
+		if ((round(p.y) + j) >= bmp->y_dim)
 			break ;
 		i = 0;
 		while (i < 2)
 		{
-			if ((floor_x + i) >= bmp->x_dim)
+			if ((round(p.x) + i) >= bmp->x_dim)
 				break ;
-			x_index = floor_x + i;
-			y_index = floor_y + j;
-			pixel_geom.x = LIMX * (float)x_index / (float)bmp->x_dim;
-			pixel_geom.y = LIMY * (float)y_index / (float)bmp->y_dim;
-			dist = distance(pixel_geom, p);
-			if (dist > pixel_size)
+			pixel.x = round(p.x) + i;
+			pixel.y = round(p.y) + j;
+			dist = distance(pixel, p);
+			if (dist > 1)
 				ratio = 0;
 			else
-			{
-				ratio = (pixel_size - dist) / pixel_size;
-				ratio = ratio * ratio;
-			}
-			set_pixel(bmp, x_index, y_index,
-					mix(color, get_pixel(bmp, x_index, y_index), ratio));
+				ratio = squared(1 - dist);
+			set_pixel(bmp, pixel.x, pixel.y,
+					mix(color, get_pixel(bmp, pixel.x, pixel.y), ratio));
 			i++;
 		}
 		j++;
 	}
 }
 
-t_float2	geom_2_pixel(t_bitmap *bmp, t_float2 a)
-{
-	t_float2	pixel;
-
-	pixel.x = (a.x / LIMX) * bmp->x_dim;
-	pixel.y = (a.y / LIMY) * bmp->y_dim;
-	return (pixel);
-}
-
-void	dda_line(t_bitmap *bmp, t_float2 a, t_float2 b,  t_rgba color)
+void	dda_line(t_bitmap *bmp, t_float2 p1, t_float2 p2,  t_rgba color)
 {
 	float	x;
 	float	y;
-	t_float2	p1 = geom_2_pixel(bmp, a);
-	t_float2	p2 = geom_2_pixel(bmp, b);
 	float	dx;
 	float	dy;
 	float	step;
@@ -243,12 +240,10 @@ void	dda_line(t_bitmap *bmp, t_float2 a, t_float2 b,  t_rgba color)
 	}
 }
 
-void	dda_line_gradient(t_bitmap *bmp, t_float2 a, t_float2 b,  t_rgba color1, t_rgba color2)
+void	dda_line_gradient(t_bitmap *bmp, t_float2 p1, t_float2 p2,  t_rgba color1, t_rgba color2)
 {
 	float	x;
 	float	y;
-	t_float2	p1 = geom_2_pixel(bmp, a);
-	t_float2	p2 = geom_2_pixel(bmp, b);
 	float	dx;
 	float	dy;
 	float	step;
@@ -275,59 +270,46 @@ void	dda_line_gradient(t_bitmap *bmp, t_float2 a, t_float2 b,  t_rgba color1, t_
 }
 void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 {
-	t_float2	pixel_size = {LIMX / bmp->x_dim, LIMY / bmp->y_dim};
-	t_float2	zero = {0.0, 0.0};
-	float		pixel_diameter = distance(zero, pixel_size);
-	float		length = distance(a, b);
+	float		length;
 	t_float2	p;
-	float		dt = 0.5 * pixel_diameter / length;
+	float		dt;
 	float		t;
 
+	p = a;
+	length = distance(a, b);
+	dt = 1 / length;
 	t = 0;
 	while (t < 1)
+	//while (t < 1 && inbounds(p, bmp))
 	{
+		if (inbounds(p, bmp))
+		//do_blend(bmp, p, color);
+			set_pixel(bmp, p.x, p.y, color);
+		t += dt;
 		p.x = a.x + t * (b.x - a.x);
 		p.y = a.y + t * (b.y - a.y);
-		t += dt;
-		do_blend(bmp, p, color);
 	}
 }
 
 void	draw_line_gradient(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba a_color, t_rgba b_color)
 {
-	t_float2	pixel_size = {LIMX / bmp->x_dim, LIMY / bmp->y_dim};
-	t_float2	zero = {0.0, 0.0};
-	float		pixel_diameter = distance(zero, pixel_size);
-	float		length = distance(a, b);
+	float		length;
 	t_float2	p;
-	float		dt = 0.5 * pixel_diameter / length;
+	float		dt;
 	float		t;
 
+	p = a;
+	length = distance(a, b);
+	dt = 1 / length;
 	t = 0;
 	while (t < 1)
 	{
+		if (inbounds(p, bmp))
+		//do_blend(bmp, p, mix(a_color, b_color, 1 - t));
+			set_pixel(bmp, p.x, p.y, mix(a_color, b_color, 1 - t));
+		t += dt;
 		p.x = a.x + t * (b.x - a.x);
 		p.y = a.y + t * (b.y - a.y);
-		do_blend(bmp, p, mix(a_color, b_color, 1 - t));
-		t += dt;
-	}
-}
-
-void	fill_rect(t_bitmap *bmp, t_uint x, t_uint y, t_uint width, t_uint height, t_rgba color)
-{
-	t_uint i;
-	t_uint j;
-
-	j = 0;
-	while (j < height)
-	{
-		i = 0;
-		while (i < width)
-		{
-			set_pixel(bmp, x + i, y + j, color);
-			i++;
-		}
-		j++;
 	}
 }
 
@@ -397,7 +379,7 @@ float	length3(t_float3 vec)
 	return (sqrt(dot(vec, vec)));
 }
 
-t_float2	project(t_float3 point, t_cam cam)
+t_float2	project(t_float3 point, t_cam cam, t_bitmap *bmp)
 {
 	t_float3	proj;
 	t_float2	screen;
@@ -407,14 +389,9 @@ t_float2	project(t_float3 point, t_cam cam)
 	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
 	proj = add_float3(point, scalar_mul(cam.proj_dir, coeff));
 
-	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * LIMX;
-	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * LIMY;
+	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * bmp->x_dim;
+	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * bmp->y_dim;
 	return (screen);
-}
-
-int		inbounds(t_float2 point)
-{
-	return (point.x > 0.0 && point.x < LIMX && point.y > 0.0 && point.y < LIMY);
 }
 
 void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba color)
@@ -422,9 +399,9 @@ void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba color)
 	t_float2	proj1;
 	t_float2	proj2;
 
-	proj1 = project(v1, cam);
-	proj2 = project(v2, cam);
-	if (inbounds(proj1) || inbounds(proj2))
+	proj1 = project(v1, cam, bmp);
+	proj2 = project(v2, cam, bmp);
+//	if (inbounds(proj1, bmp) || inbounds(proj2, bmp))
 		draw_line(bmp, proj1, proj2, color);
 }
 
@@ -433,10 +410,10 @@ void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rg
 	t_float2	proj1;
 	t_float2	proj2;
 
-	proj1 = project(v1, cam);
-	proj2 = project(v2, cam);
-	if (inbounds(proj1) || inbounds(proj2))
-		dda_line_gradient(bmp, proj1, proj2, col1, col2);
+	proj1 = project(v1, cam, bmp);
+	proj2 = project(v2, cam, bmp);
+//	if (inbounds(proj1, bmp) || inbounds(proj2, bmp))
+		draw_line_gradient(bmp, proj1, proj2, col1, col2);
 }
 
 t_rgba	color_from_z(t_float3 vertex, float z_min, float z_max)
@@ -457,14 +434,12 @@ t_rgba	color_from_z(t_float3 vertex, float z_min, float z_max)
 void	draw_grid(t_bitmap *bmp, t_cam cam, t_grid *mesh)
 {
 	int			i;
-	int			j;
 	t_rgba		color1;
 	t_rgba		color2;
 	t_float3	vertex1;
 	t_float3	vertex2;
 	t_list		*row;
 
-	j = 0;
 	row = mesh->rows;
 	while (row)
 	{
@@ -488,7 +463,6 @@ void	draw_grid(t_bitmap *bmp, t_cam cam, t_grid *mesh)
 			i++;
 		}
 		row = row->next;
-		j++;
 	}
 }
 
@@ -592,7 +566,7 @@ int		the_loop(void *param)
 	//cam.dist doesnt influence parallel projections
 	cam.dist = 1;
 	//cam.fov right now is just a screen space scale multiplier
-	cam.fov = LIMX / my->mesh->row_size;
+	cam.fov = my->bitmap->x_dim / my->mesh->row_size;
 
 	clock_gettime(CLOCK_MONOTONIC, &frame_start);
 	//inputs
