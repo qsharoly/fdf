@@ -1,26 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fdf.h                                              :+:      :+:    :+:   */
+/*   vector.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/03 18:59:51 by qsharoly         ###   ########.fr       */
+/*   Created: 2019/10/06 10:27:49 by qsharoly          #+#    #+#             */
+/*   Updated: 2019/10/06 14:16:07 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FDF_H
-# define FDF_H
+#ifndef VECTOR_H
+# define VECTOR_H
 
-# include "libft.h"
+# include <math.h>
 
 typedef struct	s_float2
 {
 	float	x;
 	float	y;
 }				t_float2;
-
 typedef struct	s_float3
 {
 	float	x;
@@ -28,9 +27,15 @@ typedef struct	s_float3
 	float	z;
 }				t_float3;
 
-float			ft_fmax(float a, float b);
-float			ft_fmin(float a, float b);
-int				read_grid(int fd, t_list **rows);
-t_float3		grid_z_range(t_list *rows, int row_size);
+float			squared(float a);
+float			distance(t_float2 a, t_float2 b);
+t_float2		add_float2(t_float2 a, t_float2 b);
+t_float3		add_float3(t_float3 a, t_float3 b);
+t_float3		sub_float3(t_float3 a, t_float3 b);
+float			dot(t_float3 a, t_float3 b);
+t_float3		cross(t_float3 a, t_float3 b);
+t_float3		scalar_mul(t_float3 vec, float s);
+float			length3(t_float3 vec);
+t_float3		make_float3(float x, float y, float z);
 
 #endif

@@ -1,468 +1,118 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include <string.h>
 #include <math.h>
 #include <time.h>
 #include <stdio.h>
-#include <signal.h>
 #include "mlx.h"
 #include "fdf.h"
 #include "libft.h"
-#define XDIM 640
-#define YDIM 480
 
-typedef unsigned int	t_uint;
-typedef unsigned char	t_uchar;
-typedef struct	s_uint2
-{
-	t_uint x;
-	t_uint y;
-}				t_uint2;
-typedef struct	s_rgba
-{
-	t_uchar r;
-	t_uchar g;
-	t_uchar b;
-	t_uchar a;
-}				t_rgba;
-
-typedef struct	s_bitmap
-{
-	unsigned int	*data;
-	t_uint	x_dim;
-	t_uint	y_dim;
-}				t_bitmap;
-
-typedef struct	s_my_state
-{
-	int	stop_program;
-	int	frame_advance;
-	int	do_step;
-	int bench;
-	int	bench_frames;
-	int	print_stats;
-	int	draw_stats;
-	int draw_helpers;
-	int	draw_controls;
-	int keycode;
-}				t_my_state;
-
-typedef struct	s_cam
-{
-	t_float3	world;
-	t_float3	dir;
-	t_float3	up;
-	t_float3	right;
-	t_float3	proj_dir;
-	float		dist;
-	float		fov;
-}				t_cam;
-
-typedef struct	s_grid
-{
-	t_list		*rows;
-	int			row_size;
-	float		z_range;
-	float		z_min;
-	float		z_max;
-}				t_grid;
-
-typedef struct	s_things
-{
-	void		*my_mlx;
-	void		*my_window;
-	void		*mlx_image;
-	t_bitmap	*bitmap;
-	t_my_state	*state;
-	t_grid		*mesh;
-}				t_things;
-
-unsigned int	rgba_to_int(t_rgba color)
-{
-	unsigned int	out = 0;
-
-	out += color.r << 16;
-	out += color.g << 8;
-	out += color.b << 0;
-	return (out);
-}
-
-t_rgba			int_to_rgba(int color)
-{
-	t_rgba	rgba;
-
-	rgba.r = *((char *)&color + 2);
-	rgba.g = *((char *)&color + 1);
-	rgba.b = *((char *)&color + 0);
-	rgba.a = *((char *)&color + 3);
-	return (rgba);
-}
-
-t_rgba	get_pixel(t_bitmap *bmp, t_uint x, t_uint y)
-{
-	unsigned int		color;
-
-	color = *(bmp->data + x + y * bmp->x_dim);
-	return (int_to_rgba(color));
-}
-
-void	set_pixel(t_bitmap *bmp, t_uint x, t_uint y, t_rgba color)
-{
-	*(bmp->data + x + y * bmp->x_dim) = rgba_to_int(color);
-}
-
-void	fill_rect(t_bitmap *bmp, t_uint x, t_uint y, t_uint width, t_uint height, t_rgba color)
-{
-	t_uint i;
-	t_uint j;
-
-	j = 0;
-	while (j < height)
-	{
-		i = 0;
-		while (i < width)
-		{
-			set_pixel(bmp, x + i, y + j, color);
-			i++;
-		}
-		j++;
-	}
-}
-
-t_bitmap	*bitmap_init(t_bitmap *bmp, t_uint x_dim, t_uint y_dim)
-{
-	bmp->data = malloc(x_dim * y_dim * sizeof(t_rgba));
-	bmp->x_dim = x_dim;
-	bmp->y_dim = y_dim;
-	return (bmp);
-}
-
-float	squared(float a)
-{
-	return (a * a);
-}
-
-float	distance(t_float2 a, t_float2 b)
-{
-	return (sqrt(squared(a.x - b.x) + squared(a.y - b.y)));
-}
-
-/*
-** mix: interpolate between colors
-** ratio is expected to be in range [0.0, 1.0]
-*/
-
-t_rgba	mix(t_rgba col1, t_rgba col2, float ratio)
-{
-	t_rgba	color;
-
-	color.r = sqrt(squared(col1.r) * ratio + squared(col2.r) * (1 - ratio));
-	color.g = sqrt(squared(col1.g) * ratio + squared(col2.g) * (1 - ratio));
-	color.b = sqrt(squared(col1.b) * ratio + squared(col2.b) * (1 - ratio));
-	return (color);
-}
-
-t_rgba	lazy_mix(t_rgba col1, t_rgba col2, float ratio)
-{
-	t_rgba	bad;
-
-	bad.r = col1.r * ratio + col2.r * (1 - ratio);
-	bad.g = col1.g * ratio + col2.g * (1 - ratio);
-	bad.b = col1.b * ratio + col2.b * (1 - ratio);
-	return (bad);
-}
-
-int		inbounds(t_float2 point, t_bitmap *bmp)
-{
-	return (point.x >= 0.0 && point.x <= bmp->x_dim && point.y >= 0.0 && point.y <= bmp->y_dim);
-}
-
-void	do_blend(t_bitmap *bmp, t_float2 p, t_rgba color)
-{
-	t_uint	i;
-	t_uint	j;
-	t_float2 pixel;
-	float	ratio;
-	float	dist;
-
-	j = 0;
-	while (j < 2)
-	{
-		if ((round(p.y) + j) >= bmp->y_dim)
-			break ;
-		i = 0;
-		while (i < 2)
-		{
-			if ((round(p.x) + i) >= bmp->x_dim)
-				break ;
-			pixel.x = round(p.x) + i;
-			pixel.y = round(p.y) + j;
-			dist = distance(pixel, p);
-			if (dist > 1)
-				ratio = 0;
-			else
-				ratio = squared(1 - dist);
-			set_pixel(bmp, pixel.x, pixel.y,
-					mix(color, get_pixel(bmp, pixel.x, pixel.y), ratio));
-			i++;
-		}
-		j++;
-	}
-}
-
-void	dda_line(t_bitmap *bmp, t_float2 p1, t_float2 p2,  t_rgba color)
-{
-	float	x;
-	float	y;
-	float	dx;
-	float	dy;
-	float	step;
-	int		i;
-
-	dx = p2.x - p1.x;
-	dy = p2.y - p1.y;
-	if (fabs(dx) >= fabs(dy))
-		step = fabs(dx);
-	else
-		step = fabs(dy);
-	dx = dx / step;
-	dy = dy / step;
-	x = p1.x;
-	y = p1.y;
-	i = 0;
-	while (i < step && x < bmp->x_dim && x > 0 && y < bmp->y_dim && y > 0)
-	{
-		set_pixel(bmp, x, y, color);
-		x += dx;
-		y += dy;
-		i++;
-	}
-}
-
-void	dda_line_gradient(t_bitmap *bmp, t_float2 p1, t_float2 p2,  t_rgba color1, t_rgba color2)
-{
-	float	x;
-	float	y;
-	float	dx;
-	float	dy;
-	float	step;
-	int		i;
-
-	dx = p2.x - p1.x;
-	dy = p2.y - p1.y;
-	if (fabs(dx) >= fabs(dy))
-		step = fabs(dx);
-	else
-		step = fabs(dy);
-	dx = dx / step;
-	dy = dy / step;
-	x = p1.x;
-	y = p1.y;
-	i = 0;
-	while (i < step && x < bmp->x_dim && x > 0 && y < bmp->y_dim && y > 0)
-	{
-		set_pixel(bmp, x, y, mix(color1, color2, 1 - i / step));
-		x += dx;
-		y += dy;
-		i++;
-	}
-}
-void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
-{
-	float		length;
-	t_float2	p;
-	float		dt;
-	float		t;
-
-	p = a;
-	length = distance(a, b);
-	dt = 1 / length;
-	t = 0;
-	while (t < 1)
-	//while (t < 1 && inbounds(p, bmp))
-	{
-		if (inbounds(p, bmp))
-		//do_blend(bmp, p, color);
-			set_pixel(bmp, p.x, p.y, color);
-		t += dt;
-		p.x = a.x + t * (b.x - a.x);
-		p.y = a.y + t * (b.y - a.y);
-	}
-}
-
-void	draw_line_gradient(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba a_color, t_rgba b_color)
-{
-	float		length;
-	t_float2	p;
-	float		dt;
-	float		t;
-
-	p = a;
-	length = distance(a, b);
-	dt = 1 / length;
-	t = 0;
-	while (t < 1)
-	{
-		if (inbounds(p, bmp))
-		//do_blend(bmp, p, mix(a_color, b_color, 1 - t));
-			set_pixel(bmp, p.x, p.y, mix(a_color, b_color, 1 - t));
-		t += dt;
-		p.x = a.x + t * (b.x - a.x);
-		p.y = a.y + t * (b.y - a.y);
-	}
-}
-
-int		near_eq(float a, float b)
-{
-	float	eps = 1e-8;
-	if (fabs(a - b) < eps)
-		return (1);
-	else
-		return (0);
-}
-
-t_float2	add_float2(t_float2 a, t_float2 b)
-{
-	t_float2	sum;
-
-	sum.x = a.x + b.x;
-	sum.y = a.y + b.y;
-	return (sum);
-}
-
-t_float3	sub_float3(t_float3 a, t_float3 b)
-{
-	t_float3	d;
-
-	d.x = a.x - b.x;
-	d.y = a.y - b.y;
-	d.z = a.z - b.z;
-	return (d);
-}
-
-t_float3	add_float3(t_float3 a, t_float3 b)
-{
-	t_float3	sum;
-
-	sum.x = a.x + b.x;
-	sum.y = a.y + b.y;
-	sum.z = a.z + b.z;
-	return (sum);
-}
-
-float		dot(t_float3 a, t_float3 b)
-{
-	return (a.x * b.x + a.y * b.y + a.z * b.z);
-}
-
-t_float3	cross(t_float3 a, t_float3 b)
-{
-	t_float3	c;
-
-	c.x = a.y * b.z - a.z * b.y;
-	c.y = a.z * b.x - a.x * b.z;
-	c.z = a.x * b.y - a.y * b.x;
-	return (c);
-}
-
-t_float3	scalar_mul(t_float3 vec, float s)
-{
-	vec.x *= s;
-	vec.y *= s;
-	vec.z *= s;
-	return (vec);
-}
-
-float	length3(t_float3 vec)
-{
-	return (sqrt(dot(vec, vec)));
-}
-
-t_float2	project(t_float3 point, t_cam cam, t_bitmap *bmp)
+t_float3	project(t_float3 point, t_cam cam, t_bitmap *bmp)
 {
 	t_float3	proj;
-	t_float2	screen;
+	t_float3	screen;
 	float		coeff;
 
-	point = sub_float3(point, cam.world);
+	point = add_float3(point, scalar_mul(cam.world, -1));
 	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
 	proj = add_float3(point, scalar_mul(cam.proj_dir, coeff));
 
 	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * bmp->x_dim;
 	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * bmp->y_dim;
+	screen.z = dot(proj, cam.dir);
 	return (screen);
 }
 
-void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba color)
+t_float3	normalize(t_float3 point)
 {
-	t_float2	proj1;
-	t_float2	proj2;
-
-	proj1 = project(v1, cam, bmp);
-	proj2 = project(v2, cam, bmp);
-//	if (inbounds(proj1, bmp) || inbounds(proj2, bmp))
-		draw_line(bmp, proj1, proj2, color);
+	return (scalar_mul(point, 1 / length3(point)));
 }
 
-void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_float3 v1, t_float3 v2, t_rgba col1, t_rgba col2)
+t_float2	take_xy(t_float3 point)
 {
-	t_float2	proj1;
-	t_float2	proj2;
+	t_float2	xy;
 
-	proj1 = project(v1, cam, bmp);
-	proj2 = project(v2, cam, bmp);
-//	if (inbounds(proj1, bmp) || inbounds(proj2, bmp))
-		draw_line_gradient(bmp, proj1, proj2, col1, col2);
+	xy.x = point.x;
+	xy.y = point.y;
+	return (xy);
 }
 
-t_rgba	color_from_z(t_float3 vertex, float z_min, float z_max)
+t_float3	rot_x(float angle, t_float3 vec)
 {
-	t_rgba		high = {150, 100, 250, 0};
-	t_rgba		low = {100, 250, 150, 0};
-	t_rgba		inferno = {250, 150, 100, 0};
+	t_float3	rot;
 
-	if (z_max - z_min  == 0.0)
-		return (low);
-	else
-		if (vertex.z >= 0.0)
-			return (mix(low, high, (z_max - vertex.z) / z_max));
-		else
-			return (mix(low, inferno, (vertex.z - z_min) / -z_min));
+	rot.x = vec.x;
+	rot.y = cos(angle) * vec.y - sin(angle) * vec.z;
+	rot.z = sin(angle) * vec.y + cos(angle) * vec.z;
+	return (rot);
 }
 
-void	draw_grid(t_bitmap *bmp, t_cam cam, t_grid *mesh)
+t_float3	rot_y(float angle, t_float3 vec)
+{
+	t_float3	rot;
+
+	rot.x = cos(angle) * vec.x - sin(angle) * vec.z;
+	rot.y = vec.y;
+	rot.z = sin(angle) * vec.x + cos(angle) * vec.z;
+	return (rot);
+}
+
+t_float3	rot_z(float angle, t_float3 vec)
+{
+	t_float3	rot;
+
+	rot.x = cos(angle) * vec.x - sin(angle) * vec.y;
+	rot.y = sin(angle) * vec.x + cos(angle) * vec.y;
+	rot.z = vec.z;
+	return (rot);
+}
+
+void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 p1, t_float3 p2, t_rgba color)
+{
+	t_float3	proj1;
+	t_float3	proj2;
+
+	proj1 = project(p1, cam, bmp);
+	proj2 = project(p2, cam, bmp);
+	draw_line(bmp, take_xy(proj1), take_xy(proj2), color);
+}
+
+void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_vertex v1, t_vertex v2)
+{
+	t_float3	proj1;
+	t_float3	proj2;
+
+	proj1 = project(v1.vec, cam, bmp);
+	proj2 = project(v2.vec, cam, bmp);
+	draw_line_gradient(bmp, take_xy(proj1), take_xy(proj2), v1.col, v2.col);
+}
+
+void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *rows)
 {
 	int			i;
-	t_rgba		color1;
-	t_rgba		color2;
-	t_float3	vertex1;
-	t_float3	vertex2;
-	t_list		*row;
+	t_vertex	vertex1;
+	t_vertex	vertex2;
 
-	row = mesh->rows;
-	while (row)
+	while (rows)
 	{
 		i = 0;
-		while (i < (int)(row->content_size / sizeof(t_float3)))
+		while (i < (int)(rows->content_size / sizeof(t_vertex)))
 		{
-			vertex1 = ((t_float3 *)row->content)[i];
-			color1 = color_from_z(vertex1, mesh->z_min, mesh->z_max);
-			if (i < (int)(row->content_size / sizeof(t_float3)) - 1)
+			vertex1 = ((t_vertex *)rows->content)[i];
+			if (i < (int)(rows->content_size / sizeof(t_vertex)) - 1)
 			{
-				vertex2 = ((t_float3 *)row->content)[i + 1];
-				color2 = color_from_z(vertex2, mesh->z_min, mesh->z_max);
-				draw_edge_gradient(bmp, cam, vertex1, vertex2, color1, color2);
+				vertex2 = ((t_vertex *)rows->content)[i + 1];
+				draw_edge_gradient(bmp, cam, vertex1, vertex2);
 			}
-			if (row->next)
+			if (rows->next)
 			{
-				vertex2 = ((t_float3 *)row->next->content)[i];
-				color2 = color_from_z(vertex2, mesh->z_min, mesh->z_max);
-				draw_edge_gradient(bmp, cam, vertex1, vertex2, color1, color2);
+				vertex2 = ((t_vertex *)rows->next->content)[i];
+				draw_edge_gradient(bmp, cam, vertex1, vertex2);
 			}
 			i++;
 		}
-		row = row->next;
+		rows = rows->next;
 	}
 }
 
@@ -477,16 +127,21 @@ void	toggle(int *var)
 #define LETTER_S 1
 #define LETTER_D 2
 #define LETTER_H 4
+#define LETTER_C 8
 #define LETTER_K 40
+#define LETTER_P 35
 #define L_SHIFT 257
 #define R_SHIFT 258
+#define ESC 53
 
 int		key_controls(int keycode, void *param)
 {
 	t_my_state	*st = (t_my_state *)param;
 
-	//dprintf(2, "key %d\n", keycode);
-	if (keycode == LETTER_Q)
+	ft_putstr_fd("key ", 2);
+	ft_putnbr_fd(keycode, 2);
+	ft_putstr_fd("\n", 2);
+	if (keycode == LETTER_Q || keycode == ESC)
 		st->stop_program = 1;
 	if (keycode == SPACEBAR)
 		toggle(&st->frame_advance);
@@ -498,8 +153,10 @@ int		key_controls(int keycode, void *param)
 		toggle(&st->draw_stats);
 	if (keycode == LETTER_H)
 		toggle(&st->draw_helpers);
-	if (keycode == LETTER_K)
+	if (keycode == LETTER_C)
 		toggle(&st->draw_controls);
+	if (keycode == LETTER_P)
+		toggle((int *)&st->projection);
 	return (0);
 }
 
@@ -510,8 +167,9 @@ int		draw_controls(void *mlx_ptr, void *mlx_window)
 	mlx_string_put(mlx_ptr, mlx_window, 20, 90, 0x00FFFFFF, "    s = show stats");
 	mlx_string_put(mlx_ptr, mlx_window, 20, 110, 0x00FFFFFF, "    h = show helpers");
 	mlx_string_put(mlx_ptr, mlx_window, 20, 130, 0x00FFFFFF, "    d = stats -> stderr");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 150, 0x00FFFFFF, "    k = show these controls");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 180, 0x00FFFFFF, "    q = quit");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 150, 0x00FFFFFF, "    c = show these controls");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 170, 0x00FFFFFF, "    p = switch projection");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 200, 0x00FFFFFF, "    q, esc = quit");
 	return (0);
 }
 
@@ -543,30 +201,62 @@ int		the_loop(void *param)
 	static t_float3	pir[4] = {{0.0, 0.0, 0.0}, {0.5, 0.0, 0.0},
 		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
 
+	//camera & projection setup
 	dir.x = sin(frame * 0.5 * M_PI / 100);
 	dir.y = cos(frame * 0.5 * M_PI / 100);
 	dir.z = 0.8;
-	dir = scalar_mul(dir, 1 / length3(dir));
+	dir = normalize(dir);
 	right.x = dir.y;
 	right.y = -dir.x;
 	right.z = 0;
-	right = scalar_mul(right, 1 / length3(right));
+	right = normalize(right);
 	up = cross(dir, right);
-//	normalizing up is not necessary because we normalized dir and right and cross of unit length
-//	vecs will be unit length
-//	up = scalar_mul(up, 1 / length3(up));
-	cam.dir = z;;
-	cam.up = up;
-	cam.right = right;
-	cam.proj_dir = dir;
-	//cam.world - position that is going to be projected to the center of screen
-	cam.world.x = my->mesh->row_size / 2;
-	cam.world.y = my->mesh->row_size / 2;
-	cam.world.z = 0;
-	//cam.dist doesnt influence parallel projections
-	cam.dist = 1;
-	//cam.fov right now is just a screen space scale multiplier
-	cam.fov = my->bitmap->x_dim / my->mesh->row_size;
+	if (my->state->projection == Axonometric)
+	{
+		cam.dist = 1;
+		cam.dir = dir;
+		cam.up = up;
+		cam.right = right;
+		cam.proj_dir = cam.dir;
+	}
+	else if (my->state->projection == Oblique)
+	{
+		//"Military"
+		cam.dist = 1;
+		cam.right = add_float3(y, scalar_mul(x, -1));
+		cam.right = normalize(cam.right);
+		cam.dir = z;
+		cam.up = cross(cam.right, cam.dir);
+		cam.proj_dir.x = 1 * sin(M_PI / 4);
+		cam.proj_dir.y = 1 * cos(M_PI / 4);
+		cam.proj_dir.z = 1;
+		cam.proj_dir = normalize(cam.proj_dir);
+		//"Cavalier"
+		/*
+		cam.dist = 1;
+		cam.right = y;
+		cam.dir = scalar_mul(x, -1);
+		cam.up = scalar_mul(z, -1);
+		cam.proj_dir = rot_z(0.15 * M_PI, cam.dir);
+		cam.proj_dir = rot_y(0.15 * M_PI, cam.proj_dir);
+		*/
+	}
+	if (my->mesh != NULL)
+	{
+		cam.dist = 0;
+		cam.world.x = my->mesh->max_row_size / 2;
+		cam.world.y = my->mesh->max_row_size / 2;
+		cam.world.z = my->mesh->z_min;
+		cam.fov = 0.5 * my->bitmap->x_dim / my->mesh->max_row_size;
+	}
+	else
+	{
+		cam.dist = 1;
+		cam.world.x = 0;
+		cam.world.y = 0;
+		cam.world.z = 0;
+		cam.fov = 0.5 * my->bitmap->x_dim;
+	}
 
 	clock_gettime(CLOCK_MONOTONIC, &frame_start);
 	//inputs
@@ -587,11 +277,20 @@ int		the_loop(void *param)
 	//physics
 	//graphics
 	//---black background
-	fill_rect(my->bitmap, 0, 0, XDIM, YDIM, black);
+	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), black);
 	//---wire mesh
-	draw_grid(my->bitmap, cam, my->mesh);
+	if (my->mesh)
+		draw_grid(my->bitmap, cam, my->mesh->rows);
 	if (my->state->draw_helpers)
 	{
+		//---cam world position
+		draw_edge(my->bitmap, cam, cam.world, add_float3(x, cam.world), mellow1);
+		draw_edge(my->bitmap, cam, cam.world, add_float3(y, cam.world), mellow2);
+		draw_edge(my->bitmap, cam, cam.world, add_float3(z, cam.world), mellow3);
+		//---axes;
+		draw_edge(my->bitmap, cam, origin, x, full_blue);
+		draw_edge(my->bitmap, cam, origin, y, full_green);
+		draw_edge(my->bitmap, cam, origin, z, full_red);
 		//---pyramid
 		draw_edge(my->bitmap, cam, pir[0], pir[1], white);
 		draw_edge(my->bitmap, cam, pir[0], pir[2], white);
@@ -599,14 +298,6 @@ int		the_loop(void *param)
 		draw_edge(my->bitmap, cam, pir[1], pir[2], mellow1);
 		draw_edge(my->bitmap, cam, pir[1], pir[3], mellow2);
 		draw_edge(my->bitmap, cam, pir[2], pir[3], mellow3);
-		//---axes;
-		draw_edge(my->bitmap, cam, origin, x, full_blue);
-		draw_edge(my->bitmap, cam, origin, y, full_green);
-		draw_edge(my->bitmap, cam, origin, z, full_red);
-		//---cam world position
-		draw_edge(my->bitmap, cam, cam.world, add_float3(x, cam.world), mellow1);
-		draw_edge(my->bitmap, cam, cam.world, add_float3(y, cam.world), mellow2);
-		draw_edge(my->bitmap, cam, cam.world, add_float3(z, cam.world), mellow3);
 	}
 	//"draw_call"
 	mlx_put_image_to_window(my->my_mlx, my->my_window, my->mlx_image, 0, 0);
@@ -614,7 +305,6 @@ int		the_loop(void *param)
 	clock_gettime(CLOCK_MONOTONIC, &frame_end);
 	time_taken_msec = (frame_end.tv_nsec - frame_start.tv_nsec) * 1e-6;
 	fps = 1000 / time_taken_msec;
-#if	1
 	if (my->state->print_stats == 1)
 	{
 		dprintf(2, "%7.3lfms, %7.3lffps ", time_taken_msec, fps);
@@ -623,13 +313,12 @@ int		the_loop(void *param)
 	if (my->state->draw_stats == 1)
 	{
 		snprintf(s1, 63, "%.3lfms %7.3lffps frame %f", time_taken_msec, fps, frame);
-		mlx_string_put(my->my_mlx, my->my_window, 10, 10, rgba_to_int(white), s1);
+		mlx_string_put(my->my_mlx, my->my_window, 10, 10, 0x00FFFFFF, s1);
 	}
 	if (my->state->draw_controls == 1)
 	{
 		draw_controls(my->my_mlx, my->my_window);
 	}
-#endif
 	frame++;
 	return (0);
 }
@@ -639,30 +328,28 @@ int		main(int argc, char **argv)
 	t_my_state	state;
 	t_things	things;
 	t_bitmap	bitmap;
-	t_grid		mesh;
+	t_grid		grid;
 	int			my_bpp;
 	int			my_image_size_line;
 	int			my_endianness;
 	int			fd;
-	t_float3	z_props;
 	char		*caption;
 
 	caption = ft_strdup("my fdf");
-	mesh.rows = NULL;
-	mesh.row_size = 0;
+	things.mesh = NULL;
+	grid.rows = NULL;
 	if (argc == 2)
 	{
 		fd = open(argv[1], O_RDONLY);
-		mesh.row_size = read_grid(fd, &mesh.rows);
+		read_grid(fd, &(grid.rows));
 		close(fd);
-		z_props = grid_z_range(mesh.rows, mesh.row_size);
-		mesh.z_range = z_props.z;
-		mesh.z_min = z_props.x;
-		mesh.z_max = z_props.y;
+		grid_make_properties(&grid);
+		assign_colors_from_z(&grid);
 		caption = ft_strjoin(caption, " : ");
 		caption = ft_strjoin(caption, argv[1]);
+		things.mesh = &grid;
 	}
-	things.mesh = &mesh;
+	state.projection = Axonometric;
 	state.stop_program = 0;
 	state.frame_advance = 0;
 	state.do_step = 0;
@@ -674,16 +361,20 @@ int		main(int argc, char **argv)
 	state.draw_controls = 0;
 	things.my_mlx = mlx_init();
 	things.my_window = mlx_new_window(things.my_mlx, XDIM, YDIM, caption);
+	free(caption);
 	things.mlx_image = mlx_new_image(things.my_mlx, XDIM, YDIM);
-	bitmap.data = (unsigned int *)mlx_get_data_addr(things.mlx_image, &my_bpp, &my_image_size_line, &my_endianness);
+	bitmap.data = (unsigned int *)mlx_get_data_addr(things.mlx_image,
+									&my_bpp, &my_image_size_line, &my_endianness);
 	bitmap.x_dim = XDIM;
 	bitmap.y_dim = YDIM;
 	things.bitmap = &bitmap;
 	things.state = &state;
 	mlx_loop_hook(things.my_mlx, the_loop, &things);
 	mlx_key_hook(things.my_window, key_controls, things.state);
-	mlx_string_put(things.my_mlx, things.my_window, XDIM / 2 - 65, 10, 0x00FFFFDA, "~ p u l s r ~");
+	/*
+	mlx_string_put(things.my_mlx, things.my_window, XDIM / 2 - 65, 10, 0x00FFFFDA, "~ m y f d f ~");
 	draw_controls(things.my_mlx, things.my_window);
+	*/
 	mlx_loop(things.my_mlx);
 	return (0);
 }
