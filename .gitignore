@@ -1,4 +1,6 @@
 fdf
 *.o
 */*.o
+*/*.a
 .DS_Store
+*.dSYM
