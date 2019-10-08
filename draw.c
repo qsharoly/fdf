@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/06 16:31:05 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/08 14:47:00 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,28 +48,6 @@ void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 	{
 		if (inbounds(p, bmp))
 			set_pixel(bmp, p.x, p.y, color);
-		t += dt;
-		p.x = a.x + t * (b.x - a.x);
-		p.y = a.y + t * (b.y - a.y);
-	}
-}
-
-void	draw_line_gradient(t_bitmap *bmp, t_float2 a, t_float2 b,
-		t_rgba a_color, t_rgba b_color)
-{
-	float		length;
-	t_float2	p;
-	float		dt;
-	float		t;
-
-	p = a;
-	length = distance(a, b);
-	dt = 1 / length;
-	t = 0;
-	while (t < 1)
-	{
-		if (inbounds(p, bmp))
-			set_pixel(bmp, p.x, p.y, mix(a_color, b_color, 1 - t));
 		t += dt;
 		p.x = a.x + t * (b.x - a.x);
 		p.y = a.y + t * (b.y - a.y);

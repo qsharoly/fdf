@@ -78,14 +78,27 @@ void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 p1, t_float3 p2, t_rgba color)
 	draw_line(bmp, take_xy(proj1), take_xy(proj2), color);
 }
 
-void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_vertex v1, t_vertex v2)
+void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_vertex a, t_vertex b)
 {
-	t_float3	proj1;
-	t_float3	proj2;
+	t_float2	p;
+	t_float2	aa;
+	t_float2	bb;
+	float		dt;
+	float		t;
 
-	proj1 = project(v1.vec, cam, bmp);
-	proj2 = project(v2.vec, cam, bmp);
-	draw_line_gradient(bmp, take_xy(proj1), take_xy(proj2), v1.col, v2.col);
+	aa = take_xy(project(a.vec, cam, bmp));
+	bb = take_xy(project(b.vec, cam, bmp));
+	p = aa;
+	dt = 1 / distance(aa, bb);
+	t = 0;
+	while (t < 1)
+	{
+		if (inbounds(p, bmp))
+			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
+		t += dt;
+		p.x = aa.x + t * (bb.x - aa.x);
+		p.y = aa.y + t * (bb.y - aa.y);
+	}
 }
 
 void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *rows)
@@ -156,7 +169,7 @@ int		key_controls(int keycode, void *param)
 	if (keycode == LETTER_C)
 		toggle(&st->draw_controls);
 	if (keycode == LETTER_P)
-		toggle((int *)&st->projection);
+		st->projection = ++(st->projection) % N_PROJECTION_KINDS;
 	return (0);
 }
 
@@ -182,64 +195,55 @@ int		the_loop(void *param)
 	double		time_taken_msec;
 	static float frame;
 	char		s1[64] = {};
-	static t_rgba		black = {0, 0, 0, 0};
-	static t_rgba		white = {255, 255, 255, 0};
-	static t_rgba		full_red	= {255, 0, 0, 0};
-	static t_rgba		full_green	= {0, 255, 0, 0};
-	static t_rgba		full_blue	= {0, 0, 255, 0};
-	static t_rgba		mellow1 = {150, 100, 250, 0};
-	static t_rgba		mellow2 = {100, 250, 150, 0};
-	static t_rgba		mellow3 = {250, 150, 100, 0};
+	static t_rgba	black = {0, 0, 0, 0};
+	static t_rgba	white = {255, 255, 255, 0};
+	static t_rgba	full_red	= {255, 0, 0, 0};
+	static t_rgba	full_green	= {0, 255, 0, 0};
+	static t_rgba	full_blue	= {0, 0, 255, 0};
+	static t_rgba	mellow1 = {150, 100, 250, 0};
+	static t_rgba	mellow2 = {100, 250, 150, 0};
+	static t_rgba	mellow3 = {250, 150, 100, 0};
 	static t_float3	origin = {0.0, 0.0, 0.0};
 	static t_float3	x = {1.0, 0.0, 0.0};
 	static t_float3	y = {0.0, 1.0, 0.0};
 	static t_float3	z = {0.0, 0.0, 1.0};
-	t_float3	dir;
-	t_float3	up;
-	t_float3	right;
 	static t_cam	cam;
 	static t_float3	pir[4] = {{0.0, 0.0, 0.0}, {0.5, 0.0, 0.0},
 		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
 
+	clock_gettime(CLOCK_MONOTONIC, &frame_start);
 	//camera & projection setup
-	dir.x = sin(frame * 0.5 * M_PI / 100);
-	dir.y = cos(frame * 0.5 * M_PI / 100);
-	dir.z = 0.8;
-	dir = normalize(dir);
-	right.x = dir.y;
-	right.y = -dir.x;
-	right.z = 0;
-	right = normalize(right);
-	up = cross(dir, right);
 	if (my->state->projection == Axonometric)
 	{
-		cam.dist = 1;
-		cam.dir = dir;
-		cam.up = up;
-		cam.right = right;
+		cam.dir.x = sin(frame * 0.5 * M_PI /100);
+		cam.dir.y = cos(frame * 0.5 * M_PI /100);
+		cam.dir.z = 0.8;
+		cam.dir = normalize(cam.dir);
+		cam.right.x = cam.dir.y;
+		cam.right.y = -cam.dir.x;
+		cam.right.z = 0;
+		cam.right = normalize(cam.right);
+		cam.up = cross(cam.dir, cam.right);
 		cam.proj_dir = cam.dir;
 	}
-	else if (my->state->projection == Oblique)
+	else if (my->state->projection == Oblique_Military)
 	{
-		//"Military"
-		cam.dist = 1;
-		cam.right = add_float3(y, scalar_mul(x, -1));
+		cam.right = add_float3(x, scalar_mul(y, -1));
 		cam.right = normalize(cam.right);
 		cam.dir = z;
-		cam.up = cross(cam.right, cam.dir);
+		cam.up = cross(cam.dir, cam.right);
 		cam.proj_dir.x = 1 * sin(M_PI / 4);
 		cam.proj_dir.y = 1 * cos(M_PI / 4);
 		cam.proj_dir.z = 1;
 		cam.proj_dir = normalize(cam.proj_dir);
-		//"Cavalier"
-		/*
-		cam.dist = 1;
-		cam.right = y;
-		cam.dir = scalar_mul(x, -1);
+	}
+	else if (my->state->projection == Oblique_Cavalier)
+	{
+		cam.right = x;
+		cam.dir = scalar_mul(y, -1);
 		cam.up = scalar_mul(z, -1);
-		cam.proj_dir = rot_z(0.15 * M_PI, cam.dir);
-		cam.proj_dir = rot_y(0.15 * M_PI, cam.proj_dir);
-		*/
+		cam.proj_dir = rot_z(- 0.15 * M_PI, cam.dir);
+		cam.proj_dir = rot_x(0.15 * M_PI, cam.proj_dir);
 	}
 	if (my->mesh != NULL)
 	{
@@ -257,8 +261,6 @@ int		the_loop(void *param)
 		cam.world.z = 0;
 		cam.fov = 0.5 * my->bitmap->x_dim;
 	}
-
-	clock_gettime(CLOCK_MONOTONIC, &frame_start);
 	//inputs
 	if ((my->state->stop_program == 1)
 			|| ((my->state->bench == 1) && (frame > my->state->bench_frames)))
@@ -276,9 +278,7 @@ int		the_loop(void *param)
 	}
 	//physics
 	//graphics
-	//---black background
 	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), black);
-	//---wire mesh
 	if (my->mesh)
 		draw_grid(my->bitmap, cam, my->mesh->rows);
 	if (my->state->draw_helpers)
@@ -371,10 +371,6 @@ int		main(int argc, char **argv)
 	things.state = &state;
 	mlx_loop_hook(things.my_mlx, the_loop, &things);
 	mlx_key_hook(things.my_window, key_controls, things.state);
-	/*
-	mlx_string_put(things.my_mlx, things.my_window, XDIM / 2 - 65, 10, 0x00FFFFDA, "~ m y f d f ~");
-	draw_controls(things.my_mlx, things.my_window);
-	*/
 	mlx_loop(things.my_mlx);
 	return (0);
 }

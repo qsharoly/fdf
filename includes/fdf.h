@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/06 16:47:21 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/08 15:39:05 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,13 @@
 # include "vector.h"
 # include "draw.h"
 
+# define N_PROJECTION_KINDS 3
+
 enum	e_projection
 {
 	Axonometric,
-	Oblique
+	Oblique_Military,
+	Oblique_Cavalier
 };
 
 typedef struct	s_vertex

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/06 16:39:42 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/08 14:35:23 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 ** to corresponding structure items mesh->z_min and mesh->z_max
 */
 
-void	grid_make_properties(t_grid *mesh)
+void		grid_make_properties(t_grid *mesh)
 {
 	float		z;
 	int			i;
@@ -57,14 +57,13 @@ t_rgba		color_from_z(t_float3 point, float z_min, float z_max)
 	inferno = make_rgba(250, 150, 100, 0);
 	if (z_max == z_min)
 		return (low);
+	else if (point.z >= 0)
+		return (mix(low, high, (z_max - point.z) / z_max));
 	else
-		if (point.z >= 0)
-			return (mix(low, high, (z_max - point.z) / z_max));
-		else
-			return (mix(low, inferno, (point.z - z_min) / -z_min));
+		return (mix(low, inferno, (point.z - z_min) / -z_min));
 }
 
-void	assign_colors_from_z(t_grid *mesh)
+void		assign_colors_from_z(t_grid *mesh)
 {
 	int			i;
 	int			row_size;
