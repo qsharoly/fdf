@@ -2,8 +2,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
-#include <stdio.h>
+//#include <time.h>
 #include "mlx.h"
 #include "fdf.h"
 #include "libft.h"
@@ -15,6 +14,7 @@ t_float3	project(t_float3 point, t_cam cam, t_bitmap *bmp)
 	float		coeff;
 
 	point = add_float3(point, scalar_mul(cam.world, -1));
+	point.z *= cam.altitude_mult;
 	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
 	proj = add_float3(point, scalar_mul(cam.proj_dir, coeff));
 
@@ -24,10 +24,6 @@ t_float3	project(t_float3 point, t_cam cam, t_bitmap *bmp)
 	return (screen);
 }
 
-t_float3	normalize(t_float3 point)
-{
-	return (scalar_mul(point, 1 / length3(point)));
-}
 
 t_float2	take_xy(t_float3 point)
 {
@@ -36,36 +32,6 @@ t_float2	take_xy(t_float3 point)
 	xy.x = point.x;
 	xy.y = point.y;
 	return (xy);
-}
-
-t_float3	rot_x(float angle, t_float3 vec)
-{
-	t_float3	rot;
-
-	rot.x = vec.x;
-	rot.y = cos(angle) * vec.y - sin(angle) * vec.z;
-	rot.z = sin(angle) * vec.y + cos(angle) * vec.z;
-	return (rot);
-}
-
-t_float3	rot_y(float angle, t_float3 vec)
-{
-	t_float3	rot;
-
-	rot.x = cos(angle) * vec.x - sin(angle) * vec.z;
-	rot.y = vec.y;
-	rot.z = sin(angle) * vec.x + cos(angle) * vec.z;
-	return (rot);
-}
-
-t_float3	rot_z(float angle, t_float3 vec)
-{
-	t_float3	rot;
-
-	rot.x = cos(angle) * vec.x - sin(angle) * vec.y;
-	rot.y = sin(angle) * vec.x + cos(angle) * vec.y;
-	rot.z = vec.z;
-	return (rot);
 }
 
 void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 p1, t_float3 p2, t_rgba color)
@@ -141,6 +107,9 @@ void	toggle(int *var)
 #define LETTER_D 2
 #define LETTER_H 4
 #define LETTER_C 8
+#define LETTER_U 32
+#define LETTER_I 34
+#define LETTER_J 38
 #define LETTER_K 40
 #define LETTER_P 35
 #define L_SHIFT 257
@@ -149,52 +118,92 @@ void	toggle(int *var)
 
 int		key_controls(int keycode, void *param)
 {
-	t_my_state	*st = (t_my_state *)param;
+	t_my_state	*st = ((t_things *)param)->state;
 
 	ft_putstr_fd("key ", 2);
 	ft_putnbr_fd(keycode, 2);
 	ft_putstr_fd("\n", 2);
+	st->redraw = 0;
 	if (keycode == LETTER_Q || keycode == ESC)
 		st->stop_program = 1;
-	if (keycode == SPACEBAR)
+	else if (keycode == SPACEBAR)
 		toggle(&st->frame_advance);
-	if ((keycode == LETTER_N) && (st->frame_advance == 1))
+	else if ((keycode == LETTER_N) && (st->frame_advance == 1))
 		st->do_step = 1;
-	if (keycode == LETTER_D)
+	else if (keycode == LETTER_D)
 		toggle(&st->print_stats);
-	if (keycode == LETTER_S)
-		toggle(&st->draw_stats);
-	if (keycode == LETTER_H)
-		toggle(&st->draw_helpers);
-	if (keycode == LETTER_C)
-		toggle(&st->draw_controls);
-	if (keycode == LETTER_P)
-		st->projection = ++(st->projection) % N_PROJECTION_KINDS;
+	else
+	{
+		st->redraw = 1;
+		if (keycode == LETTER_S)
+			toggle(&st->draw_stats);
+		else if (keycode == LETTER_H)
+			toggle(&st->draw_helpers);
+		else if (keycode == LETTER_C)
+			toggle(&st->draw_controls);
+		else if (keycode == LETTER_P)
+			st->projection = ++(st->projection) % N_PROJECTION_KINDS;
+		else if (keycode == LETTER_J)
+			((t_things *)param)->cam->fov *= 1.2;
+		else if (keycode == LETTER_K)
+			((t_things *)param)->cam->fov *= 0.8;
+		else if (keycode == LETTER_U)
+			((t_things *)param)->cam->altitude_mult *= 1.2;
+		else if (keycode == LETTER_I)
+			((t_things *)param)->cam->altitude_mult *= 0.8;
+	}
 	return (0);
 }
 
 int		draw_controls(void *mlx_ptr, void *mlx_window)
 {
-	mlx_string_put(mlx_ptr, mlx_window, 20, 50, 0x00FFFFFF, "space = pause/unpause");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 70, 0x00FFFFFF, "    n = next frame");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 90, 0x00FFFFFF, "    s = show stats");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 110, 0x00FFFFFF, "    h = show helpers");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 130, 0x00FFFFFF, "    d = stats -> stderr");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 150, 0x00FFFFFF, "    c = show these controls");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 170, 0x00FFFFFF, "    p = switch projection");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 200, 0x00FFFFFF, "    q, esc = quit");
+	int		white;
+
+	white = 0x00FFFFFF;
+	mlx_string_put(mlx_ptr, mlx_window, 20, 50, white, "space = pause/unpause");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 70, white, "    n = next frame");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 90, white, "    s = show stats");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 110, white, "    h = show axis helpers");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 130, white, "    d = stats -> stderr");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 150, white, "    c = hide controls");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 170, white, "    p = switch projection");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 190, white, "  j/k = zoom in/out");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 210, white, "  u/i = altitude multiply +/-");
+	mlx_string_put(mlx_ptr, mlx_window, 20, 240, white, "    q, esc = quit");
 	return (0);
+}
+
+void	ft_put_float_janky(float a)
+{
+	ft_putnbr(floor(a));
+	ft_putchar('.');
+	ft_putnbr(floor((a - floor(a)) * 1000));
+}
+
+char	*ft_itoa_float_janky(float a)
+{
+	char	*s;
+	char	*s1;
+
+	s = ft_itoa(floor(a));
+	s1 = ft_strjoin(s, ".");
+	free(s);
+	s = ft_strjoin(s1, ft_itoa(floor((a - floor(a)) * 1000)));
+	free(s1);
+	return (s);
 }
 
 int		the_loop(void *param)
 {
 	t_things	*my = (t_things *)param;
-	struct timespec	frame_start;
-	struct timespec frame_end;
-	double		fps;
-	double		time_taken_msec;
+//	struct timespec	frame_start;
+//	struct timespec frame_end;
+//	double		fps;
+//	double		time_taken_msec;
 	static float frame;
 	char		s1[64] = {};
+	char		*tmps;
+	int			white_i = 0x00FFFFFF;
 	static t_rgba	black = {0, 0, 0, 0};
 	static t_rgba	white = {255, 255, 255, 0};
 	static t_rgba	full_red	= {255, 0, 0, 0};
@@ -210,13 +219,38 @@ int		the_loop(void *param)
 	static t_cam	cam;
 	static t_float3	pir[4] = {{0.0, 0.0, 0.0}, {0.5, 0.0, 0.0},
 		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
+	static float	cam_rotation;
 
+	cam = *(my->cam);
+	/*
 	clock_gettime(CLOCK_MONOTONIC, &frame_start);
+	*/
+	//inputs
+	if ((my->state->stop_program == 1)
+			|| ((my->state->bench == 1) && (frame > my->state->bench_frames)))
+	{
+		mlx_destroy_window(my->my_mlx, my->my_window);
+		free(my->bitmap->data);
+		exit(0);
+	}
+	if (my->state->frame_advance == 1)
+	{
+		if (my->state->do_step == 1)
+			my->state->do_step = 0;
+		else if (my->state->redraw == 0)
+			return (0);
+	}
+	//physics
+	if (my->state->redraw == 0)
+	{
+		frame++;
+		cam_rotation = frame * 0.5 * M_PI / 100;
+	}
 	//camera & projection setup
 	if (my->state->projection == Axonometric)
 	{
-		cam.dir.x = sin(frame * 0.5 * M_PI /100);
-		cam.dir.y = cos(frame * 0.5 * M_PI /100);
+		cam.dir.x = sin(cam_rotation);
+		cam.dir.y = cos(cam_rotation);
 		cam.dir.z = 0.8;
 		cam.dir = normalize(cam.dir);
 		cam.right.x = cam.dir.y;
@@ -245,38 +279,6 @@ int		the_loop(void *param)
 		cam.proj_dir = rot_z(- 0.15 * M_PI, cam.dir);
 		cam.proj_dir = rot_x(0.15 * M_PI, cam.proj_dir);
 	}
-	if (my->mesh != NULL)
-	{
-		cam.dist = 0;
-		cam.world.x = my->mesh->max_row_size / 2;
-		cam.world.y = my->mesh->max_row_size / 2;
-		cam.world.z = my->mesh->z_min;
-		cam.fov = 0.5 * my->bitmap->x_dim / my->mesh->max_row_size;
-	}
-	else
-	{
-		cam.dist = 1;
-		cam.world.x = 0;
-		cam.world.y = 0;
-		cam.world.z = 0;
-		cam.fov = 0.5 * my->bitmap->x_dim;
-	}
-	//inputs
-	if ((my->state->stop_program == 1)
-			|| ((my->state->bench == 1) && (frame > my->state->bench_frames)))
-	{
-		mlx_destroy_window(my->my_mlx, my->my_window);
-		free(my->bitmap->data);
-		exit(0);
-	}
-	if (my->state->frame_advance == 1)
-	{
-		if (my->state->do_step == 1)
-			my->state->do_step = 0;
-		else
-			return (0);
-	}
-	//physics
 	//graphics
 	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), black);
 	if (my->mesh)
@@ -302,24 +304,48 @@ int		the_loop(void *param)
 	//"draw_call"
 	mlx_put_image_to_window(my->my_mlx, my->my_window, my->mlx_image, 0, 0);
 	//stats
+	/*
 	clock_gettime(CLOCK_MONOTONIC, &frame_end);
 	time_taken_msec = (frame_end.tv_nsec - frame_start.tv_nsec) * 1e-6;
 	fps = 1000 / time_taken_msec;
+	*/
 	if (my->state->print_stats == 1)
 	{
-		dprintf(2, "%7.3lfms, %7.3lffps ", time_taken_msec, fps);
-		dprintf(2, "frame %f\n", frame);
+		/*
+		ft_put_float_janky(time_taken_msec);
+		ft_putstr("ms ");
+		ft_put_float_janky(fps);
+		ft_putstr("fps frame ");
+		*/
+		ft_putstr("frame ");
+		ft_put_float_janky(frame);
+		ft_putstr("\n");
 	}
 	if (my->state->draw_stats == 1)
 	{
-		snprintf(s1, 63, "%.3lfms %7.3lffps frame %f", time_taken_msec, fps, frame);
-		mlx_string_put(my->my_mlx, my->my_window, 10, 10, 0x00FFFFFF, s1);
+		s1[0] = '\0';
+		/*
+		tmps = ft_itoa_float_janky(time_taken_msec);
+		ft_strcat(s1, tmps);
+		free(tmps);
+		ft_strcat(s1, "ms ");
+		tmps = ft_itoa_float_janky(fps);
+		ft_strcat(s1, tmps);
+		free(tmps);
+		ft_strcat(s1, "fps frame ");
+		*/
+		ft_strcat(s1, "frame ");
+		tmps = ft_itoa_float_janky(frame);
+		ft_strcat(s1, tmps);
+		free(tmps);
+		mlx_string_put(my->my_mlx, my->my_window, 10, 10, white_i, s1);
 	}
 	if (my->state->draw_controls == 1)
 	{
 		draw_controls(my->my_mlx, my->my_window);
 	}
-	frame++;
+	if (my->state->redraw)
+		my->state->redraw = 0;
 	return (0);
 }
 
@@ -329,6 +355,7 @@ int		main(int argc, char **argv)
 	t_things	things;
 	t_bitmap	bitmap;
 	t_grid		grid;
+	t_cam		cam;
 	int			my_bpp;
 	int			my_image_size_line;
 	int			my_endianness;
@@ -353,7 +380,8 @@ int		main(int argc, char **argv)
 	state.stop_program = 0;
 	state.frame_advance = 0;
 	state.do_step = 0;
-	state.bench = 1;
+	state.redraw = 0;
+	state.bench = 0;
 	state.bench_frames = 500;
 	state.print_stats = 0;
 	state.draw_stats = 1;
@@ -368,9 +396,27 @@ int		main(int argc, char **argv)
 	bitmap.x_dim = XDIM;
 	bitmap.y_dim = YDIM;
 	things.bitmap = &bitmap;
+	cam.altitude_mult = 1;
+	if (things.mesh != NULL)
+	{
+		cam.dist = 0;
+		cam.world.x = things.mesh->max_row_size / 2;
+		cam.world.y = things.mesh->max_row_size / 2;
+		cam.world.z = things.mesh->z_min;
+		cam.fov = 0.5 * things.bitmap->x_dim / things.mesh->max_row_size;
+	}
+	else
+	{
+		cam.dist = 1;
+		cam.world.x = 0;
+		cam.world.y = 0;
+		cam.world.z = 0;
+		cam.fov = 0.5 * things.bitmap->x_dim;
+	}
 	things.state = &state;
+	things.cam = &cam;
 	mlx_loop_hook(things.my_mlx, the_loop, &things);
-	mlx_key_hook(things.my_window, key_controls, things.state);
+	mlx_key_hook(things.my_window, key_controls, &things);
 	mlx_loop(things.my_mlx);
 	return (0);
 }

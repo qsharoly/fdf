@@ -8,22 +8,26 @@ INC_DIR = includes
 
 WFLAGS = -Wall -Wextra -Werror
 SRC = main.c read_grid.c assign_colors_from_z.c ft_fmax.c ft_fmin.c\
-	  bitmap.c make_rgba.c make_rect.c draw.c vector2.c vector3.c make_float3.c
+	  bitmap.c make_rgba.c make_rect.c draw.c vector2.c vector3.c\
+	  vector3_more.c rotations.c make_float3.c
 
 OBJ = $(SRC:%.c=%.o)
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(MLX)
+$(NAME): $(OBJ) $(MLX) $(LFT)
 	gcc -o $(NAME) $(OBJ) -L $(MLX_DIR) -L $(LFT_DIR)\
 		-I $(MLX_DIR) -I $(LFT_INC) -I $(INC_DIR)\
 		-lmlx -lft -framework OpenGL -framework AppKit
 
-%.o: %.c
+%.o: %.c $(INC_DIR)/fdf.h
 	gcc $(WFLAGS) -g -c -o $@ $< -I $(MLX_DIR) -I $(LFT_INC) -I $(INC_DIR)
 
 $(MLX):
 	make -C $(MLX_DIR)
+
+$(LFT):
+	make -C $(LFT_DIR)
 
 .PHONY: all clean fclean re
 
