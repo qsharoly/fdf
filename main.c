@@ -2,7 +2,6 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <math.h>
-//#include <time.h>
 #include "mlx.h"
 #include "fdf.h"
 #include "libft.h"
@@ -196,10 +195,6 @@ char	*ft_itoa_float_janky(float a)
 int		the_loop(void *param)
 {
 	t_things	*my = (t_things *)param;
-//	struct timespec	frame_start;
-//	struct timespec frame_end;
-//	double		fps;
-//	double		time_taken_msec;
 	static float frame;
 	char		s1[64] = {};
 	char		*tmps;
@@ -222,9 +217,6 @@ int		the_loop(void *param)
 	static float	cam_rotation;
 
 	cam = *(my->cam);
-	/*
-	clock_gettime(CLOCK_MONOTONIC, &frame_start);
-	*/
 	//inputs
 	if ((my->state->stop_program == 1)
 			|| ((my->state->bench == 1) && (frame > my->state->bench_frames)))
@@ -304,19 +296,8 @@ int		the_loop(void *param)
 	//"draw_call"
 	mlx_put_image_to_window(my->my_mlx, my->my_window, my->mlx_image, 0, 0);
 	//stats
-	/*
-	clock_gettime(CLOCK_MONOTONIC, &frame_end);
-	time_taken_msec = (frame_end.tv_nsec - frame_start.tv_nsec) * 1e-6;
-	fps = 1000 / time_taken_msec;
-	*/
 	if (my->state->print_stats == 1)
 	{
-		/*
-		ft_put_float_janky(time_taken_msec);
-		ft_putstr("ms ");
-		ft_put_float_janky(fps);
-		ft_putstr("fps frame ");
-		*/
 		ft_putstr("frame ");
 		ft_put_float_janky(frame);
 		ft_putstr("\n");
@@ -324,16 +305,6 @@ int		the_loop(void *param)
 	if (my->state->draw_stats == 1)
 	{
 		s1[0] = '\0';
-		/*
-		tmps = ft_itoa_float_janky(time_taken_msec);
-		ft_strcat(s1, tmps);
-		free(tmps);
-		ft_strcat(s1, "ms ");
-		tmps = ft_itoa_float_janky(fps);
-		ft_strcat(s1, tmps);
-		free(tmps);
-		ft_strcat(s1, "fps frame ");
-		*/
 		ft_strcat(s1, "frame ");
 		tmps = ft_itoa_float_janky(frame);
 		ft_strcat(s1, tmps);
