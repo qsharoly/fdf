@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/08 14:47:00 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/12 17:39:35 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,38 @@ void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 		t += dt;
 		p.x = a.x + t * (b.x - a.x);
 		p.y = a.y + t * (b.y - a.y);
+	}
+}
+
+void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 a, t_float3 b, t_rgba color)
+{
+	t_float2	aa;
+	t_float2	bb;
+
+	aa = take_xy(project(a, cam, bmp));
+	bb = take_xy(project(b, cam, bmp));
+	draw_line(bmp, aa, bb, color);
+}
+
+void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_vertex a, t_vertex b)
+{
+	t_float2	p;
+	t_float2	aa;
+	t_float2	bb;
+	float		dt;
+	float		t;
+
+	aa = take_xy(project(a.vec, cam, bmp));
+	bb = take_xy(project(b.vec, cam, bmp));
+	p = aa;
+	dt = 1 / distance(aa, bb);
+	t = 0;
+	while (t < 1)
+	{
+		if (inbounds(p, bmp))
+			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
+		t += dt;
+		p.x = aa.x + t * (bb.x - aa.x);
+		p.y = aa.y + t * (bb.y - aa.y);
 	}
 }

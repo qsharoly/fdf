@@ -5,66 +5,7 @@
 #include "mlx.h"
 #include "fdf.h"
 #include "libft.h"
-
-t_float3	project(t_float3 point, t_cam cam, t_bitmap *bmp)
-{
-	t_float3	proj;
-	t_float3	screen;
-	float		coeff;
-
-	point = add_float3(point, scalar_mul(cam.world, -1));
-	point.z *= cam.altitude_mult;
-	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
-	proj = add_float3(point, scalar_mul(cam.proj_dir, coeff));
-
-	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * bmp->x_dim;
-	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * bmp->y_dim;
-	screen.z = dot(proj, cam.dir);
-	return (screen);
-}
-
-
-t_float2	take_xy(t_float3 point)
-{
-	t_float2	xy;
-
-	xy.x = point.x;
-	xy.y = point.y;
-	return (xy);
-}
-
-void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 p1, t_float3 p2, t_rgba color)
-{
-	t_float3	proj1;
-	t_float3	proj2;
-
-	proj1 = project(p1, cam, bmp);
-	proj2 = project(p2, cam, bmp);
-	draw_line(bmp, take_xy(proj1), take_xy(proj2), color);
-}
-
-void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_vertex a, t_vertex b)
-{
-	t_float2	p;
-	t_float2	aa;
-	t_float2	bb;
-	float		dt;
-	float		t;
-
-	aa = take_xy(project(a.vec, cam, bmp));
-	bb = take_xy(project(b.vec, cam, bmp));
-	p = aa;
-	dt = 1 / distance(aa, bb);
-	t = 0;
-	while (t < 1)
-	{
-		if (inbounds(p, bmp))
-			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
-		t += dt;
-		p.x = aa.x + t * (bb.x - aa.x);
-		p.y = aa.y + t * (bb.y - aa.y);
-	}
-}
+#include "keyboard.h"
 
 void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *rows)
 {
@@ -92,104 +33,6 @@ void	draw_grid(t_bitmap *bmp, t_cam cam, t_list *rows)
 		}
 		rows = rows->next;
 	}
-}
-
-void	toggle(int *var)
-{
-	*var = (*var + 1) % 2;
-}
-
-#define SPACEBAR 49
-#define LETTER_Q 12
-#define LETTER_N 45
-#define LETTER_S 1
-#define LETTER_D 2
-#define LETTER_H 4
-#define LETTER_C 8
-#define LETTER_U 32
-#define LETTER_I 34
-#define LETTER_J 38
-#define LETTER_K 40
-#define LETTER_P 35
-#define L_SHIFT 257
-#define R_SHIFT 258
-#define ESC 53
-
-int		key_controls(int keycode, void *param)
-{
-	t_my_state	*st = ((t_things *)param)->state;
-
-	ft_putstr_fd("key ", 2);
-	ft_putnbr_fd(keycode, 2);
-	ft_putstr_fd("\n", 2);
-	st->redraw = 0;
-	if (keycode == LETTER_Q || keycode == ESC)
-		st->stop_program = 1;
-	else if (keycode == SPACEBAR)
-		toggle(&st->frame_advance);
-	else if ((keycode == LETTER_N) && (st->frame_advance == 1))
-		st->do_step = 1;
-	else if (keycode == LETTER_D)
-		toggle(&st->print_stats);
-	else
-	{
-		st->redraw = 1;
-		if (keycode == LETTER_S)
-			toggle(&st->draw_stats);
-		else if (keycode == LETTER_H)
-			toggle(&st->draw_helpers);
-		else if (keycode == LETTER_C)
-			toggle(&st->draw_controls);
-		else if (keycode == LETTER_P)
-			st->projection = ++(st->projection) % N_PROJECTION_KINDS;
-		else if (keycode == LETTER_J)
-			((t_things *)param)->cam->fov *= 1.2;
-		else if (keycode == LETTER_K)
-			((t_things *)param)->cam->fov *= 0.8;
-		else if (keycode == LETTER_U)
-			((t_things *)param)->cam->altitude_mult *= 1.2;
-		else if (keycode == LETTER_I)
-			((t_things *)param)->cam->altitude_mult *= 0.8;
-	}
-	return (0);
-}
-
-int		draw_controls(void *mlx_ptr, void *mlx_window)
-{
-	int		white;
-
-	white = 0x00FFFFFF;
-	mlx_string_put(mlx_ptr, mlx_window, 20, 50, white, "space = pause/unpause");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 70, white, "    n = next frame");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 90, white, "    s = show stats");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 110, white, "    h = show axis helpers");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 130, white, "    d = stats -> stderr");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 150, white, "    c = hide controls");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 170, white, "    p = switch projection");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 190, white, "  j/k = zoom in/out");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 210, white, "  u/i = altitude multiply +/-");
-	mlx_string_put(mlx_ptr, mlx_window, 20, 240, white, "    q, esc = quit");
-	return (0);
-}
-
-void	ft_put_float_janky(float a)
-{
-	ft_putnbr(floor(a));
-	ft_putchar('.');
-	ft_putnbr(floor((a - floor(a)) * 1000));
-}
-
-char	*ft_itoa_float_janky(float a)
-{
-	char	*s;
-	char	*s1;
-
-	s = ft_itoa(floor(a));
-	s1 = ft_strjoin(s, ".");
-	free(s);
-	s = ft_strjoin(s1, ft_itoa(floor((a - floor(a)) * 1000)));
-	free(s1);
-	return (s);
 }
 
 int		the_loop(void *param)
@@ -273,8 +116,8 @@ int		the_loop(void *param)
 	}
 	//graphics
 	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), black);
-	if (my->mesh)
-		draw_grid(my->bitmap, cam, my->mesh->rows);
+	if (my->grid)
+		draw_grid(my->bitmap, cam, my->grid->rows);
 	if (my->state->draw_helpers)
 	{
 		//---cam world position
@@ -320,44 +163,80 @@ int		the_loop(void *param)
 	return (0);
 }
 
+void	init_state(t_things *things)
+{
+	things->state->projection = Axonometric;
+	things->state->stop_program = 0;
+	things->state->frame_advance = 0;
+	things->state->do_step = 0;
+	things->state->redraw = 0;
+	things->state->bench = 0;
+	things->state->bench_frames = 500;
+	things->state->print_stats = 0;
+	things->state->draw_stats = 1;
+	things->state->draw_helpers = 1;
+	things->state->draw_controls = 0;
+}
+
+void	init_cam(t_things *things)
+{
+	t_cam	*cam;
+
+	cam = things->cam;
+	cam->altitude_mult = 1;
+	if (things->grid != NULL)
+	{
+		cam->dist = 0;
+		cam->world.x = things->grid->max_row_size / 2;
+		cam->world.y = things->grid->max_row_size / 2;
+		cam->world.z = things->grid->z_min;
+		cam->fov = 0.5 * things->bitmap->x_dim / things->grid->max_row_size;
+	}
+	else
+	{
+		cam->dist = 1;
+		cam->world.x = 0;
+		cam->world.y = 0;
+		cam->world.z = 0;
+		cam->fov = 0.5 * things->bitmap->x_dim;
+	}
+}
+
+int		init_grid(t_things *things, char *filename)
+{
+	int		fd;
+
+	things->grid = malloc(sizeof(t_grid));
+	things->grid->rows = NULL;
+	fd = open(filename, O_RDONLY);
+	read_grid(fd, &things->grid->rows);
+	close(fd);
+	grid_make_properties(things->grid);
+	assign_colors_from_z(things->grid);
+	return (1);
+}
+
 int		main(int argc, char **argv)
 {
-	t_my_state	state;
 	t_things	things;
 	t_bitmap	bitmap;
-	t_grid		grid;
+	t_my_state	state;
 	t_cam		cam;
 	int			my_bpp;
 	int			my_image_size_line;
 	int			my_endianness;
-	int			fd;
 	char		*caption;
 
-	caption = ft_strdup("my fdf");
-	things.mesh = NULL;
-	grid.rows = NULL;
 	if (argc == 2)
 	{
-		fd = open(argv[1], O_RDONLY);
-		read_grid(fd, &(grid.rows));
-		close(fd);
-		grid_make_properties(&grid);
-		assign_colors_from_z(&grid);
-		caption = ft_strjoin(caption, " : ");
-		caption = ft_strjoin(caption, argv[1]);
-		things.mesh = &grid;
+		caption = ft_strjoin("my fdf : ", argv[1]);
+		init_grid(&things, argv[1]);
 	}
-	state.projection = Axonometric;
-	state.stop_program = 0;
-	state.frame_advance = 0;
-	state.do_step = 0;
-	state.redraw = 0;
-	state.bench = 0;
-	state.bench_frames = 500;
-	state.print_stats = 0;
-	state.draw_stats = 1;
-	state.draw_helpers = 1;
-	state.draw_controls = 0;
+	else
+	{
+		caption = ft_strdup("my fdf");
+		things.grid = NULL;
+	}
 	things.my_mlx = mlx_init();
 	things.my_window = mlx_new_window(things.my_mlx, XDIM, YDIM, caption);
 	free(caption);
@@ -367,25 +246,10 @@ int		main(int argc, char **argv)
 	bitmap.x_dim = XDIM;
 	bitmap.y_dim = YDIM;
 	things.bitmap = &bitmap;
-	cam.altitude_mult = 1;
-	if (things.mesh != NULL)
-	{
-		cam.dist = 0;
-		cam.world.x = things.mesh->max_row_size / 2;
-		cam.world.y = things.mesh->max_row_size / 2;
-		cam.world.z = things.mesh->z_min;
-		cam.fov = 0.5 * things.bitmap->x_dim / things.mesh->max_row_size;
-	}
-	else
-	{
-		cam.dist = 1;
-		cam.world.x = 0;
-		cam.world.y = 0;
-		cam.world.z = 0;
-		cam.fov = 0.5 * things.bitmap->x_dim;
-	}
 	things.state = &state;
 	things.cam = &cam;
+	init_state(&things);
+	init_cam(&things);
 	mlx_loop_hook(things.my_mlx, the_loop, &things);
 	mlx_key_hook(things.my_window, key_controls, &things);
 	mlx_loop(things.my_mlx);
