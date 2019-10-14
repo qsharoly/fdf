@@ -1,6 +1,7 @@
 fdf
 *.o
 */*.o
+*/*.d
 */*.a
-.DS_Store
 *.dSYM
+.DS_Store

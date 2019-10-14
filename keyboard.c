@@ -48,6 +48,9 @@ int		key_controls(int keycode, void *param)
 	int			ret;
 
 	ret = 0;
+	ft_putstr_fd("key ", 2);
+	ft_putnbr_fd(keycode, 2);
+	ft_putstr_fd("\n", 2);
 	st = ((t_things *)param)->state;
 	st->redraw = 0;
 	if (keycode == LETTER_Q || keycode == ESC)

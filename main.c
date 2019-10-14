@@ -65,7 +65,11 @@ int		the_loop(void *param)
 			|| ((my->state->bench == 1) && (frame > my->state->bench_frames)))
 	{
 		mlx_destroy_window(my->my_mlx, my->my_window);
-		free(my->bitmap->data);
+		mlx_destroy_image(my->my_mlx, my->mlx_image);
+		free(my->bitmap);
+		free(my->state);
+		free(my->cam);
+		/* list delete grid*/
 		exit(0);
 	}
 	if (my->state->frame_advance == 1)
@@ -163,26 +167,32 @@ int		the_loop(void *param)
 	return (0);
 }
 
-void	init_state(t_things *things)
+t_my_state	*init_state(void)
 {
-	things->state->projection = Axonometric;
-	things->state->stop_program = 0;
-	things->state->frame_advance = 0;
-	things->state->do_step = 0;
-	things->state->redraw = 0;
-	things->state->bench = 0;
-	things->state->bench_frames = 500;
-	things->state->print_stats = 0;
-	things->state->draw_stats = 1;
-	things->state->draw_helpers = 1;
-	things->state->draw_controls = 0;
+	t_my_state	*state;
+
+	if (!(state = (t_my_state *)malloc(sizeof(*state))))
+		return (NULL);
+	state->projection = Axonometric;
+	state->stop_program = 0;
+	state->frame_advance = 0;
+	state->do_step = 0;
+	state->redraw = 0;
+	state->bench = 0;
+	state->bench_frames = 500;
+	state->print_stats = 0;
+	state->draw_stats = 1;
+	state->draw_helpers = 1;
+	state->draw_controls = 0;
+	return (state);
 }
 
-void	init_cam(t_things *things)
+t_cam	*init_cam(t_things *things)
 {
 	t_cam	*cam;
 
-	cam = things->cam;
+	if (!(cam = (t_cam *)malloc(sizeof(*cam))))
+		return(NULL);
 	cam->altitude_mult = 1;
 	if (things->grid != NULL)
 	{
@@ -200,6 +210,7 @@ void	init_cam(t_things *things)
 		cam->world.z = 0;
 		cam->fov = 0.5 * things->bitmap->x_dim;
 	}
+	return (cam);
 }
 
 int		init_grid(t_things *things, char *filename)
@@ -216,15 +227,25 @@ int		init_grid(t_things *things, char *filename)
 	return (1);
 }
 
-int		main(int argc, char **argv)
+t_bitmap	*init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim)
 {
-	t_things	things;
-	t_bitmap	bitmap;
-	t_my_state	state;
-	t_cam		cam;
+	t_bitmap	*bitmap;
 	int			my_bpp;
 	int			my_image_size_line;
 	int			my_endianness;
+	
+	if (!(bitmap = (t_bitmap *)malloc(sizeof(*bitmap))))
+		return (NULL);
+	bitmap->data = (unsigned int *)mlx_get_data_addr(mlx_img_ptr,
+									&my_bpp, &my_image_size_line, &my_endianness);
+	bitmap->x_dim = x_dim;
+	bitmap->y_dim = y_dim;
+	return (bitmap);
+}
+
+int		main(int argc, char **argv)
+{
+	t_things	things;
 	char		*caption;
 
 	if (argc == 2)
@@ -241,15 +262,9 @@ int		main(int argc, char **argv)
 	things.my_window = mlx_new_window(things.my_mlx, XDIM, YDIM, caption);
 	free(caption);
 	things.mlx_image = mlx_new_image(things.my_mlx, XDIM, YDIM);
-	bitmap.data = (unsigned int *)mlx_get_data_addr(things.mlx_image,
-									&my_bpp, &my_image_size_line, &my_endianness);
-	bitmap.x_dim = XDIM;
-	bitmap.y_dim = YDIM;
-	things.bitmap = &bitmap;
-	things.state = &state;
-	things.cam = &cam;
-	init_state(&things);
-	init_cam(&things);
+	things.bitmap = init_bitmap(things.mlx_image, XDIM, YDIM);
+	things.cam = init_cam(&things);
+	things.state = init_state();
 	mlx_loop_hook(things.my_mlx, the_loop, &things);
 	mlx_key_hook(things.my_window, key_controls, &things);
 	mlx_loop(things.my_mlx);
