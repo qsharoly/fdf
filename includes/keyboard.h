@@ -13,6 +13,8 @@
 #ifndef KEYBOARD_H
 # define KEYBOARD_H
 
+# define MACOS_KEYCODES
+# ifdef MACOS_KEYCODES
 # define SPACEBAR 49
 # define LETTER_Q 12
 # define LETTER_N 45
@@ -28,6 +30,23 @@
 # define L_SHIFT 257
 # define R_SHIFT 258
 # define ESC 53
+# endif // MACOS_KEYCODES
+
+# ifdef X11_KEYCODES
+# define ESC 65307
+# define SPACEBAR 32
+# define LETTER_Q 113
+# define LETTER_P 112
+# define LETTER_J 106
+# define LETTER_K 107
+# define LETTER_U 117
+# define LETTER_I 105
+# define LETTER_N 110
+# define LETTER_C 99
+# define LETTER_D 100
+# define LETTER_S 115
+# define LETTER_H 104
+# endif // X11_KEYCODES
 
 void	toggle(int *var);
 int		key_controls(int keycode, void *param);
