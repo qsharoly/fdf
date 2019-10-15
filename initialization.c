@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 16:38:08 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:59:16 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ t_my_state	*init_state(void)
 	state->frame_advance = 0;
 	state->do_step = 0;
 	state->redraw = 0;
-	state->bench = 0;
-	state->bench_frames = 500;
+	state->bench = 1;
+	state->bench_frames = BENCHMARK_FRAMES;
 	state->print_stats = 0;
 	state->print_keycodes = 0;
 	state->draw_stats = 1;
@@ -73,12 +73,20 @@ t_grid		*init_grid(const char *filename)
 	if (!(g = (t_grid *)malloc(sizeof(*g))))
 		return (NULL);
 	g->rows = NULL;
-	fd = open(filename, O_RDONLY);
-	read_grid(fd, &g->rows);
-	close(fd);
-	grid_make_properties(g);
-	assign_colors_from_z(g);
-	return (g);
+	if ((fd = open(filename, O_RDONLY)) > 2)
+	{
+		read_grid(fd, &g->rows);
+		close(fd);
+		grid_make_properties(g);
+		assign_colors_from_z(g);
+		return (g);
+	}
+	else
+	{
+		ft_putstr_fd("falied to read from file.\n", 2);
+		free(g);
+		return (NULL);
+	}
 }
 
 t_bitmap	*init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim)

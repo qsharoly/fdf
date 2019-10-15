@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 17:07:20 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 18:03:29 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ static void	free_things_and_exit(t_things *things)
 	free(things->bitmap);
 	free(things->state);
 	free(things->cam);
+	if (things->grid)
+	{
+		ft_lstdel(&things->grid->rows, lst_del_fdf_row);
+		free(things->grid);
+	}
 	exit(0);
 }
 

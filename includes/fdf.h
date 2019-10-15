@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 17:01:11 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 18:09:31 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include "vertex.h"
 # include "projection.h"
 # include "draw.h"
+
+# define BENCHMARK_FRAMES 500
 
 typedef struct	s_grid
 {

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 17:03:30 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:35:33 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,13 @@ int		draw_controls(void *mlx_ptr, void *mlx_window)
 	mlx_string_put(mp, mw, 20, 70, white, "    n = next frame");
 	mlx_string_put(mp, mw, 20, 90, white, "    s = show stats");
 	mlx_string_put(mp, mw, 20, 110, white, "    h = show axis helpers");
-	mlx_string_put(mp, mw, 20, 130, white, "    d = stats -> stderr");
-	mlx_string_put(mp, mw, 20, 150, white, "    c = hide controls");
-	mlx_string_put(mp, mw, 20, 170, white, "    p = switch projection");
-	mlx_string_put(mp, mw, 20, 190, white, "  j/k = zoom in/out");
-	mlx_string_put(mp, mw, 20, 210, white, "  u/i = altitude multiply +/-");
-	mlx_string_put(mp, mw, 20, 240, white, "    q, esc = quit");
+	mlx_string_put(mp, mw, 20, 130, white, "    d = print stats");
+	mlx_string_put(mp, mw, 20, 150, white, "    a = print keycodes");
+	mlx_string_put(mp, mw, 20, 170, white, "    c = hide controls");
+	mlx_string_put(mp, mw, 20, 190, white, "    p = switch projection");
+	mlx_string_put(mp, mw, 20, 210, white, "  j/k = zoom in/out");
+	mlx_string_put(mp, mw, 20, 230, white, "  u/i = altitude multiply +/-");
+	mlx_string_put(mp, mw, 20, 250, white, "    q, esc = quit");
 	return (0);
 }
 
@@ -61,7 +62,6 @@ void	draw_hud(t_things *my, float frame)
 {
 	char		s1[65];
 	char		*tmps;
-	static int	white = 0x00FFFFFF;
 
 	if (my->state->print_stats == 1)
 	{
@@ -80,7 +80,7 @@ void	draw_hud(t_things *my, float frame)
 			ft_strcat(s1, " z_buf on");
 		else
 			ft_strcat(s1, " z_buf off");
-		mlx_string_put(my->mlx, my->window, 10, 10, white, s1);
+		mlx_string_put(my->mlx, my->window, 10, 10, 0x00FFFFFF, s1);
 	}
 	if (my->state->draw_controls == 1)
 		draw_controls(my->mlx, my->window);
