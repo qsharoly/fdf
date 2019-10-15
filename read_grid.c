@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/08 15:18:23 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 13:42:21 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ int				read_grid(int fd, t_list **rows)
 	{
 		if ((row = read_row(j, line, &count)))
 		{
+			ft_lstadd(rows, ft_lstnew(row, sizeof(t_vertex) * count));
 			free(line);
 			free(row);
-			ft_lstadd(rows, ft_lstnew(row, sizeof(t_vertex) * count));
 		}
 		else
 		{
