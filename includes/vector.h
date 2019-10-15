@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:27:49 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/12 16:54:08 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:18:29 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ typedef struct	s_float3
 	float	y;
 	float	z;
 }				t_float3;
+
+# define ORIGIN (t_float3) {0.0, 0.0, 0.0}
+# define XUNIT (t_float3) {1.0, 0.0, 0.0}
+# define YUNIT (t_float3) {0.0, 1.0, 0.0}
+# define ZUNIT (t_float3) {0.0, 0.0, 1.0}
 
 float			squared(float a);
 float			distance(t_float2 a, t_float2 b);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/12 16:53:49 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:18:30 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,14 @@ typedef struct	s_cam
 	float		dist;
 	float		fov;
 	float		altitude_mult;
-	float		max_depth;
+	float		*z_buf;
+	int			z_buf_size;
 }				t_cam;
 
-t_float3		project(t_float3 point, t_cam cam, t_bitmap *bmp);
+t_float3		project(t_float3 point, t_cam *cam, t_bitmap *bmp);
+void			reset_z_buf(t_cam *cam);
+void			cam_setup_axonometric(t_cam *cam, float cam_rotation);
+void			cam_setup_military(t_cam *cam);
+void			cam_setup_cavalier(t_cam *cam);
 
 #endif

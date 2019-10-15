@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/08 15:18:23 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:04:20 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "fdf.h"
 #include "bitmap.h"
 
-static void		lst_del_fdf_row(void *row, size_t size)
+void			lst_del_fdf_row(void *row, size_t size)
 {
 	if (!row || size == 0)
 		return ;
@@ -57,15 +57,15 @@ int				read_grid(int fd, t_list **rows)
 	{
 		if ((row = read_row(j, line, &count)))
 		{
+			ft_lstadd(rows, ft_lstnew(row, sizeof(t_vertex) * count));
 			free(line);
 			free(row);
-			ft_lstadd(rows, ft_lstnew(row, sizeof(t_vertex) * count));
 		}
 		else
 		{
+			ft_lstdel(rows, lst_del_fdf_row);
 			free(line);
 			free(row);
-			ft_lstdel(rows, lst_del_fdf_row);
 			return (-1);
 		}
 		j++;

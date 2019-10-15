@@ -1,22 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   make_vertex.c                                      :+:      :+:    :+:   */
+/*   normalize.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/12 17:16:48 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/12 17:18:57 by qsharoly         ###   ########.fr       */
+/*   Created: 2019/10/15 16:03:43 by qsharoly          #+#    #+#             */
+/*   Updated: 2019/10/15 16:04:02 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vertex.h"
+#include "vector.h"
 
-t_vertex	mkvrtx(t_float3 vec, t_rgba color)
+t_float3	normalize(t_float3 vec)
 {
-	t_vertex	vrtx;
-
-	vrtx.vec = vec;
-	vrtx.col = color;
-	return (vrtx);
+	return (scalar_mul(vec, 1 / length3(vec)));
 }

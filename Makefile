@@ -12,9 +12,9 @@ DEPDIR = deps
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 WFLAGS = -Wall -Wextra -Werror
 
-SRC = main.c read_grid.c assign_colors_from_z.c ft_fmax.c ft_fmin.c\
-	  bitmap.c make_rgba.c make_rect.c draw.c vector2.c vector3.c\
-	  rotations.c projection.c make_float3.c hud.c keyboard.c
+SRC = main.c initialization.c read_grid.c assign_colors_from_z.c ft_fmax.c ft_fmin.c\
+	  bitmap.c make_rect.c make_float3.c normalize.c draw.c draw_z_buf.c draw_grid.c\
+	  vector2.c vector3.c rotations.c projection.c hud.c keyboard.c
 
 OBJ = $(SRC:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRC:%.c=$(DEPDIR)/%.d)
