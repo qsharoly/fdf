@@ -26,7 +26,7 @@ t_my_state	*init_state(void)
 	state->frame_advance = 0;
 	state->do_step = 0;
 	state->redraw = 0;
-	state->bench = 1;
+	state->bench = 0;
 	state->bench_frames = BENCHMARK_FRAMES;
 	state->print_stats = 0;
 	state->print_keycodes = 0;

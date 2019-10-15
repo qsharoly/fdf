@@ -24,7 +24,7 @@ $(shell mkdir -p $(DEPDIR))
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(MLX) $(LFT)
+$(NAME): $(MLX) $(LFT) $(OBJ) 
 	gcc -o $(NAME) $(OBJ) -L $(MLX_DIR)  -L $(LFT_DIR)\
 		-I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)\
 		-I /files/usr/include\
