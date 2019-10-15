@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/12 17:39:35 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 14:09:49 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 	}
 }
 
-void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 a, t_float3 b, t_rgba color)
+void	draw_edge(t_bitmap *bmp, t_cam *cam, t_float3 a, t_float3 b, t_rgba color)
 {
 	t_float2	aa;
 	t_float2	bb;
@@ -64,7 +64,7 @@ void	draw_edge(t_bitmap *bmp, t_cam cam, t_float3 a, t_float3 b, t_rgba color)
 	draw_line(bmp, aa, bb, color);
 }
 
-void	draw_edge_gradient(t_bitmap *bmp, t_cam cam, t_vertex a, t_vertex b)
+void	draw_edge_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
 	t_float2	p;
 	t_float2	aa;

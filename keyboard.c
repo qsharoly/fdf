@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/12 17:06:08 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 16:34:19 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int		controls_who_need_redraw(int keycode, void *param)
 		((t_things *)param)->cam->altitude_mult *= 1.2;
 	else if (keycode == LETTER_I)
 		((t_things *)param)->cam->altitude_mult *= 0.8;
+	else if (keycode == LETTER_B)
+		toggle(&st->use_z_buf);
 	return (0);
 }
 
@@ -49,6 +51,8 @@ int		key_controls(int keycode, void *param)
 
 	ret = 0;
 	st = ((t_things *)param)->state;
+	if (st->print_keycodes)
+		ft_putnbr_endl(keycode);
 	st->redraw = 0;
 	if (keycode == LETTER_Q || keycode == ESC)
 		st->stop_program = 1;
@@ -58,6 +62,8 @@ int		key_controls(int keycode, void *param)
 		st->do_step = 1;
 	else if (keycode == LETTER_D)
 		toggle(&st->print_stats);
+	else if (keycode == LETTER_A)
+		toggle(&st->print_keycodes);
 	else
 	{
 		st->redraw = 1;

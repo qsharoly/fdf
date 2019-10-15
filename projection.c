@@ -6,30 +6,72 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/12 16:53:19 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 16:33:15 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vector.h"
 #include "projection.h"
 
-t_float3	normalize(t_float3 vec)
+void		reset_z_buf(t_cam *cam)
 {
-	return (scalar_mul(vec, 1 / length3(vec)));
+	int		i;
+
+	i = 0;
+	while (i < cam->z_buf_size)
+	{
+		cam->z_buf[i] = -INFINITY;
+		i++;
+	}
 }
 
-t_float3	project(t_float3 point, t_cam cam, t_bitmap *bmp)
+t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 {
 	t_float3	proj;
 	t_float3	screen;
 	float		coeff;
 
-	point = add_float3(point, scalar_mul(cam.world, -1));
-	point.z *= cam.altitude_mult;
-	coeff = (cam.dist - dot(point, cam.dir)) / dot(cam.dir, cam.proj_dir);
-	proj = add_float3(point, scalar_mul(cam.proj_dir, coeff));
-	screen.x = cam.fov * dot(proj, cam.right) + 0.5 * bmp->x_dim;
-	screen.y = cam.fov * dot(proj, cam.up) + 0.5 * bmp->y_dim;
-	screen.z = dot(proj, cam.dir);
+	point = add_float3(point, scalar_mul(cam->world, -1));
+	point.z *= cam->altitude_mult;
+	coeff = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
+	proj = add_float3(point, scalar_mul(cam->proj_dir, coeff));
+	screen.x = cam->fov * dot(proj, cam->right) + 0.5 * bmp->x_dim;
+	screen.y = cam->fov * dot(proj, cam->up) + 0.5 * bmp->y_dim;
+	screen.z = dot(proj, cam->dir);
 	return (screen);
+}
+
+void		cam_setup_axonometric(t_cam *cam, float cam_rotation)
+{
+	cam->dir.x = sin(cam_rotation);
+	cam->dir.y = cos(cam_rotation);
+	cam->dir.z = 0.8;
+	cam->dir = normalize(cam->dir);
+	cam->right.x = cam->dir.y;
+	cam->right.y = -cam->dir.x;
+	cam->right.z = 0;
+	cam->right = normalize(cam->right);
+	cam->up = cross(cam->dir, cam->right);
+	cam->proj_dir = cam->dir;
+}
+
+void		cam_setup_military(t_cam *cam)
+{
+	cam->right = add_float3(XUNIT, scalar_mul(YUNIT, -1));
+	cam->right = normalize(cam->right);
+	cam->dir = ZUNIT;
+	cam->up = cross(cam->dir, cam->right);
+	cam->proj_dir.x = 1 * sin(M_PI / 4);
+	cam->proj_dir.y = 1 * cos(M_PI / 4);
+	cam->proj_dir.z = 1;
+	cam->proj_dir = normalize(cam->proj_dir);
+}
+
+void		cam_setup_cavalier(t_cam *cam)
+{
+	cam->right = XUNIT;
+	cam->dir = scalar_mul(YUNIT, -1);
+	cam->up = scalar_mul(ZUNIT, -1);
+	cam->proj_dir = rot_z(-0.15 * M_PI, cam->dir);
+	cam->proj_dir = rot_x(0.15 * M_PI, cam->proj_dir);
 }

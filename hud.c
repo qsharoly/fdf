@@ -6,11 +6,12 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/12 17:05:49 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:03:30 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "mlx.h"
+#include "fdf.h"
 #include "libft.h"
 #include "math.h"
 
@@ -54,4 +55,33 @@ char	*ft_itoa_float_janky(float a)
 	s = ft_strjoin(s1, ft_itoa(floor((a - floor(a)) * 1000)));
 	free(s1);
 	return (s);
+}
+
+void	draw_hud(t_things *my, float frame)
+{
+	char		s1[65];
+	char		*tmps;
+	static int	white = 0x00FFFFFF;
+
+	if (my->state->print_stats == 1)
+	{
+		ft_putstr("frame ");
+		ft_put_float_janky(frame);
+		ft_putstr("\n");
+	}
+	if (my->state->draw_stats == 1)
+	{
+		s1[0] = '\0';
+		ft_strcat(s1, "frame ");
+		tmps = ft_itoa_float_janky(frame);
+		ft_strcat(s1, tmps);
+		free(tmps);
+		if (my->state->use_z_buf)
+			ft_strcat(s1, " z_buf on");
+		else
+			ft_strcat(s1, " z_buf off");
+		mlx_string_put(my->mlx, my->window, 10, 10, white, s1);
+	}
+	if (my->state->draw_controls == 1)
+		draw_controls(my->mlx, my->window);
 }

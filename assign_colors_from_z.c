@@ -6,12 +6,13 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/08 14:35:23 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:11:21 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "fdf.h"
+#include "palette.h"
 
 /*
 ** the list mesh->rows contains arrays of t_vertex.
@@ -19,7 +20,7 @@
 ** to corresponding structure items mesh->z_min and mesh->z_max
 */
 
-void		grid_make_properties(t_grid *mesh)
+void			grid_make_properties(t_grid *mesh)
 {
 	float		z;
 	int			i;
@@ -46,24 +47,17 @@ void		grid_make_properties(t_grid *mesh)
 	}
 }
 
-t_rgba		color_from_z(t_float3 point, float z_min, float z_max)
+static t_rgba	color_from_z(t_float3 point, float z_min, float z_max)
 {
-	t_rgba	high;
-	t_rgba	low;
-	t_rgba	inferno;
-
-	high = make_rgba(150, 100, 250, 0);
-	low = make_rgba(100, 250, 150, 0);
-	inferno = make_rgba(250, 150, 100, 0);
 	if (z_max == z_min)
-		return (low);
+		return (RGBA_LIGHTGREEN);
 	else if (point.z >= 0)
-		return (mix(low, high, (z_max - point.z) / z_max));
+		return (mix(RGBA_LIGHTGREEN, RGBA_PURPLISH, (z_max - point.z) / z_max));
 	else
-		return (mix(low, inferno, (point.z - z_min) / -z_min));
+		return (mix(RGBA_LIGHTGREEN, RGBA_PEACH, (point.z - z_min) / -z_min));
 }
 
-void		assign_colors_from_z(t_grid *mesh)
+void			assign_colors_from_z(t_grid *mesh)
 {
 	int			i;
 	int			row_size;
