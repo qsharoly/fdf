@@ -13,6 +13,8 @@
 #ifndef KEYBOARD_H
 # define KEYBOARD_H
 
+# define X11_KEYCODES
+
 # ifdef MACOS_KEYCODES
 # define SPACEBAR 49
 # define LETTER_Q 12
@@ -31,7 +33,6 @@
 # define ESC 53
 # endif // MACOS_KEYCODES
 
-# define X11_KEYCODES
 # ifdef X11_KEYCODES
 # define ESC 65307
 # define SPACEBAR 32
