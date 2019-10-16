@@ -23,22 +23,25 @@ static void	draw_helpers(t_bitmap *bitmap, t_cam *cam)
 {
 	static t_float3	pir[4] = {ORIGIN, {0.5, 0.0, 0.0},
 		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
+	t_view		view;
 
-	draw_edge(bitmap, cam, cam->world, add_float3(XUNIT, cam->world),
+	view.bmp = bitmap;
+	view.cam = cam;
+	draw_edge(view, cam->world, add_float3(XUNIT, cam->world),
 			RGBA_PURPLISH);
-	draw_edge(bitmap, cam, cam->world, add_float3(YUNIT, cam->world),
+	draw_edge(view, cam->world, add_float3(YUNIT, cam->world),
 			RGBA_LIGHTGREEN);
-	draw_edge(bitmap, cam, cam->world, add_float3(ZUNIT, cam->world),
+	draw_edge(view, cam->world, add_float3(ZUNIT, cam->world),
 			RGBA_PEACH);
-	draw_edge(bitmap, cam, ORIGIN, XUNIT, RGBA_BLUE);
-	draw_edge(bitmap, cam, ORIGIN, YUNIT, RGBA_GREEN);
-	draw_edge(bitmap, cam, ORIGIN, ZUNIT, RGBA_RED);
-	draw_edge(bitmap, cam, pir[0], pir[1], RGBA_WHITE);
-	draw_edge(bitmap, cam, pir[0], pir[2], RGBA_WHITE);
-	draw_edge(bitmap, cam, pir[0], pir[3], RGBA_WHITE);
-	draw_edge(bitmap, cam, pir[1], pir[2], RGBA_PURPLISH);
-	draw_edge(bitmap, cam, pir[1], pir[3], RGBA_LIGHTGREEN);
-	draw_edge(bitmap, cam, pir[2], pir[3], RGBA_PEACH);
+	draw_edge(view, ORIGIN, XUNIT, RGBA_BLUE);
+	draw_edge(view, ORIGIN, YUNIT, RGBA_GREEN);
+	draw_edge(view, ORIGIN, ZUNIT, RGBA_RED);
+	draw_edge(view, pir[0], pir[1], RGBA_WHITE);
+	draw_edge(view, pir[0], pir[2], RGBA_WHITE);
+	draw_edge(view, pir[0], pir[3], RGBA_WHITE);
+	draw_edge(view, pir[1], pir[2], RGBA_PURPLISH);
+	draw_edge(view, pir[1], pir[3], RGBA_LIGHTGREEN);
+	draw_edge(view, pir[2], pir[3], RGBA_PEACH);
 }
 
 static void	free_things_and_exit(t_things *things)

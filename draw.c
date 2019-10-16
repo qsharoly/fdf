@@ -54,14 +54,14 @@ void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 	}
 }
 
-void	draw_edge(t_bitmap *bmp, t_cam *cam, t_float3 a, t_float3 b, t_rgba color)
+void	draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
 {
 	t_float2	aa;
 	t_float2	bb;
 
-	aa = take_xy(project(a, cam, bmp));
-	bb = take_xy(project(b, cam, bmp));
-	draw_line(bmp, aa, bb, color);
+	aa = take_xy(project(a, view.cam, view.bmp));
+	bb = take_xy(project(b, view.cam, view.bmp));
+	draw_line(view.bmp, aa, bb, color);
 }
 
 void	draw_edge_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
