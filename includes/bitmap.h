@@ -13,9 +13,6 @@
 #ifndef BITMAP_H
 # define BITMAP_H
 
-# define XDIM 640
-# define YDIM 480
-
 typedef unsigned int	t_uint;
 typedef unsigned char	t_uchar;
 typedef struct			s_uint2
