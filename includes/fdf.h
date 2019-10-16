@@ -21,6 +21,8 @@
 # include "draw.h"
 
 # define BENCHMARK_FRAMES 500
+# define XDIM 640
+# define YDIM 480
 
 typedef struct	s_grid
 {
