@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 14:27:06 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/17 15:14:27 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,23 @@ static void	setup_cam(t_cam *cam, enum e_projkind proj_kind, float cam_rotation)
 		cam_setup_cavalier(cam);
 }
 
-static void	draw_map(t_bitmap *bitmap, t_cam *cam, t_grid *grid, int use_z_buf)
+static void	norminette(t_things *my, float cam_rotation)
 {
-	if (grid)
+	setup_cam(my->cam, my->state->projection, cam_rotation);
+	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), RGBA_BLACK);
+	if (my->grid)
 	{
-		if (use_z_buf)
+		if (my->state->use_z_buf)
 		{
-			reset_z_buf(cam);
-			draw_grid_z_buf(bitmap, cam, grid->rows);
+			reset_z_buf(my->cam);
+			draw_grid_z_buf(my->bitmap, my->cam, my->grid->rows);
 		}
 		else
-			draw_grid(bitmap, cam, grid->rows);
+			draw_grid(my->bitmap, my->cam, my->grid->rows);
 	}
+	if (my->state->draw_helpers)
+		draw_helpers(my->bitmap, my->cam);
+	mlx_put_image_to_window(my->mlx, my->window, my->mlx_image, 0, 0);
 }
 
 static int	the_loop(void *param)
@@ -77,12 +82,7 @@ static int	the_loop(void *param)
 		frame++;
 		cam_rotation = frame * 0.5 * M_PI / 100;
 	}
-	setup_cam(my->cam, my->state->projection, cam_rotation);
-	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), RGBA_BLACK);
-	draw_map(my->bitmap, my->cam, my->grid, my->state->use_z_buf);
-	if (my->state->draw_helpers)
-		draw_helpers(my->bitmap, my->cam);
-	mlx_put_image_to_window(my->mlx, my->window, my->mlx_image, 0, 0);
+	norminette(my, cam_rotation);
 	draw_hud(my, frame);
 	if (my->state->redraw)
 		my->state->redraw = 0;

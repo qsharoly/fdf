@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 17:59:16 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/17 15:45:50 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include "mlx.h"
 #include "fdf.h"
+#include "benchmark.h"
 
 t_my_state	*init_state(void)
 {
@@ -26,7 +27,7 @@ t_my_state	*init_state(void)
 	state->frame_advance = 0;
 	state->do_step = 0;
 	state->redraw = 0;
-	state->bench = 1;
+	state->bench = DO_BENCH;
 	state->bench_frames = BENCHMARK_FRAMES;
 	state->print_stats = 0;
 	state->print_keycodes = 0;

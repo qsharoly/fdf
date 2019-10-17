@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 14:17:09 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/17 15:43:32 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include "projection.h"
 # include "draw.h"
 
-# define BENCHMARK_FRAMES 500
 # define XDIM 640
 # define YDIM 480
 

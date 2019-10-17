@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:23:49 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 15:50:31 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/17 15:36:56 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ void	draw_grid_z_buf(t_bitmap *bmp, t_cam *cam, t_list *rows)
 				vertex2 = ((t_vertex *)rows->content)[i + 1];
 				draw_edge_gradient_z_buf(bmp, cam, vertex1, vertex2);
 			}
-			if (rows->next)
+			if (rows->next
+					&& i < (int)(rows->next->content_size / sizeof(t_vertex)))
 			{
 				vertex2 = ((t_vertex *)rows->next->content)[i];
 				draw_edge_gradient_z_buf(bmp, cam, vertex1, vertex2);
@@ -57,7 +58,8 @@ void	draw_grid(t_bitmap *bmp, t_cam *cam, t_list *rows)
 				vertex2 = ((t_vertex *)rows->content)[i + 1];
 				draw_edge_gradient(bmp, cam, vertex1, vertex2);
 			}
-			if (rows->next)
+			if (rows->next
+					&& i < (int)(rows->next->content_size / sizeof(t_vertex)))
 			{
 				vertex2 = ((t_vertex *)rows->next->content)[i];
 				draw_edge_gradient(bmp, cam, vertex1, vertex2);
