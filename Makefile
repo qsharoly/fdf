@@ -46,6 +46,8 @@ clean:
 	rm -rf $(OBJDIR) $(DEPDIR)
 fclean: clean
 	rm -rf $(NAME)
+	make -C $(MLX_DIR) clean
+	make -C $(LFT_DIR) fclean
 re: fclean
 	make all
 
