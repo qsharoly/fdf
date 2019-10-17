@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 18:09:31 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/17 14:17:09 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void			grid_make_properties(t_grid *mesh);
 void			assign_colors_from_z(t_grid *mesh);
 void			draw_grid(t_bitmap *bmp, t_cam *cam, t_list *rows);
 void			draw_grid_z_buf(t_bitmap *bmp, t_cam *cam, t_list *rows);
+void			draw_helpers(t_bitmap *bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
 void			ft_put_float_janky(float a);

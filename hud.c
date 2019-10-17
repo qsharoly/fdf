@@ -6,14 +6,40 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 17:35:33 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/17 14:18:04 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <math.h>
 #include "mlx.h"
-#include "fdf.h"
 #include "libft.h"
-#include "math.h"
+#include "fdf.h"
+#include "palette.h"
+
+void	draw_helpers(t_bitmap *bitmap, t_cam *cam)
+{
+	static t_float3	pir[4] = {ORIGIN, {0.5, 0.0, 0.0},
+		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
+	t_view			view;
+
+	view.bmp = bitmap;
+	view.cam = cam;
+	draw_edge(view, cam->world, add_float3(XUNIT, cam->world),
+			RGBA_PURPLE);
+	draw_edge(view, cam->world, add_float3(YUNIT, cam->world),
+			RGBA_LIGHTGREEN);
+	draw_edge(view, cam->world, add_float3(ZUNIT, cam->world),
+			RGBA_PEACH);
+	draw_edge(view, ORIGIN, XUNIT, RGBA_BLUE);
+	draw_edge(view, ORIGIN, YUNIT, RGBA_GREEN);
+	draw_edge(view, ORIGIN, ZUNIT, RGBA_RED);
+	draw_edge(view, pir[0], pir[1], RGBA_WHITE);
+	draw_edge(view, pir[0], pir[2], RGBA_WHITE);
+	draw_edge(view, pir[0], pir[3], RGBA_WHITE);
+	draw_edge(view, pir[1], pir[2], RGBA_PURPLE);
+	draw_edge(view, pir[1], pir[3], RGBA_LIGHTGREEN);
+	draw_edge(view, pir[2], pir[3], RGBA_PEACH);
+}
 
 int		draw_controls(void *mlx_ptr, void *mlx_window)
 {

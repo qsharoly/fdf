@@ -6,43 +6,15 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 18:03:29 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/17 14:27:06 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <math.h>
 #include "mlx.h"
+#include "libft.h"
 #include "fdf.h"
 #include "palette.h"
-#include "libft.h"
 #include "keyboard.h"
-
-static void	draw_helpers(t_bitmap *bitmap, t_cam *cam)
-{
-	static t_float3	pir[4] = {ORIGIN, {0.5, 0.0, 0.0},
-		{0.0, 0.5, 0.0}, {0.0, 0.0, 0.5}};
-	t_view		view;
-
-	view.bmp = bitmap;
-	view.cam = cam;
-	draw_edge(view, cam->world, add_float3(XUNIT, cam->world),
-			RGBA_PURPLISH);
-	draw_edge(view, cam->world, add_float3(YUNIT, cam->world),
-			RGBA_LIGHTGREEN);
-	draw_edge(view, cam->world, add_float3(ZUNIT, cam->world),
-			RGBA_PEACH);
-	draw_edge(view, ORIGIN, XUNIT, RGBA_BLUE);
-	draw_edge(view, ORIGIN, YUNIT, RGBA_GREEN);
-	draw_edge(view, ORIGIN, ZUNIT, RGBA_RED);
-	draw_edge(view, pir[0], pir[1], RGBA_WHITE);
-	draw_edge(view, pir[0], pir[2], RGBA_WHITE);
-	draw_edge(view, pir[0], pir[3], RGBA_WHITE);
-	draw_edge(view, pir[1], pir[2], RGBA_PURPLISH);
-	draw_edge(view, pir[1], pir[3], RGBA_LIGHTGREEN);
-	draw_edge(view, pir[2], pir[3], RGBA_PEACH);
-}
 
 static void	free_things_and_exit(t_things *things)
 {
@@ -59,11 +31,34 @@ static void	free_things_and_exit(t_things *things)
 	exit(0);
 }
 
+static void	setup_cam(t_cam *cam, enum e_projkind proj_kind, float cam_rotation)
+{
+	if (proj_kind == Axonometric)
+		cam_setup_axonometric(cam, cam_rotation);
+	else if (proj_kind == Oblique_Military)
+		cam_setup_military(cam);
+	else if (proj_kind == Oblique_Cavalier)
+		cam_setup_cavalier(cam);
+}
+
+static void	draw_map(t_bitmap *bitmap, t_cam *cam, t_grid *grid, int use_z_buf)
+{
+	if (grid)
+	{
+		if (use_z_buf)
+		{
+			reset_z_buf(cam);
+			draw_grid_z_buf(bitmap, cam, grid->rows);
+		}
+		else
+			draw_grid(bitmap, cam, grid->rows);
+	}
+}
+
 static int	the_loop(void *param)
 {
 	t_things		*my;
 	static float	frame;
-	static t_rgba	black = {0, 0, 0, 0};
 	static float	cam_rotation;
 
 	my = (t_things *)param;
@@ -82,23 +77,9 @@ static int	the_loop(void *param)
 		frame++;
 		cam_rotation = frame * 0.5 * M_PI / 100;
 	}
-	if (my->state->projection == Axonometric)
-		cam_setup_axonometric(my->cam, cam_rotation);
-	else if (my->state->projection == Oblique_Military)
-		cam_setup_military(my->cam);
-	else if (my->state->projection == Oblique_Cavalier)
-		cam_setup_cavalier(my->cam);
-	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), black);
-	if (my->grid)
-	{
-		if (my->state->use_z_buf)
-		{
-			reset_z_buf(my->cam);
-			draw_grid_z_buf(my->bitmap, my->cam, my->grid->rows);
-		}
-		else
-			draw_grid(my->bitmap, my->cam, my->grid->rows);
-	}
+	setup_cam(my->cam, my->state->projection, cam_rotation);
+	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), RGBA_BLACK);
+	draw_map(my->bitmap, my->cam, my->grid, my->state->use_z_buf);
 	if (my->state->draw_helpers)
 		draw_helpers(my->bitmap, my->cam);
 	mlx_put_image_to_window(my->mlx, my->window, my->mlx_image, 0, 0);
