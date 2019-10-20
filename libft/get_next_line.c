@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 11:45:11 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/09/27 16:09:12 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 18:59:11 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ static ssize_t	parse_realloc(t_buf *buf, char **line,
 		return (-1);
 	ft_memcpy(*line + *linelen, from, till - from);
 	*linelen += part_size;
+	*(*line + *linelen) = '\0';
 	return (part_size);
 }
 
@@ -100,14 +101,14 @@ int				get_next_line(const int fd, char **line)
 {
 	static t_list	*buffers;
 	t_buf			*buf;
-	size_t			my_size;
+	static size_t	my_size = BUFF_SIZE;
 	size_t			linelen;
 
-	if (fd < 0 || line == NULL)
+	if (fd < 0)
 		return (-1);
 	linelen = 0;
-	my_size = BUFF_SIZE;
-	*line = (char *)ft_memalloc(my_size * sizeof(char));
+	if (*line == NULL)
+		*line = (char *)ft_memalloc(my_size * sizeof(char));
 	buf = get_buffer_by_fd(fd, &buffers);
 	while (buf && (buf->delim_pos != NULL
 			|| (buf->len = read(fd, buf->data, BUFF_SIZE)) > 0))
