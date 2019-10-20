@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 14:01:38 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 17:31:42 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ void			grid_make_properties(t_grid *mesh)
 static t_rgba	color_from_z(t_float3 point, float z_min, float z_max)
 {
 	if (z_max == z_min)
-		return (RGBA_LIGHTGREEN);
+		return (LIGHTGREEN);
 	else if (point.z >= 0)
-		return (mix(RGBA_LIGHTGREEN, RGBA_PURPLE, (z_max - point.z) / z_max));
+		return (mix(LIGHTGREEN, PURPLE, (z_max - point.z) / z_max));
 	else
-		return (mix(RGBA_LIGHTGREEN, RGBA_PEACH, (point.z - z_min) / -z_min));
+		return (mix(LIGHTGREEN, PEACH, (point.z - z_min) / -z_min));
 }
 
 void			assign_colors_from_z(t_grid *mesh)

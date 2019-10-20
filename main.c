@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 16:54:02 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 17:31:16 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static void	setup_cam(t_cam *cam, enum e_projkind proj_kind, float cam_rotation)
 static void	norminette(t_things *my, float cam_rotation)
 {
 	setup_cam(my->cam, my->state->projection, cam_rotation);
-	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), RGBA_BLACK);
+	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), BLACK);
 	if (my->grid)
 	{
 		if (my->state->use_z_buf)
