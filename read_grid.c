@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 20:24:35 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 21:13:26 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,11 @@ static t_vertex	*read_row(int j, char *line, int *count)
 	return (NULL);
 }
 
-static int		free_everything(t_list **rows, char *line, t_vertex *row,
+static int		rg_abort(t_list **rows, char *line, t_vertex *row,
 					char *msg)
 {
 	ft_putstr_fd(msg, 2);
+	ft_putstr_fd(" abort file read.\n", 2);
 	ft_lstdel(rows, lst_del_fdf_row);
 	free(line);
 	free(row);
@@ -69,14 +70,14 @@ int				read_grid(int fd, t_list **rows)
 	{
 		if ((row = read_row(j, line, &count)))
 			if (*rows && count != (*rows)->content_size / sizeof(t_vertex))
-				return (free_everything(rows, line, row, "bad line length.\n"));
+				return (rg_abort(rows, line, row, "bad line length."));
 			else if (ft_lst_push_tail(rows,
 						ft_lstnew(row, sizeof(t_vertex) * count)))
 				free(row);
 			else
-				return (free_everything(rows, line, row, "alloc fail.\n"));
+				return (rg_abort(rows, line, row, "alloc fail."));
 		else
-			return (free_everything(rows, line, row, "alloc fail.\n"));
+			return (rg_abort(rows, line, row, "alloc fail."));
 		j++;
 	}
 	free(line);

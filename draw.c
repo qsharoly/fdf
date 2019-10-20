@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 14:09:49 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 20:38:15 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,23 +66,21 @@ void	draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
 
 void	draw_edge_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
-	t_float2	p;
-	t_float2	aa;
-	t_float2	bb;
+	t_float3	p;
 	float		dt;
 	float		t;
 
-	aa = take_xy(project(a.vec, cam, bmp));
-	bb = take_xy(project(b.vec, cam, bmp));
-	p = aa;
-	dt = 1 / distance(aa, bb);
+	a.vec = project(a.vec, cam, bmp);
+	b.vec = project(b.vec, cam, bmp);
+	p = a.vec;
+	dt = 1 / distance(take_xy(a.vec), take_xy(b.vec));
 	t = 0;
 	while (t < 1)
 	{
-		if (inbounds(p, bmp))
+		if (inbounds(take_xy(p), bmp))
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
 		t += dt;
-		p.x = aa.x + t * (bb.x - aa.x);
-		p.y = aa.y + t * (bb.y - aa.y);
+		p.x = a.vec.x + t * (b.vec.x - a.vec.x);
+		p.y = a.vec.y + t * (b.vec.y - a.vec.y);
 	}
 }

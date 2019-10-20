@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 17:31:16 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 21:07:21 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,14 @@ int			main(int argc, char **argv)
 
 	if (argc == 2)
 	{
+		if ((things.grid = init_grid(argv[1])) == NULL)
+			return (-1);
 		caption = ft_strjoin("my fdf : ", argv[1]);
-		things.grid = init_grid(argv[1]);
 	}
 	else
 	{
-		caption = ft_strdup("my fdf");
 		things.grid = NULL;
+		caption = ft_strdup("my fdf");
 	}
 	things.mlx = mlx_init();
 	things.window = mlx_new_window(things.mlx, XDIM, YDIM, caption);

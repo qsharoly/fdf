@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 17:01:56 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 20:57:18 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,18 @@
 #include "fdf.h"
 #include "benchmark.h"
 
+static void	*fail(char *msg)
+{
+	ft_putstr_fd(msg, 2);
+	return (NULL);
+}
+
 t_my_state	*init_state(void)
 {
 	t_my_state	*state;
 
 	if (!(state = (t_my_state *)malloc(sizeof(*state))))
-		return (NULL);
+		return (fail("memory allocation failed.\n"));
 	state->projection = Axonometric;
 	state->stop_program = 0;
 	state->frame_advance = 1;
@@ -43,7 +49,7 @@ t_cam		*init_cam(t_things *things)
 	t_cam		*cam;
 
 	if (!(cam = (t_cam *)malloc(sizeof(*cam))))
-		return (NULL);
+		return (fail("memory allocation failed.\n"));
 	cam->z_buf_size = things->bitmap->x_dim * things->bitmap->y_dim;
 	cam->z_buf = (float *)malloc(sizeof(*cam->z_buf) * cam->z_buf_size);
 	cam->altitude_mult = 1;
@@ -72,16 +78,15 @@ t_grid		*init_grid(const char *filename)
 	t_grid	*g;
 
 	if (!(g = (t_grid *)malloc(sizeof(*g))))
-		return (NULL);
+		return (fail("memory allocation failed.\n"));
 	g->rows = NULL;
 	if ((fd = open(filename, O_RDONLY)) > 2)
 	{
 		if (read_grid(fd, &g->rows) < 0)
 		{
-			ft_putstr_fd("failed to read from file.\n", 2);
 			free(g);
 			close(fd);
-			return (NULL);
+			return (fail("failed to read from file.\n"));
 		}
 		close(fd);
 		grid_make_properties(g);
@@ -90,9 +95,8 @@ t_grid		*init_grid(const char *filename)
 	}
 	else
 	{
-		ft_putstr_fd("falied to open file.\n", 2);
 		free(g);
-		return (NULL);
+		return (fail("failed to open file.\n"));
 	}
 }
 
@@ -104,7 +108,7 @@ t_bitmap	*init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim)
 	int			endianness;
 
 	if (!(bitmap = (t_bitmap *)malloc(sizeof(*bitmap))))
-		return (NULL);
+		return (fail("memory allocation failed.\n"));
 	bitmap->data = (unsigned int *)mlx_get_data_addr(mlx_img_ptr,
 			&bpp, &stride, &endianness);
 	bitmap->x_dim = x_dim;
