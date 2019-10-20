@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 19:56:17 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 20:24:35 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int		free_everything(t_list **rows, char *line, t_vertex *row,
 	ft_lstdel(rows, lst_del_fdf_row);
 	free(line);
 	free(row);
-	return (-1);
+	return (-2);
 }
 
 int				read_grid(int fd, t_list **rows)
@@ -68,13 +68,13 @@ int				read_grid(int fd, t_list **rows)
 	while ((gnl_status = get_next_line(fd, &line)) > 0)
 	{
 		if ((row = read_row(j, line, &count)))
-		{
-			if (ft_lst_push_tail(rows,
+			if (*rows && count != (*rows)->content_size / sizeof(t_vertex))
+				return (free_everything(rows, line, row, "bad line length.\n"));
+			else if (ft_lst_push_tail(rows,
 						ft_lstnew(row, sizeof(t_vertex) * count)))
 				free(row);
 			else
 				return (free_everything(rows, line, row, "alloc fail.\n"));
-		}
 		else
 			return (free_everything(rows, line, row, "alloc fail.\n"));
 		j++;
