@@ -38,7 +38,7 @@ $(MLX):
 	make -C $(MLX_DIR)
 
 $(LFT):
-	make -C $(LFT_DIR)
+	make -C $(LFT_DIR) debug
 
 .PHONY: all clean fclean re
 
