@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 16:33:15 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 16:53:21 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 
 void		cam_setup_axonometric(t_cam *cam, float cam_rotation)
 {
-	cam->dir.x = sin(cam_rotation);
-	cam->dir.y = cos(cam_rotation);
-	cam->dir.z = 0.8;
+	cam->dir.x = sin(M_PI * 0.25 + cam_rotation);
+	cam->dir.y = cos(M_PI * 0.25 + cam_rotation);
+	cam->dir.z = cos(M_PI / 3);
 	cam->dir = normalize(cam->dir);
 	cam->right.x = cam->dir.y;
 	cam->right.y = -cam->dir.x;
@@ -61,8 +61,8 @@ void		cam_setup_military(t_cam *cam)
 	cam->right = normalize(cam->right);
 	cam->dir = ZUNIT;
 	cam->up = cross(cam->dir, cam->right);
-	cam->proj_dir.x = 1 * sin(M_PI / 4);
-	cam->proj_dir.y = 1 * cos(M_PI / 4);
+	cam->proj_dir.x = 1 * sin(M_PI * 0.25);
+	cam->proj_dir.y = 1 * cos(M_PI * 0.25);
 	cam->proj_dir.z = 1;
 	cam->proj_dir = normalize(cam->proj_dir);
 }

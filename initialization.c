@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 15:45:50 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 17:01:56 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ t_my_state	*init_state(void)
 		return (NULL);
 	state->projection = Axonometric;
 	state->stop_program = 0;
-	state->frame_advance = 0;
+	state->frame_advance = 1;
 	state->do_step = 0;
-	state->redraw = 0;
+	state->redraw = 1;
 	state->bench = DO_BENCH;
 	state->bench_frames = BENCHMARK_FRAMES;
 	state->print_stats = 0;
@@ -76,7 +76,13 @@ t_grid		*init_grid(const char *filename)
 	g->rows = NULL;
 	if ((fd = open(filename, O_RDONLY)) > 2)
 	{
-		read_grid(fd, &g->rows);
+		if (read_grid(fd, &g->rows) < 0)
+		{
+			ft_putstr_fd("failed to read from file.\n", 2);
+			free(g);
+			close(fd);
+			return (NULL);
+		}
 		close(fd);
 		grid_make_properties(g);
 		assign_colors_from_z(g);
@@ -84,7 +90,7 @@ t_grid		*init_grid(const char *filename)
 	}
 	else
 	{
-		ft_putstr_fd("falied to read from file.\n", 2);
+		ft_putstr_fd("falied to open file.\n", 2);
 		free(g);
 		return (NULL);
 	}
@@ -93,14 +99,14 @@ t_grid		*init_grid(const char *filename)
 t_bitmap	*init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim)
 {
 	t_bitmap	*bitmap;
-	int			my_bpp;
-	int			my_image_size_line;
-	int			my_endianness;
+	int			bpp;
+	int			stride;
+	int			endianness;
 
 	if (!(bitmap = (t_bitmap *)malloc(sizeof(*bitmap))))
 		return (NULL);
 	bitmap->data = (unsigned int *)mlx_get_data_addr(mlx_img_ptr,
-			&my_bpp, &my_image_size_line, &my_endianness);
+			&bpp, &stride, &endianness);
 	bitmap->x_dim = x_dim;
 	bitmap->y_dim = y_dim;
 	return (bitmap);

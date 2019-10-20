@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 15:28:29 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 16:32:53 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,10 @@ int				read_grid(int fd, t_list **rows)
 	char		*line;
 	int			count;
 	int			j;
+	int			gnl_status;
 
 	j = 0;
-	while (get_next_line(fd, &line) > 0)
+	while ((gnl_status = get_next_line(fd, &line)) > 0)
 	{
 		if ((row = read_row(j, line, &count)))
 		{
@@ -70,5 +71,8 @@ int				read_grid(int fd, t_list **rows)
 		}
 		j++;
 	}
-	return (1);
+	if (gnl_status == -1)
+		return (-1);
+	else
+		return (0);
 }

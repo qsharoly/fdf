@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 15:32:20 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 16:40:35 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@ void	draw_helpers(t_bitmap *bitmap, t_cam *cam)
 	view.bmp = bitmap;
 	view.cam = cam;
 	draw_edge(view, cam->world, add_float3(XUNIT, cam->world),
-			RGBA_PURPLE);
+			RGBA_PEACH);
 	draw_edge(view, cam->world, add_float3(YUNIT, cam->world),
 			RGBA_LIGHTGREEN);
 	draw_edge(view, cam->world, add_float3(ZUNIT, cam->world),
-			RGBA_PEACH);
-	draw_edge(view, ORIGIN, XUNIT, RGBA_BLUE);
+			RGBA_PURPLE);
+	draw_edge(view, ORIGIN, XUNIT, RGBA_RED);
 	draw_edge(view, ORIGIN, YUNIT, RGBA_GREEN);
-	draw_edge(view, ORIGIN, ZUNIT, RGBA_RED);
+	draw_edge(view, ORIGIN, ZUNIT, RGBA_BLUE);
 }
 
 int		draw_controls(void *mlx_ptr, void *mlx_window)
