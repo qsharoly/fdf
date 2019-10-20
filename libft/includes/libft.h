@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 16:08:51 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/03 18:54:36 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/20 19:45:52 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void			ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
 void			ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 void			ft_lstiter(t_list *lst, void (*f)(t_list *elem));
 t_list			*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
-void			ft_lst_push_tail(t_list **alst, t_list *new_node);
+t_list			*ft_lst_push_tail(t_list **alst, t_list *new_node);
 t_btree			*ft_btree_new_node(void const *content, size_t content_size);
 t_btree			*ft_btree_add_unique(t_btree **tree, t_btree *new_node,
 					int (*cmp)(void *, void *));
