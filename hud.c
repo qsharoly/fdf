@@ -38,32 +38,34 @@ int		draw_controls(void *mlx_ptr, void *mlx_window)
 	int		white;
 	void	*mp;
 	void	*mw;
+	int		v;
 
 	mp = mlx_ptr;
 	mw = mlx_window;
 	white = 0x00ffffff;
-	mlx_string_put(mp, mw, 20, 50, white, "space = pause/unpause");
-	mlx_string_put(mp, mw, 20, 70, white, "    n = next frame when paused");
-	mlx_string_put(mp, mw, 20, 90, white, "    s = show stats");
-	mlx_string_put(mp, mw, 20, 110, white, "    h = show axis helpers");
-	mlx_string_put(mp, mw, 20, 130, white, "    d = print stats");
-	mlx_string_put(mp, mw, 20, 150, white, "    a = print keycodes");
-	mlx_string_put(mp, mw, 20, 170, white, "    c = show controls");
-	mlx_string_put(mp, mw, 20, 190, white, "    p = switch projection");
-	mlx_string_put(mp, mw, 20, 210, white, "  j/k = zoom in/out");
-	mlx_string_put(mp, mw, 20, 230, white, "  u/i = altitude adjust +/-");
-	mlx_string_put(mp, mw, 20, 250, white, "    q, esc = quit");
+	v = 50;
+	mlx_string_put(mp, mw, 20, v, white, "space = pause/unpause animation");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    n = next frame when paused");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    s = show fps");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    h = show axis helpers");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    d = print stats");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    a = print keycodes");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    c = show controls");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    p = switch projection");
+	mlx_string_put(mp, mw, 20, v += 20, white, "  j/k = zoom in/out");
+	mlx_string_put(mp, mw, 20, v += 20, white, "  u/i = altitude adjust +/-");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    q, esc = quit");
 	return (0);
 }
 
-void	ft_put_float_janky(float a)
+void	ft_put_float(float a)
 {
 	ft_putnbr(floor(a));
 	ft_putchar('.');
 	ft_putnbr(floor((a - floor(a)) * 1000));
 }
 
-char	*ft_itoa_float_janky(float a)
+char	*ft_itoa_float(float a)
 {
 	char	*s;
 	char	*s1;
@@ -87,14 +89,14 @@ void	draw_hud(t_things *my, float frame)
 	if (my->state->print_stats == 1)
 	{
 		ft_putstr("frame ");
-		ft_put_float_janky(frame);
+		ft_put_float(frame);
 		ft_putstr("\n");
 	}
 	if (my->state->draw_stats == 1)
 	{
 		s1[0] = '\0';
 		ft_strcat(s1, "frame ");
-		tmps = ft_itoa_float_janky(frame);
+		tmps = ft_itoa_float(frame);
 		ft_strcat(s1, tmps);
 		free(tmps);
 		if (my->state->use_z_buf)

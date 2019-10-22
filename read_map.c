@@ -56,7 +56,7 @@ static int		rg_abort(t_list **rows, char *line, t_vertex *row,
 	return (-2);
 }
 
-int				read_grid(int fd, t_list **rows)
+int				read_map(int fd, t_map *map)
 {
 	t_vertex	*row;
 	char		*line;
@@ -69,17 +69,21 @@ int				read_grid(int fd, t_list **rows)
 	while ((gnl_status = get_next_line(fd, &line)) > 0)
 	{
 		if ((row = read_row(j, line, &count)))
-			if (*rows && count != (*rows)->content_size / sizeof(t_vertex))
-				return (rg_abort(rows, line, row, "bad line length."));
-			else if (ft_lst_push_tail(rows,
-						ft_lstnew(row, sizeof(t_vertex) * count)))
+		{
+			if (j == 0)
+				map->row_size = count;
+			else if (count != map->row_size)
+				return (rg_abort(&map->rows, line, row, "bad line length."));
+			if (ft_lst_push_tail(&map->rows, ft_lstnew(row, sizeof(t_vertex) * count)))
 				free(row);
 			else
-				return (rg_abort(rows, line, row, "alloc fail."));
+				return (rg_abort(&map->rows, line, row, "alloc fail."));
+		}
 		else
-			return (rg_abort(rows, line, row, "alloc fail."));
+			return (rg_abort(&map->rows, line, row, "alloc fail."));
 		j++;
 	}
+	map->row_num = j;
 	free(line);
 	return (gnl_status);
 }

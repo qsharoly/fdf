@@ -22,16 +22,16 @@ static void	*fail(char *msg)
 	return (NULL);
 }
 
-t_my_state	*init_state(void)
+t_state		*init_state(void)
 {
-	t_my_state	*state;
+	t_state	*state;
 
-	if (!(state = (t_my_state *)malloc(sizeof(*state))))
+	if (!(state = (t_state *)malloc(sizeof(*state))))
 		return (fail("memory allocation failed.\n"));
 	state->projection = Axonometric;
 	state->stop_program = 0;
-	state->frame_advance = 1;
-	state->do_step = 0;
+	state->animation_pause = 1;
+	state->animation_step = 0;
 	state->redraw = 1;
 	state->bench = DO_BENCH;
 	state->bench_frames = BENCHMARK_FRAMES;
@@ -51,15 +51,16 @@ t_cam		*init_cam(t_things *things)
 	if (!(cam = (t_cam *)malloc(sizeof(*cam))))
 		return (fail("memory allocation failed.\n"));
 	cam->z_buf_size = things->bitmap->x_dim * things->bitmap->y_dim;
+	cam->z_buf_stride = things->bitmap->x_dim;
 	cam->z_buf = (float *)malloc(sizeof(*cam->z_buf) * cam->z_buf_size);
 	cam->altitude_mult = 1;
-	if (things->grid != NULL)
+	if (things->map != NULL)
 	{
 		cam->dist = 0;
-		cam->world.x = things->grid->max_row_size / 2;
-		cam->world.y = things->grid->max_row_size / 2;
-		cam->world.z = things->grid->z_min;
-		cam->fov = 0.5 * things->bitmap->x_dim / things->grid->max_row_size;
+		cam->world.x = things->map->row_size / 2;
+		cam->world.y = things->map->row_size / 2;
+		cam->world.z = things->map->z_min;
+		cam->zoom = 0.5 * things->bitmap->x_dim / things->map->row_size;
 	}
 	else
 	{
@@ -67,30 +68,30 @@ t_cam		*init_cam(t_things *things)
 		cam->world.x = 0;
 		cam->world.y = 0;
 		cam->world.z = 0;
-		cam->fov = 0.5 * things->bitmap->x_dim;
+		cam->zoom = 0.5 * things->bitmap->x_dim;
 	}
 	return (cam);
 }
 
-t_grid		*init_grid(const char *filename)
+t_map		*init_map(const char *filename)
 {
 	int		fd;
-	t_grid	*g;
+	t_map	*g;
 
-	if (!(g = (t_grid *)malloc(sizeof(*g))))
+	if (!(g = (t_map *)malloc(sizeof(*g))))
 		return (fail("memory allocation failed.\n"));
 	g->rows = NULL;
 	if ((fd = open(filename, O_RDONLY)) > 2)
 	{
-		if (read_grid(fd, &g->rows) < 0)
+		if (read_map(fd, g) < 0)
 		{
 			free(g);
 			close(fd);
 			return (fail("failed to read from file.\n"));
 		}
 		close(fd);
-		grid_make_properties(g);
-		assign_colors_from_z(g);
+		map_find_height_range(g);
+		map_make_colors(g);
 		return (g);
 	}
 	else

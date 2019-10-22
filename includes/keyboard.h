@@ -50,7 +50,4 @@
 #  define LETTER_H 104
 # endif
 
-void	toggle(int *var);
-int		key_controls(int keycode, void *param);
-
 #endif

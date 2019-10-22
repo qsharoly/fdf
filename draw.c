@@ -35,22 +35,23 @@ int		inbounds(t_float2 point, t_bitmap *bmp)
 
 void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 {
-	float		length;
 	t_float2	p;
+	t_float2	step;
 	float		dt;
 	float		t;
 
 	p = a;
-	length = distance(a, b);
-	dt = 1 / length;
+	dt = 1 / distance(a, b);
+	step.x = (b.x - a.x) * dt;
+	step.y = (b.y - a.y) * dt;
 	t = 0;
 	while (t < 1)
 	{
 		if (inbounds(p, bmp))
 			set_pixel(bmp, p.x, p.y, color);
 		t += dt;
-		p.x = a.x + t * (b.x - a.x);
-		p.y = a.y + t * (b.y - a.y);
+		p.x += step.x;
+		p.y += step.y;
 	}
 }
 
@@ -67,6 +68,7 @@ void	draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
 void	draw_edge_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
 	t_float3	p;
+	t_float3	step;
 	float		dt;
 	float		t;
 
@@ -74,13 +76,15 @@ void	draw_edge_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
 	b.vec = project(b.vec, cam, bmp);
 	p = a.vec;
 	dt = 1 / distance(take_xy(a.vec), take_xy(b.vec));
+	step.x = (b.vec.x - a.vec.x) * dt;
+	step.y = (b.vec.y - a.vec.y) * dt;
+	step.z = (b.vec.z - a.vec.z) * dt;
 	t = 0;
 	while (t < 1)
 	{
 		if (inbounds(take_xy(p), bmp))
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
 		t += dt;
-		p.x = a.vec.x + t * (b.vec.x - a.vec.x);
-		p.y = a.vec.y + t * (b.vec.y - a.vec.y);
+		p = add_float3(p, step);
 	}
 }

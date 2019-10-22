@@ -15,7 +15,7 @@
 
 void		reset_z_buf(t_cam *cam)
 {
-	int		i;
+	t_uint		i;
 
 	i = 0;
 	while (i < cam->z_buf_size)
@@ -35,8 +35,8 @@ t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 	point.z *= cam->altitude_mult;
 	coeff = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
 	proj = add_float3(point, scalar_mul(cam->proj_dir, coeff));
-	screen.x = cam->fov * dot(proj, cam->right) + 0.5 * bmp->x_dim;
-	screen.y = cam->fov * dot(proj, cam->up) + 0.5 * bmp->y_dim;
+	screen.x = cam->zoom * dot(proj, cam->right) + 0.5 * bmp->x_dim;
+	screen.y = cam->zoom * dot(proj, cam->up) + 0.5 * bmp->y_dim;
 	screen.z = dot(proj, cam->dir);
 	return (screen);
 }

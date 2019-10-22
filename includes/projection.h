@@ -33,10 +33,11 @@ typedef struct	s_cam
 	t_float3	right;
 	t_float3	proj_dir;
 	float		dist;
-	float		fov;
+	float		zoom;
 	float		altitude_mult;
 	float		*z_buf;
-	int			z_buf_size;
+	t_uint		z_buf_size;
+	t_uint		z_buf_stride;
 }				t_cam;
 
 t_float3		project(t_float3 point, t_cam *cam, t_bitmap *bmp);

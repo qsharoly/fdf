@@ -16,17 +16,17 @@
 #include "palette.h"
 #include "keyboard.h"
 
-static void	free_things_and_exit(t_things *things)
+void	free_things_and_exit(t_things *things)
 {
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
 	free(things->bitmap);
 	free(things->state);
 	free(things->cam);
-	if (things->grid)
+	if (things->map)
 	{
-		ft_lstdel(&things->grid->rows, lst_del_fdf_row);
-		free(things->grid);
+		ft_lstdel(&things->map->rows, lst_del_fdf_row);
+		free(things->map);
 	}
 	exit(0);
 }
@@ -45,35 +45,28 @@ static void	norminette(t_things *my, float cam_rotation)
 {
 	setup_cam(my->cam, my->state->projection, cam_rotation);
 	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), BLACK);
-	if (my->grid)
+	if (my->map)
 	{
 		if (my->state->use_z_buf)
-		{
 			reset_z_buf(my->cam);
-			draw_grid_z_buf(my->bitmap, my->cam, my->grid->rows);
-		}
-		else
-			draw_grid(my->bitmap, my->cam, my->grid->rows);
+		draw_map(my->bitmap, my->cam, my->map, my->state->use_z_buf);
 	}
 	if (my->state->draw_helpers)
 		draw_helpers(my->bitmap, my->cam);
 	mlx_put_image_to_window(my->mlx, my->window, my->mlx_image, 0, 0);
 }
 
-static int	the_loop(void *param)
+static int	the_loop(t_things *my)
 {
-	t_things		*my;
 	static float	frame;
 	static float	cam_rotation;
 
-	my = (t_things *)param;
-	if ((my->state->stop_program == 1)
-			|| ((my->state->bench == 1) && (frame > my->state->bench_frames)))
+	if (my->state->bench == 1 && frame > my->state->bench_frames)
 		free_things_and_exit(my);
-	if (my->state->frame_advance == 1)
+	if (my->state->animation_pause == 1)
 	{
-		if (my->state->do_step == 1)
-			my->state->do_step = 0;
+		if (my->state->animation_step == 1)
+			my->state->animation_step = 0;
 		else if (my->state->redraw == 0)
 			return (0);
 	}
@@ -96,13 +89,13 @@ int			main(int argc, char **argv)
 
 	if (argc == 2)
 	{
-		if ((things.grid = init_grid(argv[1])) == NULL)
+		if ((things.map = init_map(argv[1])) == NULL)
 			return (-1);
 		caption = ft_strjoin("my fdf : ", argv[1]);
 	}
 	else
 	{
-		things.grid = NULL;
+		things.map = NULL;
 		caption = ft_strdup("my fdf");
 	}
 	things.mlx = mlx_init();

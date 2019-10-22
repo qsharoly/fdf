@@ -23,19 +23,20 @@
 # define XDIM 640
 # define YDIM 480
 
-typedef struct	s_grid
+typedef struct	s_map
 {
 	t_list		*rows;
 	float		z_min;
 	float		z_max;
-	int			max_row_size;
-}				t_grid;
+	int			row_size;
+	int			row_num;
+}				t_map;
 
-typedef struct	s_my_state
+typedef struct	s_state
 {
 	int				stop_program;
-	int				frame_advance;
-	int				do_step;
+	int				animation_pause;
+	int				animation_step;
 	int				redraw;
 	int				bench;
 	int				bench_frames;
@@ -45,9 +46,9 @@ typedef struct	s_my_state
 	int				draw_helpers;
 	int				draw_controls;
 	int				use_z_buf;
-	int				keycode;
+	//int				keycode;
 	enum e_projkind	projection;
-}				t_my_state;
+}				t_state;
 
 typedef struct	s_things
 {
@@ -55,27 +56,29 @@ typedef struct	s_things
 	void		*window;
 	void		*mlx_image;
 	t_bitmap	*bitmap;
-	t_my_state	*state;
-	t_grid		*grid;
+	t_state		*state;
+	t_map		*map;
 	t_cam		*cam;
 }				t_things;
 
 float			ft_fmin(float a, float b);
 float			ft_fmax(float a, float b);
-t_my_state		*init_state(void);
+void			ft_put_float(float a);
+char			*ft_itoa_float(float a);
+t_state			*init_state(void);
 t_cam			*init_cam(t_things *things);
-t_grid			*init_grid(const char *filename);
+t_map			*init_map(const char *filename);
 t_bitmap		*init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim);
 void			lst_del_fdf_row(void *row, size_t size);
-int				read_grid(int fd, t_list **rows);
-void			grid_make_properties(t_grid *mesh);
-void			assign_colors_from_z(t_grid *mesh);
-void			draw_grid(t_bitmap *bmp, t_cam *cam, t_list *rows);
-void			draw_grid_z_buf(t_bitmap *bmp, t_cam *cam, t_list *rows);
+int				read_map(int fd, t_map *map);
+void			map_find_height_range(t_map *map);
+void			map_make_colors(t_map *map);
+void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, int use_z_buf);
 void			draw_helpers(t_bitmap *bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
-void			ft_put_float_janky(float a);
-char			*ft_itoa_float_janky(float a);
+void			toggle(int *var);
+void			free_things_and_exit(t_things *things);
+int				key_controls(int keycode, t_things *param);
 
 #endif

@@ -13,7 +13,7 @@
 #ifndef BENCHMARK_H
 # define BENCHMARK_H
 
-# define DO_BENCH 0
+# define DO_BENCH 1
 # define BENCHMARK_FRAMES 500
 
 #endif
