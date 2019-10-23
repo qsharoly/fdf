@@ -23,12 +23,13 @@ static void		set_z_buf(t_cam *cam, t_uint x, t_uint y, float val)
 }
 
 /*
+ *  t_vertex a and b must be in screen space.
 **	Implies that at the start of each frame
 **	all elements of z_buf are set to -INFINITY
 **	and the camera normal cam->dir sticks out of the screen
 */
 
-void	draw_edge_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
+void	draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
 		t_vertex a, t_vertex b)
 {
 	t_float3	p;
@@ -36,8 +37,6 @@ void	draw_edge_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
 	float		dt;
 	float		t;
 
-	a.vec = project(a.vec, cam, bmp);
-	b.vec = project(b.vec, cam, bmp);
 	p = a.vec;
 	dt = 1 / distance(take_xy(a.vec), take_xy(b.vec));
 	step.x = (b.vec.x - a.vec.x) * dt;

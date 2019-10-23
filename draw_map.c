@@ -20,7 +20,7 @@ void	draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, int use_z_buf)
 	t_vertex	vertex2;
 	void		(*draw_func)(t_bitmap *, t_cam *, t_vertex, t_vertex);
 
-	draw_func = use_z_buf ? draw_edge_gradient_z_buf : draw_edge_gradient;
+	draw_func = use_z_buf ? draw_line_gradient_z_buf : draw_line_gradient;
 	rows = map->rows;
 	while (rows)
 	{
@@ -28,15 +28,19 @@ void	draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, int use_z_buf)
 		while (i < map->row_size)
 		{
 			vertex1 = ((t_vertex *)rows->content)[i];
+			vertex1.vec = project(vertex1.vec, cam, bmp);
 			if (i < map->row_size - 1)
 			{
 				vertex2 = ((t_vertex *)rows->content)[i + 1];
+				vertex2.vec = project(vertex2.vec, cam, bmp);
 				draw_func(bmp, cam, vertex1, vertex2);
 			}
+			// TODO(qsharoly): remove redundant i < map->row_size check
 			if (rows->next
 					&& i < map->row_size) 
 			{
 				vertex2 = ((t_vertex *)rows->next->content)[i];
+				vertex2.vec = project(vertex2.vec, cam, bmp);
 				draw_func(bmp, cam, vertex1, vertex2);
 			}
 			i++;

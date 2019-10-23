@@ -65,15 +65,14 @@ void	draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
 	draw_line(view.bmp, aa, bb, color);
 }
 
-void	draw_edge_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
+void	draw_line_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
 	t_float3	p;
 	t_float3	step;
 	float		dt;
 	float		t;
 
-	a.vec = project(a.vec, cam, bmp);
-	b.vec = project(b.vec, cam, bmp);
+	cam += 0;
 	p = a.vec;
 	dt = 1 / distance(take_xy(a.vec), take_xy(b.vec));
 	step.x = (b.vec.x - a.vec.x) * dt;

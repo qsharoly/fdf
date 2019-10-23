@@ -13,7 +13,7 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 WFLAGS = -Wall -Wextra -Werror
 
 SRC = main.c startup.c read_map.c map_make_colors.c ft_fmax.c ft_fmin.c\
-	  bitmap.c make_rect.c make_float3.c normalize.c draw.c draw_edge_gradient_z_buf.c\
+	  bitmap.c make_rect.c make_float3.c normalize.c draw.c draw_line_gradient_z_buf.c\
 	  draw_map.c vector2.c vector3.c rotations.c projection.c hud.c keyboard.c
 
 OBJ = $(SRC:%.c=$(OBJDIR)/%.o)
