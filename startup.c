@@ -15,6 +15,7 @@
 #include "mlx.h"
 #include "fdf.h"
 #include "benchmark.h"
+#include "settings.h"
 
 static void	*fail(char *msg)
 {
@@ -30,7 +31,7 @@ t_state		*init_state(void)
 		return (fail("memory allocation failed.\n"));
 	state->projection = Axonometric;
 	state->stop_program = 0;
-	state->animation_pause = 1;
+	state->animation_pause = START_PAUSED;
 	state->animation_step = 0;
 	state->redraw = 1;
 	state->bench = DO_BENCH;
