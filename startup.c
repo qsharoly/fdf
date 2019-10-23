@@ -14,7 +14,6 @@
 #include <fcntl.h>
 #include "mlx.h"
 #include "fdf.h"
-#include "benchmark.h"
 #include "settings.h"
 
 static void	*fail(char *msg)
