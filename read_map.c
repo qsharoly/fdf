@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 18:01:37 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 19:20:32 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,13 @@ static t_vertex	*read_row(int j, char *line, int *count)
 	t_vertex	*row;
 	char		**words;
 	int			i;
+	static char	wait_anim[4][4] = {"   ", ".  ", ".. ", "..."};
 
+	if (j % 40 == 0)
+	{
+		ft_putstr_fd("\033[14Dloading map", 2);
+		ft_putstr_fd(wait_anim[j / 40 % 4], 2);
+	}
 	if ((words = ft_strsplit_n(line, ' ', count)))
 		if ((row = malloc(sizeof(t_vertex) * *count)))
 		{

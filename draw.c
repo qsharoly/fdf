@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 20:38:15 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 18:51:32 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,13 @@ void	draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
 	draw_line(view.bmp, aa, bb, color);
 }
 
-void	draw_line_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
+void	draw_line_gradient(t_bitmap *bmp, t_vertex a, t_vertex b)
 {
 	t_float3	p;
 	t_float3	step;
 	float		dt;
 	float		t;
 
-	cam += 0;
 	p = a.vec;
 	dt = 1 / distance(take_xy(a.vec), take_xy(b.vec));
 	step.x = (b.vec.x - a.vec.x) * dt;

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 17:53:21 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 19:23:54 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,12 @@ static void	norminette(t_things *my, float cam_rotation)
 	if (my->map)
 	{
 		if (my->state->use_z_buf)
+		{
 			reset_z_buf(my->cam);
-		draw_map(my->bitmap, my->cam, my->map, my->state->use_z_buf);
+			draw_map_z_buf(my->bitmap, my->cam, my->map, my->map->rows);
+		}
+		else
+			draw_map(my->bitmap, my->cam, my->map, my->map->rows);
 	}
 	if (my->state->draw_helpers)
 		draw_helpers(my->bitmap, my->cam);
@@ -87,17 +91,16 @@ int			main(int argc, char **argv)
 	t_things	things;
 	char		*caption;
 
+	things.map = NULL;
 	if (argc == 2)
 	{
 		if ((things.map = init_map(argv[1])) == NULL)
 			return (-1);
+		ft_putstr_fd("\033[3D ok.\n", 2);
 		caption = ft_strjoin("my fdf : ", argv[1]);
 	}
 	else
-	{
-		things.map = NULL;
 		caption = ft_strdup("my fdf");
-	}
 	things.mlx = mlx_init();
 	things.window = mlx_new_window(things.mlx, XDIM, YDIM, caption);
 	free(caption);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 17:36:01 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 18:03:45 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int		draw_controls(void *mlx_ptr, void *mlx_window)
 	white = 0x00ffffff;
 	v = 50;
 	mlx_string_put(mp, mw, 20, v, white, "space = pause/unpause animation");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    n = next frame when paused");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    n = next frame if paused");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    s = show fps");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    h = show axis helpers");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    d = print stats");

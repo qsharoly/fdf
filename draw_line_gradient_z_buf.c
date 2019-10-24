@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 20:36:13 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 18:06:47 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,23 @@
 
 static float	get_z_buf(t_cam *cam, t_uint x, t_uint y)
 {
-		return (*(cam->z_buf + y * cam->z_buf_stride + x));
+	return (*(cam->z_buf + y * cam->z_buf_stride + x));
 }
 
 static void		set_z_buf(t_cam *cam, t_uint x, t_uint y, float val)
 {
-	*(cam->z_buf + y * cam->z_buf_stride + x) = val; 
+	*(cam->z_buf + y * cam->z_buf_stride + x) = val;
 }
 
 /*
- *  t_vertex a and b must be in screen space.
+**  use on projected vertices a and b
 **	Implies that at the start of each frame
 **	all elements of z_buf are set to -INFINITY
 **	and the camera normal cam->dir sticks out of the screen
 */
 
-void	draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
-		t_vertex a, t_vertex b)
+void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
+					t_vertex a, t_vertex b)
 {
 	t_float3	p;
 	t_float3	step;

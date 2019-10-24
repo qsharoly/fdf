@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 15:43:32 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 18:57:38 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ typedef struct	s_state
 	int				draw_helpers;
 	int				draw_controls;
 	int				use_z_buf;
-	//int				keycode;
 	enum e_projkind	projection;
 }				t_state;
 
@@ -73,7 +72,9 @@ void			lst_del_fdf_row(void *row, size_t size);
 int				read_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
-void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, int use_z_buf);
+void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, t_list *rows);
+void			draw_map_z_buf(t_bitmap *bmp, t_cam *cam, t_map *map,
+					t_list *rows);
 void			draw_helpers(t_bitmap *bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
