@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:23:49 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/17 15:36:56 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 17:51:45 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,7 @@ void	draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, int use_z_buf)
 				vertex2.vec = project(vertex2.vec, cam, bmp);
 				draw_func(bmp, cam, vertex1, vertex2);
 			}
-			// TODO(qsharoly): remove redundant i < map->row_size check
-			if (rows->next
-					&& i < map->row_size) 
+			if (rows->next)
 			{
 				vertex2 = ((t_vertex *)rows->next->content)[i];
 				vertex2.vec = project(vertex2.vec, cam, bmp);
