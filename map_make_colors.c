@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 17:31:42 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 17:54:08 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void			map_find_height_range(t_map *map)
 	}
 }
 
-static t_rgba	color_from_z(t_float3 point, float z_min, float z_mid, float z_max)
+static t_rgba	color_from_z(t_float3 point,
+					float z_min, float z_mid, float z_max)
 {
 	if (z_max == z_min)
 		return (LIGHTGREEN);

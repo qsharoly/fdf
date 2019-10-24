@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 21:13:26 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 18:01:37 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,16 @@ int				read_map(int fd, t_map *map)
 	line = NULL;
 	while ((gnl_status = get_next_line(fd, &line)) > 0)
 	{
-		if ((row = read_row(j, line, &count)))
-		{
-			if (j == 0)
-				map->row_size = count;
-			else if (count != map->row_size)
-				return (rg_abort(&map->rows, line, row, "bad line length."));
-			if (ft_lst_push_tail(&map->rows, ft_lstnew(row, sizeof(t_vertex) * count)))
-				free(row);
-			else
-				return (rg_abort(&map->rows, line, row, "alloc fail."));
-		}
-		else
+		if (!(row = read_row(j, line, &count)))
 			return (rg_abort(&map->rows, line, row, "alloc fail."));
+		if (j == 0)
+			map->row_size = count;
+		else if (count != map->row_size)
+			return (rg_abort(&map->rows, line, row, "bad line length."));
+		if (!(ft_lst_push_tail(&map->rows,
+					ft_lstnew(row, sizeof(t_vertex) * count))))
+			return (rg_abort(&map->rows, line, row, "alloc fail."));
+		free(row);
 		j++;
 	}
 	map->row_num = j;
