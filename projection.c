@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 16:53:21 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/24 19:44:05 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void		cam_setup_military(t_cam *cam)
 void		cam_setup_cavalier(t_cam *cam)
 {
 	cam->right = XUNIT;
-	cam->dir = scalar_mul(YUNIT, -1);
+	cam->dir = YUNIT;
 	cam->up = scalar_mul(ZUNIT, -1);
 	cam->proj_dir = rot_z(-0.15 * M_PI, cam->dir);
 	cam->proj_dir = rot_x(0.15 * M_PI, cam->proj_dir);
