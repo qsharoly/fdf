@@ -33,6 +33,13 @@ int		inbounds(t_float2 point, t_bitmap *bmp)
 			&& point.y >= 0.0 && point.y <= bmp->y_dim);
 }
 
+int		inbounds3(t_float3 point, t_bitmap *bmp, t_cam *cam)
+{
+	return (point.x >= 0.0 && point.x <= bmp->x_dim
+			&& point.y >= 0.0 && point.y <= bmp->y_dim
+			&& point.z >= cam->z_near && point.z <= cam->z_far);
+}
+
 void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 {
 	t_float2	p;
@@ -42,6 +49,8 @@ void	draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color)
 
 	p = a;
 	dt = 1 / distance(a, b);
+	if (dt < 0.00001)
+		return ;
 	step.x = (b.x - a.x) * dt;
 	step.y = (b.y - a.y) * dt;
 	t = 0;
@@ -65,7 +74,7 @@ void	draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
 	draw_line(view.bmp, aa, bb, color);
 }
 
-void	draw_line_gradient(t_bitmap *bmp, t_vertex a, t_vertex b)
+void	draw_line_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
 	t_float3	p;
 	t_float3	step;
@@ -80,7 +89,7 @@ void	draw_line_gradient(t_bitmap *bmp, t_vertex a, t_vertex b)
 	t = 0;
 	while (t < 1)
 	{
-		if (inbounds(take_xy(p), bmp))
+		if (inbounds3(p, bmp, cam))
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
 		t += dt;
 		p = add_float3(p, step);

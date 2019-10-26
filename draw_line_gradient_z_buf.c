@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "draw.h"
+#include "palette.h"
 
 static float	get_z_buf(t_cam *cam, t_uint x, t_uint y)
 {
@@ -25,8 +26,7 @@ static void		set_z_buf(t_cam *cam, t_uint x, t_uint y, float val)
 /*
 **  use on projected vertices a and b
 **	Implies that at the start of each frame
-**	all elements of z_buf are set to -INFINITY
-**	and the camera normal cam->dir sticks out of the screen
+**	all elements of z_buf are set to +INFINITY
 */
 
 void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
@@ -39,14 +39,16 @@ void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
 
 	p = a.vec;
 	dt = 1 / distance(take_xy(a.vec), take_xy(b.vec));
+	if (dt < 0.0001)
+		return ;
 	step.x = (b.vec.x - a.vec.x) * dt;
 	step.y = (b.vec.y - a.vec.y) * dt;
 	step.z = (b.vec.z - a.vec.z) * dt;
 	t = 0;
 	while (t < 1)
 	{
-		if (inbounds(take_xy(p), bmp)
-			&& p.z > get_z_buf(cam, p.x, p.y))
+		if (inbounds3(p, bmp, cam)
+			&& p.z < get_z_buf(cam, p.x, p.y))
 		{
 			set_z_buf(cam, p.x, p.y, p.z);
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));

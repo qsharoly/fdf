@@ -27,7 +27,7 @@ void	controls_who_need_redraw(int keycode, t_things *my)
 	else if (keycode == LETTER_C)
 		toggle(&my->state->draw_controls);
 	else if (keycode == LETTER_P)
-		my->state->projection = ++(my->state->projection) % N_PROJECTION_KINDS;
+		my->cam->projection = ++(my->cam->projection) % N_PROJECTION_KINDS;
 	else if (keycode == LETTER_J)
 		my->cam->zoom *= 1.2;
 	else if (keycode == LETTER_K)

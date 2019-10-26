@@ -16,10 +16,11 @@
 # include "vector.h"
 # include "bitmap.h"
 
-# define N_PROJECTION_KINDS 3
+# define N_PROJECTION_KINDS 4
 
 enum			e_projkind
 {
+	Perspective,
 	Axonometric,
 	Oblique_Military,
 	Oblique_Cavalier
@@ -27,22 +28,26 @@ enum			e_projkind
 
 typedef struct	s_cam
 {
-	t_float3	world;
-	t_float3	dir;
-	t_float3	up;
-	t_float3	right;
-	t_float3	proj_dir;
-	float		dist;
-	float		zoom;
-	float		altitude_mult;
-	float		*z_buf;
-	t_uint		z_buf_size;
-	t_uint		z_buf_stride;
+	t_float3		world;
+	t_float3		dir;
+	t_float3		up;
+	t_float3		right;
+	t_float3		proj_dir;
+	t_float3		rot;
+	float			dist;
+	float			z_near;
+	float			z_far;
+	float			zoom;
+	float			altitude_mult;
+	float			*z_buf;
+	t_uint			z_buf_size;
+	t_uint			z_buf_stride;
+	enum e_projkind	projection;
 }				t_cam;
 
 t_float3		project(t_float3 point, t_cam *cam, t_bitmap *bmp);
 void			reset_z_buf(t_cam *cam);
-void			cam_setup_axonometric(t_cam *cam, float cam_rotation);
+void			cam_setup_axonometric(t_cam *cam);
 void			cam_setup_military(t_cam *cam);
 void			cam_setup_cavalier(t_cam *cam);
 

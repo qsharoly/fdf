@@ -99,6 +99,10 @@ void	draw_hud(t_things *my, float frame)
 		tmps = ft_itoa_float(frame);
 		ft_strcat(s1, tmps);
 		free(tmps);
+		ft_strcat(s1, "zoom = ");
+		tmps = ft_itoa_float(my->cam->zoom);
+		ft_strcat(s1, tmps);
+		free(tmps);
 		if (my->state->use_z_buf)
 			ft_strcat(s1, " z_buf on");
 		else

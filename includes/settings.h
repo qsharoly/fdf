@@ -13,8 +13,8 @@
 #ifndef SETTINGS_H
 # define SETTINGS_H
 
-# define START_PAUSED 0
-# define DO_BENCH 1
+# define START_PAUSED 1
+# define DO_BENCH 0
 # define BENCHMARK_FRAMES 500
 
 #endif

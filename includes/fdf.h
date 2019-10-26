@@ -46,7 +46,6 @@ typedef struct	s_state
 	int				draw_helpers;
 	int				draw_controls;
 	int				use_z_buf;
-	enum e_projkind	projection;
 }				t_state;
 
 typedef struct	s_things

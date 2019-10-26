@@ -20,32 +20,42 @@ void		reset_z_buf(t_cam *cam)
 	i = 0;
 	while (i < cam->z_buf_size)
 	{
-		cam->z_buf[i] = -INFINITY;
+		cam->z_buf[i] = INFINITY;
 		i++;
 	}
 }
 
+#include <stdio.h>
 t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 {
 	t_float3	proj;
 	t_float3	screen;
-	float		coeff;
+	float		ray_len;
+	float		persp;
 
-	point = add_float3(point, scalar_mul(cam->world, -1));
 	point.z *= cam->altitude_mult;
-	coeff = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
-	proj = add_float3(point, scalar_mul(cam->proj_dir, coeff));
-	screen.z = dot(point, cam->dir);
-	screen.x = cam->zoom * dot(proj, cam->right) + 0.5 * bmp->x_dim;
-	screen.y = cam->zoom * dot(proj, cam->up) + 0.5 * bmp->y_dim;
+	point = add_float3(point, scalar_mul(cam->world, -1));
+	ray_len = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
+	proj = add_float3(point, scalar_mul(cam->proj_dir, ray_len));
+	screen.x = cam->zoom * dot(proj, cam->right);
+	screen.y = cam->zoom * dot(proj, cam->up);
+	screen.z = ray_len; 
+	if (cam->projection == Perspective)
+	{
+		persp = (cam->z_far - cam->z_near) / screen.z;
+		screen.x *= persp;
+		screen.y *= persp;
+	}
+	screen.x += 0.5 * bmp->x_dim / dot(cam->dir, cam->proj_dir);
+	screen.y += 0.5 * bmp->y_dim / dot(cam->dir, cam->proj_dir);
 	return (screen);
 }
 
-void		cam_setup_axonometric(t_cam *cam, float cam_rotation)
+void		cam_setup_axonometric(t_cam *cam)
 {
-	cam->dir.x = sin(M_PI * 0.25 + cam_rotation);
-	cam->dir.y = cos(M_PI * 0.25 + cam_rotation);
-	cam->dir.z = cos(M_PI / 3);
+	cam->dir = ZUNIT;
+	cam->dir = rot_x(M_PI / 3, cam->dir);
+	cam->dir = rot_z(M_PI * 3 / 4 + cam->rot.z, cam->dir);
 	cam->dir = normalize(cam->dir);
 	cam->right.x = cam->dir.y;
 	cam->right.y = -cam->dir.x;

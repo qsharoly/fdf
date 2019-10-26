@@ -28,7 +28,6 @@ t_state		*init_state(void)
 
 	if (!(state = (t_state *)malloc(sizeof(*state))))
 		return (fail("memory allocation failed.\n"));
-	state->projection = Axonometric;
 	state->stop_program = 0;
 	state->animation_pause = START_PAUSED;
 	state->animation_step = 0;
@@ -53,23 +52,25 @@ t_cam		*init_cam(t_things *things)
 	cam->z_buf_size = things->bitmap->x_dim * things->bitmap->y_dim;
 	cam->z_buf_stride = things->bitmap->x_dim;
 	cam->z_buf = (float *)malloc(sizeof(*cam->z_buf) * cam->z_buf_size);
-	cam->altitude_mult = 1;
 	if (things->map != NULL)
 	{
-		cam->dist = 0;
 		cam->world.x = things->map->row_size / 2;
-		cam->world.y = things->map->row_size / 2;
+		cam->world.y = things->map->row_num / 2;
 		cam->world.z = things->map->z_min;
-		cam->zoom = 0.5 * things->bitmap->x_dim / things->map->row_size;
+		cam->zoom = things->bitmap->x_dim / things->map->row_size;
+		cam->dist = (things->map->row_size + things->map->row_num) / 2;
 	}
 	else
 	{
-		cam->dist = 1;
-		cam->world.x = 0;
-		cam->world.y = 0;
-		cam->world.z = 0;
+		cam->world = ORIGIN;
 		cam->zoom = 0.5 * things->bitmap->x_dim;
+		cam->dist = 1;
 	}
+	cam->z_near = 1;
+	cam->z_far = 2 * cam->dist;
+	cam->rot = ORIGIN;
+	cam->projection = Perspective;
+	cam->altitude_mult = 1;
 	return (cam);
 }
 

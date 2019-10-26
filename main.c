@@ -31,19 +31,19 @@ void		free_things_and_exit(t_things *things)
 	exit(0);
 }
 
-static void	setup_cam(t_cam *cam, enum e_projkind proj_kind, float cam_rotation)
+static void	setup_cam(t_cam *cam)
 {
-	if (proj_kind == Axonometric)
-		cam_setup_axonometric(cam, cam_rotation);
-	else if (proj_kind == Oblique_Military)
-		cam_setup_military(cam);
-	else if (proj_kind == Oblique_Cavalier)
-		cam_setup_cavalier(cam);
+	void	(*setup_func[4])(t_cam *) = {
+		cam_setup_axonometric,
+		cam_setup_axonometric,
+		cam_setup_military,
+		cam_setup_cavalier};
+
+	setup_func[cam->projection](cam);
 }
 
-static void	norminette(t_things *my, float cam_rotation)
+static void	draw_geometry(t_things *my)
 {
-	setup_cam(my->cam, my->state->projection, cam_rotation);
 	fill_rect(my->bitmap, rect(0, 0, XDIM, YDIM), BLACK);
 	if (my->map)
 	{
@@ -63,7 +63,6 @@ static void	norminette(t_things *my, float cam_rotation)
 static int	the_loop(t_things *my)
 {
 	static float	frame;
-	static float	cam_rotation;
 
 	if (my->state->bench == 1 && frame > my->state->bench_frames)
 		free_things_and_exit(my);
@@ -77,9 +76,10 @@ static int	the_loop(t_things *my)
 	if (my->state->redraw == 0)
 	{
 		frame++;
-		cam_rotation = frame * 0.5 * M_PI / 100;
+		my->cam->rot.z = frame * 0.5 * M_PI / 100;
 	}
-	norminette(my, cam_rotation);
+	setup_cam(my->cam);
+	draw_geometry(my);
 	draw_hud(my, frame);
 	if (my->state->redraw)
 		my->state->redraw = 0;
