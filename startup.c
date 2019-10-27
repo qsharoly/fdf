@@ -43,6 +43,23 @@ t_state		*init_state(void)
 	return (state);
 }
 
+void		reset_cam_position(t_things *things)
+{
+	if (things->map != NULL)
+	{
+		things->cam->world.x = things->map->row_size / 2;
+		things->cam->world.y = things->map->row_num / 2;
+		things->cam->world.z = things->map->z_min;
+		things->cam->zoom = 0.5 * things->bitmap->x_dim / things->map->row_size;
+	}
+	else
+	{
+		things->cam->world = ORIGIN;
+		things->cam->zoom = 0.5 * things->bitmap->x_dim;
+	}
+	things->cam->rot = ORIGIN;
+}
+
 t_cam		*init_cam(t_things *things)
 {
 	t_cam		*cam;
@@ -57,7 +74,7 @@ t_cam		*init_cam(t_things *things)
 		cam->world.x = things->map->row_size / 2;
 		cam->world.y = things->map->row_num / 2;
 		cam->world.z = things->map->z_min;
-		cam->zoom = things->bitmap->x_dim / things->map->row_size;
+		cam->zoom = 0.5 * things->bitmap->x_dim / things->map->row_size;
 		cam->dist = 0.75 * (things->map->row_size + things->map->row_num);
 	}
 	else
@@ -69,7 +86,7 @@ t_cam		*init_cam(t_things *things)
 	cam->z_near = 1;
 	cam->z_far = 2 * cam->dist;
 	cam->rot = ORIGIN;
-	cam->projection = Perspective;
+	cam->projection = Axonometric;
 	cam->altitude_mult = 1;
 	return (cam);
 }

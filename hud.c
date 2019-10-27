@@ -46,14 +46,15 @@ int		draw_controls(void *mlx_ptr, void *mlx_window)
 	v = 50;
 	mlx_string_put(mp, mw, 20, v, white, "space = pause/unpause animation");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    n = next frame if paused");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    s = show fps");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    h = show axis helpers");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    s = show stats");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    h = show axis");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    d = print stats");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    a = print keycodes");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    c = show controls");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    p = switch projection");
 	mlx_string_put(mp, mw, 20, v += 20, white, "  j/k = zoom in/out");
 	mlx_string_put(mp, mw, 20, v += 20, white, "  u/i = altitude adjust +/-");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    b = use z buffer");
 	mlx_string_put(mp, mw, 20, v += 20, white, "    q, esc = quit");
 	return (0);
 }
@@ -83,8 +84,9 @@ char	*ft_itoa_float(float a)
 
 void	draw_hud(t_things *my, float frame)
 {
-	char		s1[65];
+	char		s1[120];
 	char		*tmps;
+	char		*projnames[4] = {"Perspective", "Isometric", "Military", "Cavalier"};
 
 	if (my->state->print_stats == 1)
 	{
@@ -99,14 +101,16 @@ void	draw_hud(t_things *my, float frame)
 		tmps = ft_itoa_float(frame);
 		ft_strcat(s1, tmps);
 		free(tmps);
-		ft_strcat(s1, "zoom = ");
+		ft_strcat(s1, ", zoom = ");
 		tmps = ft_itoa_float(my->cam->zoom);
 		ft_strcat(s1, tmps);
 		free(tmps);
 		if (my->state->use_z_buf)
-			ft_strcat(s1, " z_buf on");
+			ft_strcat(s1, ", z_buf on");
 		else
-			ft_strcat(s1, " z_buf off");
+			ft_strcat(s1, ", z_buf off");
+		ft_strcat(s1, "projection = ");
+		ft_strcat(s1, projnames[my->cam->projection]);
 		mlx_string_put(my->mlx, my->window, 10, 10, 0x00FFFFFF, s1);
 	}
 	if (my->state->draw_controls == 1)

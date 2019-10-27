@@ -17,6 +17,10 @@
 # include "bitmap.h"
 
 # define N_PROJECTION_KINDS 4
+# define GO_FWD 0
+# define GO_BACK 1
+# define STRAFE_RIGHT 2
+# define STRAFE_LEFT 3
 
 enum			e_projkind
 {
@@ -50,5 +54,6 @@ void			cam_setup_perspective(t_cam *cam);
 void			cam_setup_axonometric(t_cam *cam);
 void			cam_setup_military(t_cam *cam);
 void			cam_setup_cavalier(t_cam *cam);
+void			translate_cam(t_cam *cam, int command);
 
 #endif

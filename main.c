@@ -66,8 +66,8 @@ static void	draw_geometry(t_things *my)
 
 static int	the_loop(t_things *my)
 {
-	static float	frame;
-
+	static int	frame;
+	
 	if (my->state->bench == 1 && frame > my->state->bench_frames)
 		free_things_and_exit(my);
 	if (my->state->animation_pause == 1)
@@ -79,8 +79,8 @@ static int	the_loop(t_things *my)
 	}
 	if (my->state->redraw == 0)
 	{
+		my->cam->rot.z += (-1) * 0.5 * M_PI / 100;
 		frame++;
-		my->cam->rot.z = (-1) * frame * 0.5 * M_PI / 100;
 	}
 	setup_cam(my->cam);
 	draw_geometry(my);

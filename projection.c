@@ -39,6 +39,27 @@ t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 	screen.y += 0.5 * bmp->y_dim;
 	return (screen);
 }
+#include "libft.h"
+void		translate_cam(t_cam *cam, int command)
+{
+	t_float3	lateral;
+	float		step;
+
+	step = 1.0;
+	lateral.x = -cam->dir.x;
+	lateral.y = -cam->dir.y;
+	lateral.z = 0.0;
+	normalize(lateral);
+	if (command == GO_FWD)
+		cam->world = add_float3(cam->world, scalar_mul(lateral, step));
+	else if (command == GO_BACK)
+		cam->world = add_float3(cam->world, scalar_mul(lateral, -step));
+	else if (command == STRAFE_RIGHT)
+		cam->world = add_float3(cam->world, scalar_mul(cam->right, step));
+	else if (command == STRAFE_LEFT)
+		cam->world = add_float3(cam->world, scalar_mul(cam->right, -step));
+}
+
 
 void		cam_setup_perspective(t_cam *cam)
 {
@@ -50,7 +71,7 @@ void		cam_setup_perspective(t_cam *cam)
 void		cam_setup_axonometric(t_cam *cam)
 {
 	cam->dir = ZUNIT;
-	cam->dir = rot_x(M_PI / 3, cam->dir);
+	cam->dir = rot_x(M_PI / 3 + cam->rot.x, cam->dir);
 	cam->dir = rot_z(M_PI * 3 / 4 + cam->rot.z, cam->dir);
 	cam->dir = normalize(cam->dir);
 	cam->right.x = cam->dir.y;

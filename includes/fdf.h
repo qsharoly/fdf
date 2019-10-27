@@ -74,6 +74,7 @@ void			map_make_colors(t_map *map);
 void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, t_list *rows);
 void			draw_map_z_buf(t_bitmap *bmp, t_cam *cam, t_map *map,
 					t_list *rows);
+void			reset_cam_position(t_things *things);
 void			draw_helpers(t_bitmap *bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
