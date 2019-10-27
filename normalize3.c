@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   normalize.c                                        :+:      :+:    :+:   */
+/*   normalize3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/15 16:03:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 16:04:02 by qsharoly         ###   ########.fr       */
+/*   Created: 2019/10/27 17:58:07 by qsharoly          #+#    #+#             */
+/*   Updated: 2019/10/27 17:58:12 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vector.h"
 
-t_float3	normalize(t_float3 vec)
+t_float3	normalize3(t_float3 vec)
 {
 	return (scalar_mul(vec, 1 / length3(vec)));
 }

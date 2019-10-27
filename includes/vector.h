@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:27:49 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 17:18:29 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:59:24 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ float			dot(t_float3 a, t_float3 b);
 t_float3		cross(t_float3 a, t_float3 b);
 t_float3		scalar_mul(t_float3 vec, float s);
 float			length3(t_float3 vec);
-t_float3		normalize(t_float3 vec);
+t_float3		normalize3(t_float3 vec);
 t_float3		make_float3(float x, float y, float z);
 t_float3		rot_x(float angle, t_float3 vec);
 t_float3		rot_y(float angle, t_float3 vec);

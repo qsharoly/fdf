@@ -13,7 +13,7 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 WFLAGS = -Wall -Wextra -Werror
 
 SRC = main.c startup.c read_map.c map_make_colors.c ft_fmax.c ft_fmin.c\
-	  bitmap.c make_rect.c make_float3.c normalize.c draw.c draw_z_buf.c\
+	  bitmap.c make_rect.c make_float3.c normalize3.c draw.c draw_z_buf.c\
 	  draw_map.c vector2.c vector3.c rotations.c projection.c hud.c keyboard.c\
 	  ft_itoa_float.c ft_put_float.c cam_move.c
 
@@ -26,7 +26,9 @@ $(shell mkdir -p $(DEPDIR))
 all: $(NAME)
 
 $(NAME): $(OBJ) $(MLX) $(LFT)
-	gcc -o $(NAME) $(OBJ) -L $(MLX_DIR)  -L $(LFT_DIR)\
+	@echo "# linking $(NAME)"
+	gcc -o $(NAME) $(OBJ)\
+		-L $(MLX_DIR) -L $(LFT_DIR)\
 		-I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)\
 		-lmlx -lft -framework OpenGL -framework AppKit
 

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 17:14:01 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 18:00:22 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	translate_cam(t_cam *cam, int command)
 		lateral.x = -cam->dir.x;
 		lateral.y = -cam->dir.y;
 		lateral.z = 0.0;
-		normalize(lateral);
+		normalize3(lateral);
 	}
 	if (command == GO_FWD)
 		cam->world = add_float3(cam->world, scalar_mul(lateral, step));
