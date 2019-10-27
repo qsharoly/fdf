@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 17:24:41 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:48:07 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 	scr.y = cam->zoom * dot(point, cam->up);
 	if (cam->projection == Perspective)
 	{
-		persp = 0.5 * (cam->z_far - cam->z_near) / scr.z;
+		persp = 0.5 * (cam->z_far + cam->z_near) / scr.z;
 		scr.x *= persp;
 		scr.y *= persp;
 	}
@@ -43,8 +43,6 @@ t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 void		cam_setup_perspective(t_cam *cam)
 {
 	cam_setup_axonometric(cam);
-	cam->z_near = 1;
-	cam->z_far = 2 * cam->dist;
 }
 
 void		cam_setup_axonometric(t_cam *cam)
@@ -53,9 +51,8 @@ void		cam_setup_axonometric(t_cam *cam)
 	cam->dir = rot_x(M_PI / 3 + cam->rot.x, cam->dir);
 	cam->dir = rot_z(M_PI * 3 / 4 + cam->rot.z, cam->dir);
 	cam->dir = normalize(cam->dir);
-	cam->right.x = cam->dir.y;
-	cam->right.y = -cam->dir.x;
-	cam->right.z = 0;
+	cam->right = scalar_mul(XUNIT, -1);
+	cam->right = rot_z(M_PI * 3 / 4 + cam->rot.z, cam->right);
 	cam->right = normalize(cam->right);
 	cam->up = cross(cam->dir, cam->right);
 	cam->proj_dir = cam->dir;

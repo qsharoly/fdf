@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 15:37:47 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:54:12 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@ static int	the_loop(t_things *my)
 	}
 	if (my->state->redraw == 0)
 	{
-		my->cam->rot.z += (-1) * 0.5 * M_PI / 100;
+		my->cam->rot.z += (-1) * 0.05 * M_PI / 100;
+		my->cam->rot.x += (-1) * 0.5 * M_PI / 100;
 		frame++;
 	}
 	g_cam_setup_func[my->cam->projection](my->cam);
