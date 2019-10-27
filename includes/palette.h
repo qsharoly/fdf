@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:41:56 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 17:32:31 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 16:53:19 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@
 # define PURPLE (t_rgba) {150, 30, 250, 0}
 # define LIGHTGREEN (t_rgba) {30, 250, 150, 0}
 # define PEACH (t_rgba) {250, 150, 30, 0}
+# define DARKGREEN (t_rgba) {30, 150, 80, 0}
 
 #endif

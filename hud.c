@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 18:03:45 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 16:40:59 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,45 @@
 #include "fdf.h"
 #include "palette.h"
 
-void	draw_helpers(t_bitmap *bitmap, t_cam *cam)
+int			draw_controls(void *mlx_ptr, void *mlx_window)
+{
+	int		white;
+	void	*mp;
+	void	*mw;
+	int		v;
+
+	mp = mlx_ptr;
+	mw = mlx_window;
+	white = 0x00ffffff;
+	v = 30;
+	mlx_string_put(mp, mw, 20, v += 20, white, "yhuo = rotate cam");
+	mlx_string_put(mp, mw, 20, v += 20, white, "ijkl = translate cam");
+	mlx_string_put(mp, mw, 20, v += 20, white, "  ,. = zoom in/out");
+	mlx_string_put(mp, mw, 20, v += 20, white, "  tg = altitude adjust +/-");
+	mlx_string_put(mp, mw, 20, v += 20, white, "   p = switch projection");
+	mlx_string_put(mp, mw, 20, v += 20, white, "   r = reset cam");
+	mlx_string_put(mp, mw, 20, v += 20, white, "   z = show stats");
+	mlx_string_put(mp, mw, 20, v += 20, white, "   x = show axis");
+	mlx_string_put(mp, mw, 20, v += 20, white, "   a = print keycodes");
+	mlx_string_put(mp, mw, 20, v += 20, white, "   c = show controls");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    b = toggle z buffer");
+	mlx_string_put(mp, mw, 20, v += 20, white, "space = (un)pause animation");
+	mlx_string_put(mp, mw, 20, v += 20, white, "    n = next frame if paused");
+	mlx_string_put(mp, mw, 20, v += 20, white, "q, esc = quit");
+	return (0);
+}
+
+void		draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
+{
+	t_float2	aa;
+	t_float2	bb;
+
+	aa = take_xy(project(a, view.cam, view.bmp));
+	bb = take_xy(project(b, view.cam, view.bmp));
+	draw_line(view.bmp, aa, bb, color);
+}
+
+void		draw_helpers(t_bitmap *bitmap, t_cam *cam)
 {
 	t_view			view;
 
@@ -33,84 +71,31 @@ void	draw_helpers(t_bitmap *bitmap, t_cam *cam)
 	draw_edge(view, ORIGIN, ZUNIT, BLUE);
 }
 
-int		draw_controls(void *mlx_ptr, void *mlx_window)
+static void	ft_append(char *tgt, char *varname, float varval)
 {
-	int		white;
-	void	*mp;
-	void	*mw;
-	int		v;
+	char *valstr;
 
-	mp = mlx_ptr;
-	mw = mlx_window;
-	white = 0x00ffffff;
-	v = 50;
-	mlx_string_put(mp, mw, 20, v, white, "space = pause/unpause animation");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    n = next frame if paused");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    s = show stats");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    h = show axis");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    d = print stats");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    a = print keycodes");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    c = show controls");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    p = switch projection");
-	mlx_string_put(mp, mw, 20, v += 20, white, "  j/k = zoom in/out");
-	mlx_string_put(mp, mw, 20, v += 20, white, "  u/i = altitude adjust +/-");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    b = use z buffer");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    q, esc = quit");
-	return (0);
+	ft_strcat(tgt, varname);
+	valstr = ft_itoa_float(varval);
+	ft_strcat(tgt, valstr);
+	free(valstr);
 }
 
-void	ft_put_float(float a)
-{
-	ft_putnbr(floor(a));
-	ft_putchar('.');
-	ft_putnbr(floor((a - floor(a)) * 1000));
-}
-
-char	*ft_itoa_float(float a)
-{
-	char	*s;
-	char	*s1;
-	char	*s2;
-
-	s = ft_itoa(floor(a));
-	s1 = ft_strjoin(s, ".");
-	free(s);
-	s = ft_itoa(floor((a - floor(a)) * 1000));
-	s2 = ft_strjoin(s1, s);
-	free(s);
-	free(s1);
-	return (s2);
-}
-
-void	draw_hud(t_things *my, float frame)
+void		draw_hud(t_things *my, float frame)
 {
 	char		s1[120];
-	char		*tmps;
-	char		*projnames[4] = {"Perspective", "Isometric", "Military", "Cavalier"};
 
-	if (my->state->print_stats == 1)
-	{
-		ft_putstr("frame ");
-		ft_put_float(frame);
-		ft_putstr("\n");
-	}
 	if (my->state->draw_stats == 1)
 	{
 		s1[0] = '\0';
-		ft_strcat(s1, "frame ");
-		tmps = ft_itoa_float(frame);
-		ft_strcat(s1, tmps);
-		free(tmps);
-		ft_strcat(s1, ", zoom = ");
-		tmps = ft_itoa_float(my->cam->zoom);
-		ft_strcat(s1, tmps);
-		free(tmps);
+		ft_append(s1, "frame ", frame);
+		ft_append(s1, ", zoom = ", my->cam->zoom);
 		if (my->state->use_z_buf)
 			ft_strcat(s1, ", z_buf on");
 		else
 			ft_strcat(s1, ", z_buf off");
-		ft_strcat(s1, "projection = ");
-		ft_strcat(s1, projnames[my->cam->projection]);
+		ft_strcat(s1, ", projection = ");
+		ft_strcat(s1, g_projnames[my->cam->projection]);
 		mlx_string_put(my->mlx, my->window, 10, 10, 0x00FFFFFF, s1);
 	}
 	if (my->state->draw_controls == 1)

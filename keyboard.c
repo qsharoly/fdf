@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 16:34:19 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 16:32:50 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ void	camera_movements(int keycode, t_things *my)
 {
 	if (keycode == LETTER_R)
 		reset_cam_position(my);
-	else if (keycode == LETTER_L)
-		my->cam->rot.z += M_PI / 128;
-	else if (keycode == LETTER_J)
-		my->cam->rot.z -= M_PI / 128;
+	else if (keycode == LETTER_O)
+		my->cam->rot.z += M_PI / 64;
+	else if (keycode == LETTER_U)
+		my->cam->rot.z -= M_PI / 64;
 	else if (keycode == LETTER_Y)
 		my->cam->rot.x += M_PI / 64;
 	else if (keycode == LETTER_H)
@@ -34,9 +34,9 @@ void	camera_movements(int keycode, t_things *my)
 		translate_cam(my->cam, GO_FWD);
 	else if (keycode == LETTER_K)
 		translate_cam(my->cam, GO_BACK);
-	else if (keycode == LETTER_U)
+	else if (keycode == LETTER_J)
 		translate_cam(my->cam, STRAFE_LEFT);
-	else if (keycode == LETTER_O)
+	else if (keycode == LETTER_L)
 		translate_cam(my->cam, STRAFE_RIGHT);
 }
 
@@ -50,9 +50,9 @@ void	controls_who_need_redraw(int keycode, t_things *my)
 		toggle(&my->state->draw_controls);
 	else if (keycode == LETTER_P)
 		my->cam->projection = ++(my->cam->projection) % N_PROJECTION_KINDS;
-	else if (keycode == GREATER_THAN)
+	else if (keycode == COMMA)
 		my->cam->zoom *= 1.2;
-	else if (keycode == LESS_THAN)
+	else if (keycode == PERIOD)
 		my->cam->zoom *= 0.8;
 	else if (keycode == LETTER_T)
 		my->cam->altitude_mult *= 1.2;
@@ -60,7 +60,7 @@ void	controls_who_need_redraw(int keycode, t_things *my)
 		my->cam->altitude_mult *= 0.8;
 	else if (keycode == LETTER_B)
 		toggle(&my->state->use_z_buf);
-	else 
+	else
 		camera_movements(keycode, my);
 }
 
@@ -75,8 +75,6 @@ int		key_controls(int keycode, t_things *my)
 		toggle(&my->state->animation_pause);
 	else if (keycode == LETTER_N && my->state->animation_pause)
 		my->state->animation_step = 1;
-	else if (keycode == LETTER_D)
-		toggle(&my->state->print_stats);
 	else if (keycode == LETTER_A)
 		toggle(&my->state->print_keycodes);
 	else

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 19:23:54 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 15:37:47 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 #include "fdf.h"
 #include "palette.h"
 #include "keyboard.h"
+
+static void	put_usage_and_exit(void)
+{
+	ft_putstr("usage: fdf <filename>\n press c to view controls\n");
+	exit(0);
+}
 
 void		free_things_and_exit(t_things *things)
 {
@@ -29,17 +35,6 @@ void		free_things_and_exit(t_things *things)
 		free(things->map);
 	}
 	exit(0);
-}
-
-static void	setup_cam(t_cam *cam)
-{
-	void	(*setup_func[4])(t_cam *) = {
-		cam_setup_perspective,
-		cam_setup_axonometric,
-		cam_setup_military,
-		cam_setup_cavalier};
-
-	setup_func[cam->projection](cam);
 }
 
 static void	draw_geometry(t_things *my)
@@ -67,7 +62,7 @@ static void	draw_geometry(t_things *my)
 static int	the_loop(t_things *my)
 {
 	static int	frame;
-	
+
 	if (my->state->bench == 1 && frame > my->state->bench_frames)
 		free_things_and_exit(my);
 	if (my->state->animation_pause == 1)
@@ -82,7 +77,7 @@ static int	the_loop(t_things *my)
 		my->cam->rot.z += (-1) * 0.5 * M_PI / 100;
 		frame++;
 	}
-	setup_cam(my->cam);
+	g_cam_setup_func[my->cam->projection](my->cam);
 	draw_geometry(my);
 	draw_hud(my, frame);
 	my->state->redraw = 0;
@@ -94,6 +89,7 @@ int			main(int argc, char **argv)
 	t_things	things;
 	char		*caption;
 
+	caption = NULL;
 	things.map = NULL;
 	if (argc == 2)
 	{
@@ -103,7 +99,7 @@ int			main(int argc, char **argv)
 		caption = ft_strjoin("my fdf : ", argv[1]);
 	}
 	else
-		caption = ft_strdup("my fdf");
+		put_usage_and_exit();
 	things.mlx = mlx_init();
 	things.window = mlx_new_window(things.mlx, XDIM, YDIM, caption);
 	free(caption);

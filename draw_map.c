@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:23:49 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 18:55:56 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 14:42:04 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,12 @@ void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, t_list *rows)
 			if (i < map->row_size - 1)
 			{
 				vertex2 = p(((t_vertex *)rows->content)[i + 1], cam, bmp);
-				if (inbounds3(vertex1.vec, bmp, cam) || inbounds3(vertex2.vec, bmp, cam))
-					draw_line_gradient(bmp, cam, vertex1, vertex2);
+				draw_line_gradient(bmp, cam, vertex1, vertex2);
 			}
 			if (rows->next)
 			{
 				vertex2 = p(((t_vertex *)rows->next->content)[i], cam, bmp);
-				if (inbounds3(vertex1.vec, bmp, cam) || inbounds3(vertex2.vec, bmp, cam))
-					draw_line_gradient(bmp, cam, vertex1, vertex2);
+				draw_line_gradient(bmp, cam, vertex1, vertex2);
 			}
 			i++;
 		}
@@ -53,7 +51,7 @@ void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, t_list *rows)
 }
 
 void			draw_map_z_buf(t_bitmap *bmp, t_cam *cam, t_map *map,
-					t_list *rows)
+		t_list *rows)
 {
 	int			i;
 	t_vertex	vertex1;
@@ -68,14 +66,12 @@ void			draw_map_z_buf(t_bitmap *bmp, t_cam *cam, t_map *map,
 			if (i < map->row_size - 1)
 			{
 				vertex2 = p(((t_vertex *)rows->content)[i + 1], cam, bmp);
-				if (inbounds3(vertex1.vec, bmp, cam) || inbounds3(vertex2.vec, bmp, cam))
-					draw_line_gradient_z_buf(bmp, cam, vertex1, vertex2);
+				draw_line_gradient_z_buf(bmp, cam, vertex1, vertex2);
 			}
 			if (rows->next)
 			{
 				vertex2 = p(((t_vertex *)rows->next->content)[i], cam, bmp);
-				if (inbounds3(vertex1.vec, bmp, cam) || inbounds3(vertex2.vec, bmp, cam))
-					draw_line_gradient_z_buf(bmp, cam, vertex1, vertex2);
+				draw_line_gradient_z_buf(bmp, cam, vertex1, vertex2);
 			}
 			i++;
 		}

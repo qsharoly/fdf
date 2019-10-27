@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:40:11 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 17:15:56 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 16:25:28 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@
 #  define LETTER_X 7
 #  define LETTER_Y 16
 #  define LETTER_Z 6
-#  define LESS_THAN 43
-#  define GREATER_THAN 47
+#  define COMMA 43
+#  define PERIOD 47
 #  define L_SHIFT 257
 #  define R_SHIFT 258
 # endif

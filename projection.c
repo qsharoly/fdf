@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 19:44:05 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 15:26:14 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,51 +15,30 @@
 
 t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 {
-	t_float3	screen;
+	t_float3	scr;
 	float		ray_len;
 	float		persp;
 
 	point.z *= cam->altitude_mult;
 	point = add_float3(point, scalar_mul(cam->world, -1));
-	screen.z = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
+	scr.z = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
 	if (cam->projection == Perspective)
-		ray_len = screen.z;
+		ray_len = scr.z;
 	else
 		ray_len = -dot(point, cam->dir) / dot(cam->dir, cam->proj_dir);
 	point = add_float3(point, scalar_mul(cam->proj_dir, ray_len));
-	screen.x = cam->zoom * dot(point, cam->right);
-	screen.y = cam->zoom * dot(point, cam->up);
+	scr.x = cam->zoom * dot(point, cam->right);
+	scr.y = cam->zoom * dot(point, cam->up);
 	if (cam->projection == Perspective)
 	{
-		persp = 0.5 * (cam->z_far - cam->z_near) / screen.z;
-		screen.x *= persp;
-		screen.y *= persp;
+		persp = 0.5 * (cam->z_far - cam->z_near) / scr.z;
+		scr.x *= persp;
+		scr.y *= persp;
 	}
-	screen.x += 0.5 * bmp->x_dim;
-	screen.y += 0.5 * bmp->y_dim;
-	return (screen);
+	scr.x += 0.5 * bmp->x_dim;
+	scr.y += 0.5 * bmp->y_dim;
+	return (scr);
 }
-#include "libft.h"
-void		translate_cam(t_cam *cam, int command)
-{
-	t_float3	lateral;
-	float		step;
-
-	step = 1.0;
-	lateral.x = -cam->dir.x;
-	lateral.y = -cam->dir.y;
-	lateral.z = 0.0;
-	normalize(lateral);
-	if (command == GO_FWD)
-		cam->world = add_float3(cam->world, scalar_mul(lateral, step));
-	else if (command == GO_BACK)
-		cam->world = add_float3(cam->world, scalar_mul(lateral, -step));
-	else if (command == STRAFE_RIGHT)
-		cam->world = add_float3(cam->world, scalar_mul(cam->right, step));
-	else if (command == STRAFE_LEFT)
-		cam->world = add_float3(cam->world, scalar_mul(cam->right, -step));
-}
-
 
 void		cam_setup_perspective(t_cam *cam)
 {

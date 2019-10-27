@@ -6,14 +6,14 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 18:06:47 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 15:05:31 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "draw.h"
 #include "palette.h"
 
-void		reset_z_buf(t_cam *cam)
+void			reset_z_buf(t_cam *cam)
 {
 	t_uint		i;
 
@@ -49,9 +49,10 @@ void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
 	float		dt;
 	float		t;
 
+	if (!inbounds3(a.vec, bmp, cam) && !inbounds3(b.vec, bmp, cam))
+		return ;
 	p = a.vec;
-	dt = 1 / distance(take_xy(a.vec), take_xy(b.vec));
-	if (dt < 0.0001)
+	if ((dt = 1 / distance(take_xy(a.vec), take_xy(b.vec))) < 0.0001)
 		return ;
 	step.x = (b.vec.x - a.vec.x) * dt;
 	step.y = (b.vec.y - a.vec.y) * dt;

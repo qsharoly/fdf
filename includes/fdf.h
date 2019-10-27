@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/24 18:57:38 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 16:33:11 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@
 
 # define XDIM 640
 # define YDIM 480
+
+static void			(*g_cam_setup_func[4])(t_cam *) = {cam_setup_perspective,
+	cam_setup_axonometric, cam_setup_military, cam_setup_cavalier};
+static const char	*g_projnames[4] = {"Perspective", "Isometric", "Military",
+	"Cavalier"};
 
 typedef struct	s_map
 {
@@ -40,7 +45,6 @@ typedef struct	s_state
 	int				redraw;
 	int				bench;
 	int				bench_frames;
-	int				print_stats;
 	int				print_keycodes;
 	int				draw_stats;
 	int				draw_helpers;
