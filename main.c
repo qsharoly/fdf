@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 18:01:08 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 18:58:30 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,6 @@ static void	draw_geometry(t_things *my)
 	mlx_put_image_to_window(my->mlx, my->window, my->mlx_image, 0, 0);
 }
 
-/*
-** For clockwise rotation we need to increment angle in negative direction
-*/
-
 static int	the_loop(t_things *my)
 {
 	static int	frame;
@@ -74,8 +70,8 @@ static int	the_loop(t_things *my)
 	}
 	if (my->state->redraw == 0)
 	{
-		my->cam->rot.z += (-1) * 0.05 * M_PI / 100;
-		my->cam->rot.x += (-1) * 0.5 * M_PI / 100;
+		my->cam->rot.z += 0.05 * M_PI / 100;
+		my->cam->rot.x += (-1) * 0.5 * M_PI / 200;
 		frame++;
 	}
 	g_cam_setup_func[my->cam->projection](my->cam);
