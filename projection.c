@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 15:26:14 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:24:41 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 	float		ray_len;
 	float		persp;
 
-	point.z *= cam->altitude_mult;
 	point = add_float3(point, scalar_mul(cam->world, -1));
+	point.z *= cam->altitude_mult;
 	scr.z = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
 	if (cam->projection == Perspective)
 		ray_len = scr.z;
