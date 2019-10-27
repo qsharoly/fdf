@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 16:30:27 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:14:01 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,11 @@ void	reset_cam_position(t_things *things)
 	{
 		things->cam->world.x = things->map->row_size / 2;
 		things->cam->world.y = things->map->row_num / 2;
-		things->cam->world.z = things->map->z_min;
-		things->cam->zoom = 0.5 * things->bitmap->x_dim / things->map->row_size;
+		things->cam->world.z = (things->map->z_min + things->map->z_max) / 2;
 	}
 	else
 	{
 		things->cam->world = ORIGIN;
-		things->cam->zoom = 0.5 * things->bitmap->x_dim;
 	}
 	things->cam->rot = ORIGIN;
 }

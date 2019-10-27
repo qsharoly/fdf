@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 16:34:00 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:10:36 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ t_cam		*init_cam(t_things *things)
 	{
 		cam->world.x = things->map->row_size / 2;
 		cam->world.y = things->map->row_num / 2;
-		cam->world.z = things->map->z_min;
+		cam->world.z = (things->map->z_min + things->map->z_max) / 2;
 		cam->zoom = 0.5 * things->bitmap->x_dim / things->map->row_size;
 		cam->dist = 0.75 * (things->map->row_size + things->map->row_num);
 	}
