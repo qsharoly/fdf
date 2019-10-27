@@ -13,42 +13,38 @@
 #include "vector.h"
 #include "projection.h"
 
-void		reset_z_buf(t_cam *cam)
-{
-	t_uint		i;
-
-	i = 0;
-	while (i < cam->z_buf_size)
-	{
-		cam->z_buf[i] = INFINITY;
-		i++;
-	}
-}
-
-#include <stdio.h>
 t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
 {
-	t_float3	proj;
 	t_float3	screen;
 	float		ray_len;
 	float		persp;
 
 	point.z *= cam->altitude_mult;
 	point = add_float3(point, scalar_mul(cam->world, -1));
-	ray_len = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
-	proj = add_float3(point, scalar_mul(cam->proj_dir, ray_len));
-	screen.x = cam->zoom * dot(proj, cam->right);
-	screen.y = cam->zoom * dot(proj, cam->up);
-	screen.z = ray_len; 
+	screen.z = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
+	if (cam->projection == Perspective)
+		ray_len = screen.z;
+	else
+		ray_len = -dot(point, cam->dir) / dot(cam->dir, cam->proj_dir);
+	point = add_float3(point, scalar_mul(cam->proj_dir, ray_len));
+	screen.x = cam->zoom * dot(point, cam->right);
+	screen.y = cam->zoom * dot(point, cam->up);
 	if (cam->projection == Perspective)
 	{
-		persp = (cam->z_far - cam->z_near) / screen.z;
+		persp = 0.5 * (cam->z_far - cam->z_near) / screen.z;
 		screen.x *= persp;
 		screen.y *= persp;
 	}
-	screen.x += 0.5 * bmp->x_dim / dot(cam->dir, cam->proj_dir);
-	screen.y += 0.5 * bmp->y_dim / dot(cam->dir, cam->proj_dir);
+	screen.x += 0.5 * bmp->x_dim;
+	screen.y += 0.5 * bmp->y_dim;
 	return (screen);
+}
+
+void		cam_setup_perspective(t_cam *cam)
+{
+	cam_setup_axonometric(cam);
+	cam->z_near = 1;
+	cam->z_far = 2 * cam->dist;
 }
 
 void		cam_setup_axonometric(t_cam *cam)

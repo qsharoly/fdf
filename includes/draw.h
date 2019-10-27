@@ -33,5 +33,6 @@ void			draw_line_gradient(t_bitmap *bmp, t_cam * cam,
 					t_vertex a, t_vertex b);
 void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
 					t_vertex a, t_vertex b);
+void			reset_z_buf(t_cam *cam);
 
 #endif

@@ -58,7 +58,7 @@ t_cam		*init_cam(t_things *things)
 		cam->world.y = things->map->row_num / 2;
 		cam->world.z = things->map->z_min;
 		cam->zoom = things->bitmap->x_dim / things->map->row_size;
-		cam->dist = (things->map->row_size + things->map->row_num) / 2;
+		cam->dist = 0.75 * (things->map->row_size + things->map->row_num);
 	}
 	else
 	{
@@ -89,6 +89,12 @@ t_map		*init_map(const char *filename)
 			free(g);
 			close(fd);
 			return (fail("failed to read from file.\n"));
+		}
+		if (g->row_num == 0)
+		{
+			free(g);
+			close(fd);
+			return (fail("map empty.\n"));
 		}
 		close(fd);
 		map_find_height_range(g);

@@ -34,7 +34,7 @@ void		free_things_and_exit(t_things *things)
 static void	setup_cam(t_cam *cam)
 {
 	void	(*setup_func[4])(t_cam *) = {
-		cam_setup_axonometric,
+		cam_setup_perspective,
 		cam_setup_axonometric,
 		cam_setup_military,
 		cam_setup_cavalier};
@@ -60,6 +60,10 @@ static void	draw_geometry(t_things *my)
 	mlx_put_image_to_window(my->mlx, my->window, my->mlx_image, 0, 0);
 }
 
+/*
+** For clockwise rotation we need to increment angle in negative direction
+*/
+
 static int	the_loop(t_things *my)
 {
 	static float	frame;
@@ -76,13 +80,12 @@ static int	the_loop(t_things *my)
 	if (my->state->redraw == 0)
 	{
 		frame++;
-		my->cam->rot.z = frame * 0.5 * M_PI / 100;
+		my->cam->rot.z = (-1) * frame * 0.5 * M_PI / 100;
 	}
 	setup_cam(my->cam);
 	draw_geometry(my);
 	draw_hud(my, frame);
-	if (my->state->redraw)
-		my->state->redraw = 0;
+	my->state->redraw = 0;
 	return (0);
 }
 

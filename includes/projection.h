@@ -46,7 +46,7 @@ typedef struct	s_cam
 }				t_cam;
 
 t_float3		project(t_float3 point, t_cam *cam, t_bitmap *bmp);
-void			reset_z_buf(t_cam *cam);
+void			cam_setup_perspective(t_cam *cam);
 void			cam_setup_axonometric(t_cam *cam);
 void			cam_setup_military(t_cam *cam);
 void			cam_setup_cavalier(t_cam *cam);

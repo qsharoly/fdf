@@ -13,6 +13,18 @@
 #include "draw.h"
 #include "palette.h"
 
+void		reset_z_buf(t_cam *cam)
+{
+	t_uint		i;
+
+	i = 0;
+	while (i < cam->z_buf_size)
+	{
+		cam->z_buf[i] = INFINITY;
+		i++;
+	}
+}
+
 static float	get_z_buf(t_cam *cam, t_uint x, t_uint y)
 {
 	return (*(cam->z_buf + y * cam->z_buf_stride + x));
