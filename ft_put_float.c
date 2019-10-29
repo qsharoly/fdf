@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 14:45:10 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 15:06:42 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/10/29 18:56:47 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 void	ft_put_float(float a)
 {
-	ft_putnbr(floor(a));
+	ft_putnbr(trunc(a));
 	ft_putchar('.');
-	ft_putnbr(floor((a - floor(a)) * 1000));
+	ft_putnbr(trunc((a - trunc(a)) * 1000));
 }
