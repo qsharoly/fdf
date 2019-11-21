@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/11/21 19:36:48 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/11/21 20:25:08 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,9 +173,25 @@ t_mat4	rot_mat4_z(float angle)
 	return (m);
 }
 
-t_mat4	rot_mat4(t_vec3 angles)
+t_mat4	rot_mat4(t_float3 axis, float angle)
 {
 	t_mat4	m;
+	float	sin_a;
+	float	cos_a;
 
+	axis = normalize3(axis);
+	sin_a = sin(angle);
+	cos_a = cos(angle);
 	m = zero_mat4();
-	m[0][0] = 
+	m[0][0] = axis.x * axis.x + (axis.y * axis.y + axis.z * axis.z) * cos_a;
+	m[0][1] = axis.x * axis.y * (1 - cos_a) - axis.z * sin_a;
+	m[0][2] = axis.x * axis.z * (1 - cos_a) + axis.y * sin_a;
+	m[1][0] = axis.x * axis.y * (1 - cos_a) + axis.z * sin_a;
+	m[1][1] = axis.y * axis.y + (axis.x * axis.x + axis.z * axis.z) * cos_a;
+	m[1][2] = axis.y * axis.z * (1 - cos_a) - axis.x * sin_a;
+	m[2][0] = axis.x * axis.z * (1 - cos_a) - axis.y * sin_a;
+	m[2][1] = axis.y * axis.z * (1 - cos_a) + axis.x * sin_a;
+	m[2][2] = axis.z * axis.z + (axis.x * axis.x + axis.y * axis.y) * cos_a;
+	m[3][3] = 1;
+	return (m);
+}
