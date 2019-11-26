@@ -52,7 +52,8 @@ SRC = main.c\
 	  keyboard.c\
 	  ft_itoa_float.c\
 	  ft_put_float.c\
-	  cam_move.c
+	  cam_move.c\
+	  matrix.c
 
 OBJ = $(SRC:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRC:%.c=$(DEPDIR)/%.d)

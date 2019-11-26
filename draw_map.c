@@ -6,21 +6,33 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2020/05/21 08:22:10 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 14:01:49 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include <sys/time.h>
 #include <stdio.h>
+#include "matrix.h"
 
-static t_vertex	p(t_vertex world, const t_cam *cam, t_bitmap bmp)
+/*
+static t_vertex	p(t_vertex v, t_cam *cam, t_bitmap *bmp)
 {
 	t_vertex	projected;
 
 	projected.vec = project(world.vec, cam, bmp);
 	projected.col = world.col;
 	return (projected);
+}
+*/
+
+static t_vertex	p(t_vertex v, t_cam *cam)
+{
+	t_vertex	screen;
+
+	screen.vec = to_screen(v.vec, cam->pipeline);
+	screen.color = v.color;
+	return (screen);
 }
 
 void			draw_map(t_bitmap bmp, t_cam *cam, const t_map *map,
@@ -36,15 +48,15 @@ void			draw_map(t_bitmap bmp, t_cam *cam, const t_map *map,
 		i = 0;
 		while (i < map->row_size)
 		{
-			prj.v1 = p(((t_vertex *)row->content)[i], cam, bmp);
-			if (i + 1 < map->row_size)
+			prj.v1 = p(((t_vertex *)row->content)[i], cam);
+			if (i < map->row_size - 1)
 			{
-				prj.v2 = p(((t_vertex *)row->content)[i + 1], cam, bmp);
+				prj.v2 = p(((t_vertex *)row->content)[i + 1], cam);
 				draw_line(bmp, cam, prj.v1, prj.v2);
 			}
 			if (row->next)
 			{
-				prj.v2 = p(((t_vertex *)row->next->content)[i], cam, bmp);
+				prj.v2 = p(((t_vertex *)row->next->content)[i], cam);
 				draw_line(bmp, cam, prj.v1, prj.v2);
 			}
 			i++;

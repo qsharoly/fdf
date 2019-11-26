@@ -6,36 +6,59 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/11/21 20:25:08 by qsharoly         ###   ########.fr       */
+/*   Updated: 2019/11/26 19:43:41 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#define	X 0
-#define Y 1
-#define Z 2
-#define W 3
+#include "projection.h"
+#include "libft.h"
 
-typedef float	t_vec4[4];
-typedef	float	t_mat4[4][4];
-
-t_vec4	get_row4(t_mat4 m, int index)
+t_vec4	vec4(float coordinates[4])
 {
-	return (new_vec4_from_array(m[index]));
+	t_vec4	new;
+
+	new.v[X] = coordinates[X];
+	new.v[Y] = coordinates[Y];
+	new.v[Z] = coordinates[Z];
+	new.v[W] = coordinates[W];
+	return (new);
 }
 
-float	dot4(t_vec4 a, t_vec4 b)
+float	dot4(float a[4], float b[4])
 {
 	return (a[X] * b[X] + a[Y] * b[Y] + a[Z] * b[Z] + a[W] * b[W]);
+}
+
+t_vec4	point4(t_float3 v)
+{
+	t_vec4	new;
+
+	new.v[X] = v.x;
+	new.v[Y] = v.y;
+	new.v[Z] = v.z;
+	new.v[W] = 1;
+	return (new);
+}
+
+t_vec4	direction4(t_float3 v)
+{
+	t_vec4	dir;
+
+	dir.v[X] = v.x;
+	dir.v[Y] = v.y;
+	dir.v[Z] = v.z;
+	dir.v[W] = 0;
+	return (dir);
 }
 
 t_vec4	transform(t_mat4 m, t_vec4 v)
 {
 	t_vec4	res;
 
-	res[X] = dot(m[0], v);
-	res[Y] = dot(m[1], v);
-	res[Z] = dot(m[2], v);
-	res[W] = dot(m[3], v);
+	res.v[X] = dot4(m.m[0], v.v);
+	res.v[Y] = dot4(m.m[1], v.v);
+	res.v[Z] = dot4(m.m[2], v.v);
+	res.v[W] = dot4(m.m[3], v.v);
 	return (res);
 }
 
@@ -51,7 +74,7 @@ t_mat4	transpose(t_mat4 m)
 		i = 0;
 		while (i < 4)
 		{
-			tr[j][i] = m[i][j];
+			tr.m[j][i] = m.m[i][j];
 			i++;
 		}
 		j++;
@@ -73,7 +96,7 @@ t_mat4	compose(t_mat4 a, t_mat4 b)
 		i = 0;
 		while (i < 4)
 		{
-			c[j][i] = dot4(a[j], b_transposed[i]);
+			c.m[j][i] = dot4(a.m[j], b_transposed.m[i]);
 			i++;
 		}
 		j++;
@@ -84,114 +107,172 @@ t_mat4	compose(t_mat4 a, t_mat4 b)
 t_mat4	zero_mat4(void)
 {
 	t_mat4	m;
-	int		i;
-	int		j;
 
-	j = 0;
-	while (j < 4)
-	{
-		i = 0;
-		while (i < 4)
-		{
-			m[j][i] = 0.0;
-			i++;
-		}
-		j++;
-	}
-
+	ft_bzero(&m.m[0][0], sizeof(m.m[0][0]) * 4);
+	ft_bzero(&m.m[1][0], sizeof(m.m[0][0]) * 4);
+	ft_bzero(&m.m[2][0], sizeof(m.m[0][0]) * 4);
+	ft_bzero(&m.m[3][0], sizeof(m.m[0][0]) * 4);
 	return (m);
 }
 
 t_mat4	identity_mat4(void)
 {
 	t_mat4	m;
-	int		i;
 
 	m = zero_mat4();
-	m[0][0] = 1.0;
-	m[1][1] = 1.0;
-	m[2][2] = 1.0;
-	m[3][3] = 1.0;
+	m.m[0][0] = 1.0;
+	m.m[1][1] = 1.0;
+	m.m[2][2] = 1.0;
+	m.m[3][3] = 1.0;
+	return (m);
 }
 
-t_mat4	translation_mat(float x, float y, float z)
+t_mat4	translation_mat4(float x, float y, float z)
 {
 	t_mat4	m;
 
 	m = identity_mat4();
-	m[3][0] = x;
-	m[3][1] = y;
-	m[3][2] = z;
+	m.m[0][3] = x;
+	m.m[1][3] = y;
+	m.m[2][3] = z;
 	return (m);
 }
 
-t_mat4	scaling_mat(float x_scale, float y_scale, float z_scale)
+t_mat4	scaling_mat4(float x_scale, float y_scale, float z_scale)
 {
-	t_mat	m;
+	t_mat4	m;
 
-	m= zero_mat4();
-	m[0][0] = x_scale;
-	m[1][1] = y_scale;
-	m[2][2] = z_scale;
-	m[3][3] = 0;
+	m = zero_mat4();
+	m.m[0][0] = x_scale;
+	m.m[1][1] = y_scale;
+	m.m[2][2] = z_scale;
+	m.m[3][3] = 1;
 	return (m);
 }
 
-t_mat4	rot_mat4_x(float angle)
+t_mat4	rot_mat4_simple(char axis, float angle)
 {
 	t_mat4	m;
 
 	m = identity_mat4();
-	m[1][1] = cos(angle);
-	m[1][2] = -sin(angle);
-	m[2][1] = sin(angle);
-	m[2][2] = cos(angle);
+	if (axis == X)
+	{
+		m.m[1][1] = cos(angle);
+		m.m[1][2] = -sin(angle);
+		m.m[2][1] = sin(angle);
+		m.m[2][2] = cos(angle);
+	}
+	else if (axis == Y)
+	{
+		m.m[0][0] = cos(angle);
+		m.m[0][2] = -sin(angle);
+		m.m[2][0] = cos(angle);
+		m.m[2][2] = sin(angle);
+	}
+	else if (axis == Z)
+	{
+		m.m[0][0] = cos(angle);
+		m.m[0][1] = -sin(angle);
+		m.m[1][0] = cos(angle);
+		m.m[1][1] = sin(angle);
+	}
 	return (m);
 }
 
-t_mat4	rot_mat4_y(float angle)
-{
-	t_mat4	m;
-
-	m = identity_mat4();
-	m[0][0] = cos(angle);
-	m[0][2] = -sin(angle);
-	m[2][0] = cos(angle);
-	m[2][2] = sin(angle);
-	return (m);
-}
-
-t_mat4	rot_mat4_z(float angle)
-{
-	t_mat4	m;
-
-	m = identity_mat4();
-	m[0][0] = cos(angle);
-	m[0][1] = -sin(angle);
-	m[1][0] = cos(angle);
-	m[1][1] = sin(angle);
-	return (m);
-}
-
-t_mat4	rot_mat4(t_float3 axis, float angle)
+t_mat4	rot_mat4(t_float3 dir, float angle)
 {
 	t_mat4	m;
 	float	sin_a;
 	float	cos_a;
 
-	axis = normalize3(axis);
+	dir = normalize3(dir);
 	sin_a = sin(angle);
 	cos_a = cos(angle);
 	m = zero_mat4();
-	m[0][0] = axis.x * axis.x + (axis.y * axis.y + axis.z * axis.z) * cos_a;
-	m[0][1] = axis.x * axis.y * (1 - cos_a) - axis.z * sin_a;
-	m[0][2] = axis.x * axis.z * (1 - cos_a) + axis.y * sin_a;
-	m[1][0] = axis.x * axis.y * (1 - cos_a) + axis.z * sin_a;
-	m[1][1] = axis.y * axis.y + (axis.x * axis.x + axis.z * axis.z) * cos_a;
-	m[1][2] = axis.y * axis.z * (1 - cos_a) - axis.x * sin_a;
-	m[2][0] = axis.x * axis.z * (1 - cos_a) - axis.y * sin_a;
-	m[2][1] = axis.y * axis.z * (1 - cos_a) + axis.x * sin_a;
-	m[2][2] = axis.z * axis.z + (axis.x * axis.x + axis.y * axis.y) * cos_a;
-	m[3][3] = 1;
+	m.m[0][0] = dir.x * dir.x + (dir.y * dir.y + dir.z * dir.z) * cos_a;
+	m.m[0][1] = dir.x * dir.y * (1 - cos_a) - dir.z * sin_a;
+	m.m[0][2] = dir.x * dir.z * (1 - cos_a) + dir.y * sin_a;
+	m.m[1][0] = dir.x * dir.y * (1 - cos_a) + dir.z * sin_a;
+	m.m[1][1] = dir.y * dir.y + (dir.x * dir.x + dir.z * dir.z) * cos_a;
+	m.m[1][2] = dir.y * dir.z * (1 - cos_a) - dir.x * sin_a;
+	m.m[2][0] = dir.x * dir.z * (1 - cos_a) - dir.y * sin_a;
+	m.m[2][1] = dir.y * dir.z * (1 - cos_a) + dir.x * sin_a;
+	m.m[2][2] = dir.z * dir.z + (dir.x * dir.x + dir.y * dir.y) * cos_a;
+	m.m[3][3] = 1;
 	return (m);
+}
+
+/*
+t_mat4	orthograaphic_mat4(t_cam *cam, t_bitmap *bmp)
+{
+	t_mat4	m;
+	float	top;
+	float	right;
+	float	aspect;
+
+	m = zero_mat4();
+	top = tan(0.5 * cam->fov) * cam->z_near;
+	aspect = (float)bmp->x_dim / bmp->y_dim;
+	right = top * aspect;
+	m.m[0][0] = cam->z_near / top;
+	m.m[1][1] = cam->z_near / right;
+	m.m[2][2] = -2 / (cam->z_far - cam->z_near);
+	m.m[2][3] = -(cam->z_far + cam->z_near) / (cam->z_far - cam->z_near);
+	m.m[3][3] = 1;
+	return (m);
+}
+*/
+t_mat4	perspective_mat4(t_cam *cam, t_bitmap *bmp)
+{
+	t_mat4	m;
+	float	top;
+	float	right;
+	float	aspect;
+
+	m = zero_mat4();
+	top = tan(0.5 * cam->fov) * cam->z_near;
+	aspect = (float)bmp->x_dim / bmp->y_dim;
+	right = top * aspect;
+	m.m[0][0] = cam->z_near / top;
+	m.m[1][1] = cam->z_near / right;
+	m.m[2][2] = -(cam->z_far + cam->z_near) / (cam->z_far - cam->z_near);
+	m.m[2][3] = -2 * cam->z_far * cam->z_near / (cam->z_far - cam->z_near);
+	m.m[3][2] = -1;
+	return (m);
+}
+
+void	calc_pipeline(t_cam *cam, t_bitmap *bmp)
+{
+	t_mat4	translation;
+	t_mat4	rotation;
+	t_mat4	distance;
+	t_mat4	perspective;
+	t_mat4	scaling;
+
+	translation = translation_mat4(-cam->world.x, -cam->world.y, -cam->world.z);
+	rotation = rot_mat4(cross(cam->dir, ZUNIT), acos(dot(cam->dir, ZUNIT)));
+	distance = translation_mat4(0, 0, cam->dist);
+	perspective = perspective_mat4(cam, bmp);
+	scaling = scaling_mat4(cam->zoom * bmp->y_dim, cam->zoom * bmp->x_dim, 1);
+	cam->pipeline = compose(scaling, compose(perspective, compose(distance, compose(rotation, translation))));
+}
+
+t_float3	persp_divide(t_vec4 v)
+{
+	t_float3	screen;
+
+	screen.x = v.v[X] / v.v[W];
+	screen.y = v.v[Y] / v.v[W];
+	screen.z = v.v[Z] / v.v[W];
+	return (screen);
+}
+
+t_float3	to_screen(t_float3 point, t_mat4 pipeline)
+{
+	t_float3	screen;
+
+	screen = persp_divide(transform(pipeline, point4(point)));
+	screen.x = 0.5 * 640 + screen.x;
+	screen.y = 0.5 * 480 + screen.y;
+	return (screen);
 }

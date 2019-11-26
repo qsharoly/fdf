@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/21 12:39:56 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 14:14:16 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,9 @@ static int	the_loop(t_things *my)
 		my->cam.angle.x += (-1) * 0.5 * M_PI / 200;
 	}
 	frame++;
-	g_cam_setup_func[my->cam.projection](&my->cam);
+	//g_cam_setup_func[my->cam->projection](my->cam);
+	cam_setup_perspective(&my->cam);
+	calc_pipeline(&my->cam, my->bitmap);
 	avg_drawing_time = (avg_drawing_time * (frame - 1) + draw_geometry(my)) / frame;
 	draw_hud(my, frame);
 	my->state.redraw = 0;

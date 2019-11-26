@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/21 12:43:45 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 14:14:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PROJECTION_H
 
 # include "vector.h"
+# include "matrix.h"
 # include "bitmap.h"
 
 # define N_PROJECTION_KINDS 4
@@ -32,6 +33,7 @@ enum			e_projkind
 
 typedef struct	s_cam
 {
+	t_mat4			pipeline;
 	t_vec3			target;
 	t_vec3			dir;
 	t_vec3			up;
@@ -41,6 +43,7 @@ typedef struct	s_cam
 	float			dist;
 	float			z_near;
 	float			z_far;
+	float			fov;
 	float			zoom;
 	float			altitude_mult;
 	float			*zbuf;
@@ -55,5 +58,10 @@ void		cam_setup_axonometric(t_cam *cam);
 void		cam_setup_military(t_cam *cam);
 void		cam_setup_cavalier(t_cam *cam);
 void		translate_cam(t_cam *cam, int command);
+t_mat4		perspective_mat4(t_cam *cam, t_bitmap bmp);
+t_mat4		orthographic_mat4(t_cam *cam, t_bitmap bmp);
+t_vec3		persp_divide(t_vec4 v);
+void		calc_pipeline(t_cam *cam, t_bitmap bmp);
+t_vec3		to_screen(t_vec3 point, t_mat4 pipeline);
 
 #endif

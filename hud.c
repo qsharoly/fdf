@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/21 13:24:53 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 14:03:20 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ void		draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color)
 	t_vec2	aa;
 	t_vec2	bb;
 
-	aa = take_xy(project(a, view.cam, view.bmp));
-	bb = take_xy(project(b, view.cam, view.bmp));
+	aa = take_xy(to_screen(a, view.cam->pipeline));
+	bb = take_xy(to_screen(b, view.cam->pipeline));
 	draw_line(view.bmp, aa, bb, color);
 }
 
