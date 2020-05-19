@@ -16,9 +16,15 @@
 #include "palette.h"
 #include "keyboard.h"
 
+void			(*g_cam_setup_func[4])(t_cam *) = {cam_setup_perspective,
+	cam_setup_axonometric, cam_setup_military, cam_setup_cavalier};
+const char	*g_projnames[4] = {"Perspective", "Isometric", "Military",
+	"Cavalier"};
+
 static void	put_usage_and_exit(void)
 {
-	ft_putstr("usage: fdf <filename>\n press c to view controls\n");
+	ft_putstr("Usage: fdf <filename>\n"
+			"When running, press c to view controls.\n");
 	exit(0);
 }
 
@@ -92,20 +98,27 @@ int			main(int argc, char **argv)
 	{
 		if ((things.map = init_map(argv[1])) == NULL)
 			return (-1);
-		ft_putstr_fd("\033[3D ok.\n", 2);
+		ft_putstr_fd("\033[3Dok.\n", 2);
 		caption = ft_strjoin("my fdf : ", argv[1]);
 	}
 	else
 		put_usage_and_exit();
+
+	ft_putstr_fd("try mlx_init()\n", 2);
 	things.mlx = mlx_init();
+	ft_putstr_fd("try mlx_new_window()\n", 2);
 	things.window = mlx_new_window(things.mlx, XDIM, YDIM, caption);
 	free(caption);
+	ft_putstr_fd("try mlx_new_image()\n", 2);
 	things.mlx_image = mlx_new_image(things.mlx, XDIM, YDIM);
 	things.bitmap = init_bitmap(things.mlx_image, XDIM, YDIM);
 	things.cam = init_cam(&things);
 	things.state = init_state();
+	ft_putstr_fd("try mlx_loop_hook()\n", 2);
 	mlx_loop_hook(things.mlx, the_loop, &things);
+	ft_putstr_fd("try mlx_key_hook()\n", 2);
 	mlx_key_hook(things.window, key_controls, &things);
+	ft_putstr_fd("try mlx_loop()\n", 2);
 	mlx_loop(things.mlx);
 	return (0);
 }

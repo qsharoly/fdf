@@ -31,7 +31,7 @@ static t_vertex	*read_row(int j, char *line, int *count)
 
 	if (j % 40 == 0)
 	{
-		ft_putstr_fd("\033[14Dloading map", 2);
+		ft_putstr_fd("\033[16DLoading map: ", 2);
 		ft_putstr_fd(wait_anim[j / 40 % 4], 2);
 	}
 	if ((words = ft_strsplit_n(line, ' ', count)))

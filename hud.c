@@ -16,6 +16,8 @@
 #include "fdf.h"
 #include "palette.h"
 
+extern const char	*g_projnames[4];
+
 int			draw_controls(void *mlx_ptr, void *mlx_window)
 {
 	int		white;

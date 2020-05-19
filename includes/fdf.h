@@ -23,11 +23,6 @@
 # define XDIM 640
 # define YDIM 480
 
-static void			(*g_cam_setup_func[4])(t_cam *) = {cam_setup_perspective,
-	cam_setup_axonometric, cam_setup_military, cam_setup_cavalier};
-static const char	*g_projnames[4] = {"Perspective", "Isometric", "Military",
-	"Cavalier"};
-
 typedef struct	s_map
 {
 	t_list		*rows;

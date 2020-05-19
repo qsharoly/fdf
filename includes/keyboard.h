@@ -13,8 +13,7 @@
 #ifndef KEYBOARD_H
 # define KEYBOARD_H
 
-# define MACOS_KEYCODES
-# ifdef MACOS_KEYCODES
+# if __APPLE__
 #  define ESC 53
 #  define SPACEBAR 49
 #  define LETTER_A 0
@@ -49,20 +48,56 @@
 #  define R_SHIFT 258
 # endif
 
-# ifdef X11_KEYCODES
+# if __linux__
 #  define ESC 65307
 #  define SPACEBAR 32
-#  define LETTER_Q 113
-#  define LETTER_P 112
-#  define LETTER_J 106
-#  define LETTER_K 107
-#  define LETTER_U 117
-#  define LETTER_I 105
-#  define LETTER_N 110
+#  define COMMA 44
+#  define PERIOD 46
+#  define LETTER_A 97
+#  define LETTER_B 98
 #  define LETTER_C 99
 #  define LETTER_D 100
-#  define LETTER_S 115
+#  define LETTER_G 103
 #  define LETTER_H 104
+#  define LETTER_I 105
+#  define LETTER_J 106
+#  define LETTER_K 107
+#  define LETTER_L 108
+#  define LETTER_O 111
+#  define LETTER_P 112
+#  define LETTER_Q 113
+#  define LETTER_R 114
+#  define LETTER_T 116
+#  define LETTER_U 117
+#  define LETTER_N 110
+#  define LETTER_S 115
+#  define LETTER_X 120
+#  define LETTER_Y 121
+#  define LETTER_Z 122
 # endif
+
+# define K_EXIT1 ESC
+# define K_EXIT2 LETTER_Q
+# define K_PRINT_KEYCODES LETTER_A
+# define K_ANIM_PAUSE SPACEBAR
+# define K_ANIM_STEP LETTER_N
+# define K_ZOOM_IN COMMA
+# define K_ZOOM_OUT PERIOD
+# define K_ALTITUDE_SCALE_UP LETTER_T
+# define K_ALTITUDE_SCALE_DOWN LETTER_G
+# define K_TOGGLE_ZBUF LETTER_B
+# define K_NEXT_PROJECTION LETTER_P
+# define K_DRAW_CONTROLS LETTER_C
+# define K_DRAW_AXIS LETTER_X
+# define K_DRAW_STATS LETTER_Z
+# define K_CAM_RESET LETTER_R
+# define K_CAM_NOSE_UP LETTER_H
+# define K_CAM_NOSE_DOWN LETTER_Y
+# define K_CAM_TURN_LEFT LETTER_U
+# define K_CAM_TURN_RIGHT LETTER_O
+# define K_CAM_GO_FWD LETTER_I
+# define K_CAM_GO_BACK LETTER_K
+# define K_CAM_STRAFE_LEFT LETTER_J
+# define K_CAM_STRAFE_RIGHT LETTER_L
 
 #endif

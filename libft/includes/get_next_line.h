@@ -14,6 +14,9 @@
 # define GET_NEXT_LINE_H
 
 # include <unistd.h>
+# ifdef __linux__
+# include <stdint.h>
+# endif
 
 # define BUFF_SIZE 1024
 

@@ -1,16 +1,35 @@
 NAME = fdf
-LFT_DIR = libft
-LFT_INC = $(LFT_DIR)/includes
-LFT = $(LFT_DIR)/libft.a
-MLX_DIR = minilibx_macos
-MLX_INC = $(MLX_DIR)
-MLX = $(MLX_DIR)/libmlx.a
 INCDIR = includes
 OBJDIR = objs
 DEPDIR = deps
 
+LFT_DIR = libft
+LFT_INC = $(LFT_DIR)/includes
+LFT = $(LFT_DIR)/libft.a
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S), Linux)
+	MLX_DIR = minilibx
+	MLX_INC = $(MLX_DIR)/include
+	LIB_FLAGS += -lm -lXext -lX11
+else
+	MLX_DIR = minilibx_macos
+	MLX_INC = $(MLX_DIR)
+	LIB_FLAGS += -framework OpenGL -framework AppKit
+endif
+MLX = $(MLX_DIR)/libmlx.a
+
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
-WFLAGS = -Wall -Wextra -Werror
+CCFLAGS = -Wall -Wextra -Werror
+INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
+LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
+LIB_FLAGS += -lft -lmlx
+
+debug = yes
+
+ifeq ($(debug), yes)
+	CCFLAGS += -g
+endif
 
 SRC = main.c startup.c read_map.c map_make_colors.c ft_fmax.c ft_fmin.c\
 	  bitmap.c make_rect.c make_float3.c normalize3.c draw.c draw_z_buf.c\
@@ -28,12 +47,12 @@ all: $(NAME)
 $(NAME): $(OBJ) $(MLX) $(LFT)
 	@echo "# linking $(NAME)"
 	gcc -o $(NAME) $(OBJ)\
-		-L $(MLX_DIR) -L $(LFT_DIR)\
-		-I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)\
-		-lmlx -lft -framework OpenGL -framework AppKit
+		$(LIB_PATHS)\
+		$(INC_PATHS)\
+		$(LIB_FLAGS) $(MLX_DEPS)
 
 $(OBJDIR)/%.o: %.c $(DEPDIR)/%.d
-	gcc $(DEPFLAGS) $(WFLAGS) -g -c -o $@ $< -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
+	gcc $(DEPFLAGS) $(CCFLAGS) -c -o $@ $< $(INC_PATHS) 
 
 $(DEPDIR)/%.d: ;
 
@@ -41,7 +60,7 @@ $(MLX):
 	make -C $(MLX_DIR)
 
 $(LFT):
-	make -C $(LFT_DIR) debug
+	make -C $(LFT_DIR) 
 
 .PHONY: all clean fclean re
 

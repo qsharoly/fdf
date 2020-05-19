@@ -7,6 +7,12 @@ OBJDIR = objects
 DEPDIR = deps
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 
+debug = yes
+
+ifeq ($(debug), yes)
+	CCFLAGS += -g
+endif
+
 SRC = $(shell ls ft_*.c) get_next_line.c
 OBJ = $(SRC:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRC:%.c=$(DEPDIR)/%.d)
@@ -14,14 +20,11 @@ DEPS = $(SRC:%.c=$(DEPDIR)/%.d)
 $(shell mkdir -p $(OBJDIR))
 $(shell mkdir -p $(DEPDIR))
 
-.PHONY: all debug clean fclean re
+.PHONY: all clean fclean re
 all: $(NAME)
 
-debug: CCFLAGS += -g
-debug: $(NAME)
-
 $(NAME): $(OBJ)
-	@echo --- link ---
+	@echo --- link $(NAME) ---
 	ar rcs $(NAME) $(OBJ)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
