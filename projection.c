@@ -13,20 +13,20 @@
 #include "vector.h"
 #include "projection.h"
 
-t_float3	project(t_float3 point, t_cam *cam, t_bitmap *bmp)
+t_vec3	project(t_vec3 point, t_cam *cam, t_bitmap *bmp)
 {
-	t_float3	scr;
-	float		ray_len;
-	float		persp;
+	t_vec3	scr;
+	float	ray_len;
+	float	persp;
 
-	point = add_float3(point, scalar_mul(cam->world, -1));
+	point = add_vec3(point, scalar_mul(cam->world, -1));
 	point.z *= cam->altitude_mult;
 	scr.z = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
 	if (cam->projection == Perspective)
 		ray_len = scr.z;
 	else
 		ray_len = -dot(point, cam->dir) / dot(cam->dir, cam->proj_dir);
-	point = add_float3(point, scalar_mul(cam->proj_dir, ray_len));
+	point = add_vec3(point, scalar_mul(cam->proj_dir, ray_len));
 	scr.x = cam->zoom * dot(point, cam->right);
 	scr.y = cam->zoom * dot(point, cam->up);
 	if (cam->projection == Perspective)
@@ -60,7 +60,7 @@ void		cam_setup_axonometric(t_cam *cam)
 
 void		cam_setup_military(t_cam *cam)
 {
-	cam->right = add_float3(XUNIT, scalar_mul(YUNIT, -1));
+	cam->right = add_vec3(XUNIT, scalar_mul(YUNIT, -1));
 	cam->right = normalize3(cam->right);
 	cam->dir = ZUNIT;
 	cam->up = cross(cam->dir, cam->right);

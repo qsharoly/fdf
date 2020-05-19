@@ -12,9 +12,9 @@
 
 #include "vector.h"
 
-t_float3	rot_x(float angle, t_float3 vec)
+t_vec3	rot_x(float angle, t_vec3 vec)
 {
-	t_float3	rot;
+	t_vec3	rot;
 
 	rot.x = vec.x;
 	rot.y = cos(angle) * vec.y - sin(angle) * vec.z;
@@ -22,9 +22,9 @@ t_float3	rot_x(float angle, t_float3 vec)
 	return (rot);
 }
 
-t_float3	rot_y(float angle, t_float3 vec)
+t_vec3	rot_y(float angle, t_vec3 vec)
 {
-	t_float3	rot;
+	t_vec3	rot;
 
 	rot.x = cos(angle) * vec.x - sin(angle) * vec.z;
 	rot.y = vec.y;
@@ -32,9 +32,9 @@ t_float3	rot_y(float angle, t_float3 vec)
 	return (rot);
 }
 
-t_float3	rot_z(float angle, t_float3 vec)
+t_vec3	rot_z(float angle, t_vec3 vec)
 {
-	t_float3	rot;
+	t_vec3	rot;
 
 	rot.x = cos(angle) * vec.x - sin(angle) * vec.y;
 	rot.y = sin(angle) * vec.x + cos(angle) * vec.y;

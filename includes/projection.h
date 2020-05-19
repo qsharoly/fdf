@@ -32,12 +32,12 @@ enum			e_projkind
 
 typedef struct	s_cam
 {
-	t_float3		world;
-	t_float3		dir;
-	t_float3		up;
-	t_float3		right;
-	t_float3		proj_dir;
-	t_float3		rot;
+	t_vec3			world;
+	t_vec3			dir;
+	t_vec3			up;
+	t_vec3			right;
+	t_vec3			proj_dir;
+	t_vec3			rot;
 	float			dist;
 	float			z_near;
 	float			z_far;
@@ -49,11 +49,11 @@ typedef struct	s_cam
 	enum e_projkind	projection;
 }				t_cam;
 
-t_float3		project(t_float3 point, t_cam *cam, t_bitmap *bmp);
-void			cam_setup_perspective(t_cam *cam);
-void			cam_setup_axonometric(t_cam *cam);
-void			cam_setup_military(t_cam *cam);
-void			cam_setup_cavalier(t_cam *cam);
-void			translate_cam(t_cam *cam, int command);
+t_vec3		project(t_vec3 point, t_cam *cam, t_bitmap *bmp);
+void		cam_setup_perspective(t_cam *cam);
+void		cam_setup_axonometric(t_cam *cam);
+void		cam_setup_military(t_cam *cam);
+void		cam_setup_cavalier(t_cam *cam);
+void		translate_cam(t_cam *cam, int command);
 
 #endif

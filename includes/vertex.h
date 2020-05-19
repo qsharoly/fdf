@@ -18,7 +18,7 @@
 
 typedef struct	s_vertex
 {
-	t_float3	vec;
+	t_vec3		vec;
 	t_rgba		col;
 }				t_vertex;
 

@@ -37,7 +37,7 @@ void			map_find_height_range(t_map *map)
 	}
 }
 
-static t_rgba	color_from_z(t_float3 point,
+static t_rgba	color_from_z(t_vec3 point,
 					float z_min, float z_mid, float z_max)
 {
 	if (z_max == z_min)

@@ -44,15 +44,15 @@ static void		set_z_buf(t_cam *cam, t_uint x, t_uint y, float val)
 void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
 					t_vertex a, t_vertex b)
 {
-	t_float3	p;
-	t_float3	step;
-	float		dt;
-	float		t;
+	t_vec3	p;
+	t_vec3	step;
+	float	dt;
+	float	t;
 
 	if (!inbounds3(a.vec, bmp, cam) && !inbounds3(b.vec, bmp, cam))
 		return ;
 	p = a.vec;
-	if ((dt = 1 / distance(take_xy(a.vec), take_xy(b.vec))) < 0.0001)
+	if ((dt = 1 / length2(take_xy(a.vec), take_xy(b.vec))) < 0.0001)
 		return ;
 	step.x = (b.vec.x - a.vec.x) * dt;
 	step.y = (b.vec.y - a.vec.y) * dt;
@@ -67,6 +67,6 @@ void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
 		}
 		t += dt;
-		p = add_float3(p, step);
+		p = add_vec3(p, step);
 	}
 }

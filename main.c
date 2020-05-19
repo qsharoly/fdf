@@ -16,7 +16,7 @@
 #include "palette.h"
 #include "keyboard.h"
 
-void			(*g_cam_setup_func[4])(t_cam *) = {cam_setup_perspective,
+void		(*g_cam_setup_func[4])(t_cam *) = {cam_setup_perspective,
 	cam_setup_axonometric, cam_setup_military, cam_setup_cavalier};
 const char	*g_projnames[4] = {"Perspective", "Isometric", "Military",
 	"Cavalier"};
@@ -103,7 +103,6 @@ int			main(int argc, char **argv)
 	}
 	else
 		put_usage_and_exit();
-
 	ft_putstr_fd("try mlx_init()\n", 2);
 	things.mlx = mlx_init();
 	ft_putstr_fd("try mlx_new_window()\n", 2);

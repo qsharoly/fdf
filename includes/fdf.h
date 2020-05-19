@@ -34,17 +34,17 @@ typedef struct	s_map
 
 typedef struct	s_state
 {
-	int				stop_program;
-	int				animation_pause;
-	int				animation_step;
-	int				redraw;
-	int				bench;
-	int				bench_frames;
-	int				print_keycodes;
-	int				draw_stats;
-	int				draw_helpers;
-	int				draw_controls;
-	int				use_z_buf;
+	int			stop_program;
+	int			animation_pause;
+	int			animation_step;
+	int			redraw;
+	int			bench;
+	int			bench_frames;
+	int			print_keycodes;
+	int			draw_stats;
+	int			draw_helpers;
+	int			draw_controls;
+	int			use_z_buf;
 }				t_state;
 
 typedef struct	s_things

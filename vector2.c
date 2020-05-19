@@ -12,28 +12,28 @@
 
 #include "vector.h"
 
-float		squared(float a)
+float	squared(float a)
 {
 	return (a * a);
 }
 
-float		distance(t_float2 a, t_float2 b)
+float	length2(t_vec2 a, t_vec2 b)
 {
 	return (sqrt(squared(a.x - b.x) + squared(a.y - b.y)));
 }
 
-t_float2	add_float2(t_float2 a, t_float2 b)
+t_vec2	add_vec2(t_vec2 a, t_vec2 b)
 {
-	t_float2	sum;
+	t_vec2	sum;
 
 	sum.x = a.x + b.x;
 	sum.y = a.y + b.y;
 	return (sum);
 }
 
-t_float2	take_xy(t_float3 point)
+t_vec2	take_xy(t_vec3 point)
 {
-	t_float2	xy;
+	t_vec2	xy;
 
 	xy.x = point.x;
 	xy.y = point.y;

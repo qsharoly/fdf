@@ -12,7 +12,7 @@
 
 #include "vector.h"
 
-t_float3	normalize3(t_float3 vec)
+t_vec3	normalize3(t_vec3 vec)
 {
 	return (scalar_mul(vec, 1 / length3(vec)));
 }

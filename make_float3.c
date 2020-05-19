@@ -12,9 +12,9 @@
 
 #include "vector.h"
 
-t_float3	make_float3(float x, float y, float z)
+t_vec3	vec3(float x, float y, float z)
 {
-	t_float3	v;
+	t_vec3	v;
 
 	v.x = x;
 	v.y = y;

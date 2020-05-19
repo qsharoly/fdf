@@ -46,10 +46,10 @@ int			draw_controls(void *mlx_ptr, void *mlx_window)
 	return (0);
 }
 
-void		draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color)
+void		draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color)
 {
-	t_float2	aa;
-	t_float2	bb;
+	t_vec2	aa;
+	t_vec2	bb;
 
 	aa = take_xy(project(a, view.cam, view.bmp));
 	bb = take_xy(project(b, view.cam, view.bmp));
@@ -62,11 +62,11 @@ void		draw_helpers(t_bitmap *bitmap, t_cam *cam)
 
 	view.bmp = bitmap;
 	view.cam = cam;
-	draw_edge(view, cam->world, add_float3(XUNIT, cam->world),
+	draw_edge(view, cam->world, add_vec3(XUNIT, cam->world),
 			PEACH);
-	draw_edge(view, cam->world, add_float3(YUNIT, cam->world),
+	draw_edge(view, cam->world, add_vec3(YUNIT, cam->world),
 			LIGHTGREEN);
-	draw_edge(view, cam->world, add_float3(ZUNIT, cam->world),
+	draw_edge(view, cam->world, add_vec3(ZUNIT, cam->world),
 			PURPLE);
 	draw_edge(view, ORIGIN, XUNIT, RED);
 	draw_edge(view, ORIGIN, YUNIT, GREEN);

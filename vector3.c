@@ -12,9 +12,9 @@
 
 #include "vector.h"
 
-t_float3	add_float3(t_float3 a, t_float3 b)
+t_vec3	add_vec3(t_vec3 a, t_vec3 b)
 {
-	t_float3	sum;
+	t_vec3	sum;
 
 	sum.x = a.x + b.x;
 	sum.y = a.y + b.y;
@@ -22,14 +22,14 @@ t_float3	add_float3(t_float3 a, t_float3 b)
 	return (sum);
 }
 
-float		dot(t_float3 a, t_float3 b)
+float	dot(t_vec3 a, t_vec3 b)
 {
 	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }
 
-t_float3	cross(t_float3 a, t_float3 b)
+t_vec3	cross(t_vec3 a, t_vec3 b)
 {
-	t_float3	c;
+	t_vec3	c;
 
 	c.x = a.y * b.z - a.z * b.y;
 	c.y = a.z * b.x - a.x * b.z;
@@ -37,7 +37,7 @@ t_float3	cross(t_float3 a, t_float3 b)
 	return (c);
 }
 
-t_float3	scalar_mul(t_float3 vec, float s)
+t_vec3	scalar_mul(t_vec3 vec, float s)
 {
 	vec.x *= s;
 	vec.y *= s;
@@ -45,7 +45,7 @@ t_float3	scalar_mul(t_float3 vec, float s)
 	return (vec);
 }
 
-float		length3(t_float3 vec)
+float	length3(t_vec3 vec)
 {
 	return (sqrt(dot(vec, vec)));
 }

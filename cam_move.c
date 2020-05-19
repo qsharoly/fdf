@@ -29,8 +29,8 @@ void	reset_cam_position(t_things *things)
 
 void	translate_cam(t_cam *cam, int command)
 {
-	t_float3	lateral;
-	float		step;
+	t_vec3	lateral;
+	float	step;
 
 	step = 1.0;
 	if (cam->projection == Oblique_Military)
@@ -43,11 +43,11 @@ void	translate_cam(t_cam *cam, int command)
 		normalize3(lateral);
 	}
 	if (command == GO_FWD)
-		cam->world = add_float3(cam->world, scalar_mul(lateral, step));
+		cam->world = add_vec3(cam->world, scalar_mul(lateral, step));
 	else if (command == GO_BACK)
-		cam->world = add_float3(cam->world, scalar_mul(lateral, -step));
+		cam->world = add_vec3(cam->world, scalar_mul(lateral, -step));
 	else if (command == STRAFE_RIGHT)
-		cam->world = add_float3(cam->world, scalar_mul(cam->right, step));
+		cam->world = add_vec3(cam->world, scalar_mul(cam->right, step));
 	else if (command == STRAFE_LEFT)
-		cam->world = add_float3(cam->world, scalar_mul(cam->right, -step));
+		cam->world = add_vec3(cam->world, scalar_mul(cam->right, -step));
 }

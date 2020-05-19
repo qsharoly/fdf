@@ -66,7 +66,7 @@ static t_vertex	*read_row(int j, const char *line, int *count)
 	cur = (char *)line;
 	while (i < *count)
 	{
-		row[i].vec = make_float3(i, j, ft_atoi(cur));
+		row[i].vec = vec3(i, j, ft_atoi(cur));
 		row[i].col = int_to_rgba(0);
 		cur = next_entry(cur);
 		i++;

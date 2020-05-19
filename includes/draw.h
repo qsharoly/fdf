@@ -25,10 +25,10 @@ typedef struct	s_view
 }				t_view;
 
 t_rgba			mix(t_rgba col1, t_rgba col2, float ratio);
-int				inbounds(t_float2 point, t_bitmap *bmp);
-int				inbounds3(t_float3 point, t_bitmap *bmp, t_cam *cam);
-void			draw_line(t_bitmap *bmp, t_float2 a, t_float2 b, t_rgba color);
-void			draw_edge(t_view view, t_float3 a, t_float3 b, t_rgba color);
+int				inbounds(t_vec2 point, t_bitmap *bmp);
+int				inbounds3(t_vec3 point, t_bitmap *bmp, t_cam *cam);
+void			draw_line(t_bitmap *bmp, t_vec2 a, t_vec2 b, t_rgba color);
+void			draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color);
 void			draw_line_gradient(t_bitmap *bmp, t_cam *cam,
 					t_vertex a, t_vertex b);
 void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
