@@ -41,7 +41,7 @@ static void		set_z_buf(t_cam *cam, t_uint x, t_uint y, float val)
 **	all elements of z_buf are set to +INFINITY
 */
 
-void			draw_line_gradient_z_buf(t_bitmap *bmp, t_cam *cam,
+void			draw_line_gradient_z_buf(t_bitmap bmp, t_cam *cam,
 					t_vertex a, t_vertex b)
 {
 	t_vec3	p;

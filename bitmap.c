@@ -35,20 +35,20 @@ t_rgba	int_to_rgba(int color)
 	return (rgba);
 }
 
-t_rgba	get_pixel(t_bitmap *bmp, t_uint x, t_uint y)
+t_rgba	get_pixel(t_bitmap bmp, t_uint x, t_uint y)
 {
 	unsigned int		color;
 
-	color = *(bmp->data + x + y * bmp->x_dim);
+	color = *(bmp.data + x + y * bmp.x_dim);
 	return (int_to_rgba(color));
 }
 
-void	set_pixel(t_bitmap *bmp, t_uint x, t_uint y, t_rgba color)
+void	set_pixel(t_bitmap bmp, t_uint x, t_uint y, t_rgba color)
 {
-	*(bmp->data + x + y * bmp->x_dim) = rgba_to_int(color);
+	*(bmp.data + x + y * bmp.x_dim) = rgba_to_int(color);
 }
 
-void	fill_rect(t_bitmap *bmp, t_rect rect, t_rgba color)
+void	fill_rect(t_bitmap bmp, t_rect rect, t_rgba color)
 {
 	t_uint i;
 	t_uint j;

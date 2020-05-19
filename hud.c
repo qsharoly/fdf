@@ -56,7 +56,7 @@ void		draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color)
 	draw_line(view.bmp, aa, bb, color);
 }
 
-void		draw_helpers(t_bitmap *bitmap, t_cam *cam)
+void		draw_helpers(t_bitmap bitmap, t_cam *cam)
 {
 	t_view			view;
 

@@ -44,10 +44,10 @@ typedef struct			s_bitmap
 t_uint					rgba_to_int(t_rgba color);
 t_rgba					int_to_rgba(int color);
 t_rgba					make_rgba(t_uchar r, t_uchar g, t_uchar b, t_uchar a);
-t_rgba					get_pixel(t_bitmap *bmp, t_uint x, t_uint y);
-void					set_pixel(t_bitmap *bmp, t_uint x, t_uint y,
+t_rgba					get_pixel(t_bitmap bmp, t_uint x, t_uint y);
+void					set_pixel(t_bitmap bmp, t_uint x, t_uint y,
 									t_rgba color);
 t_rect					rect(t_uint x, t_uint y, t_uint width, t_uint height);
-void					fill_rect(t_bitmap *bmp, t_rect rect, t_rgba color);
+void					fill_rect(t_bitmap bmp, t_rect rect, t_rgba color);
 
 #endif

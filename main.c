@@ -32,7 +32,6 @@ void		free_things_and_exit(t_things *things)
 {
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
-	free(things->bitmap);
 	free(things->state);
 	free(things->cam);
 	if (things->map)

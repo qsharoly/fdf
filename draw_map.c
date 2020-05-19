@@ -12,7 +12,7 @@
 
 #include "fdf.h"
 
-static t_vertex	p(t_vertex world, t_cam *cam, t_bitmap *bmp)
+static t_vertex	p(t_vertex world, t_cam *cam, t_bitmap bmp)
 {
 	t_vertex	screen;
 
@@ -21,7 +21,7 @@ static t_vertex	p(t_vertex world, t_cam *cam, t_bitmap *bmp)
 	return (screen);
 }
 
-void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, t_list *rows)
+void			draw_map(t_bitmap bmp, t_cam *cam, t_map *map, t_list *rows)
 {
 	int			i;
 	t_vertex	vertex1;
@@ -50,7 +50,7 @@ void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, t_list *rows)
 	}
 }
 
-void			draw_map_z_buf(t_bitmap *bmp, t_cam *cam, t_map *map,
+void			draw_map_z_buf(t_bitmap bmp, t_cam *cam, t_map *map,
 		t_list *rows)
 {
 	int			i;

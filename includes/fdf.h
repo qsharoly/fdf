@@ -52,7 +52,7 @@ typedef struct	s_things
 	void		*mlx;
 	void		*window;
 	void		*mlx_image;
-	t_bitmap	*bitmap;
+	t_bitmap	bitmap;
 	t_state		*state;
 	t_map		*map;
 	t_cam		*cam;
@@ -65,16 +65,16 @@ char			*ft_itoa_float(float a);
 t_state			*init_state(void);
 t_cam			*init_cam(t_things *things);
 t_map			*init_map(const char *filename);
-t_bitmap		*init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim);
+t_bitmap		init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim);
 void			lst_del_fdf_row(void *row, size_t size);
-int				read_map(int fd, t_map *map);
+int				load_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
-void			draw_map(t_bitmap *bmp, t_cam *cam, t_map *map, t_list *rows);
-void			draw_map_z_buf(t_bitmap *bmp, t_cam *cam, t_map *map,
+void			draw_map(t_bitmap bmp, t_cam *cam, t_map *map, t_list *rows);
+void			draw_map_z_buf(t_bitmap bmp, t_cam *cam, t_map *map,
 					t_list *rows);
 void			reset_cam_position(t_things *things);
-void			draw_helpers(t_bitmap *bitmap, t_cam *cam);
+void			draw_helpers(t_bitmap bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
 void			toggle(int *var);

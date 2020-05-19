@@ -31,7 +31,7 @@ ifeq ($(debug), yes)
 	CCFLAGS += -g
 endif
 
-SRC = main.c startup.c read_map.c map_make_colors.c ft_fmax.c ft_fmin.c\
+SRC = main.c startup.c load_map.c map_make_colors.c ft_fmax.c ft_fmin.c\
 	  bitmap.c make_rect.c make_float3.c normalize3.c draw.c draw_z_buf.c\
 	  draw_map.c vector2.c vector3.c rotations.c projection.c hud.c keyboard.c\
 	  ft_itoa_float.c ft_put_float.c cam_move.c

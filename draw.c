@@ -27,20 +27,20 @@ t_rgba	mix(t_rgba col1, t_rgba col2, float ratio)
 	return (color);
 }
 
-int		inbounds(t_vec2 point, t_bitmap *bmp)
+int		inbounds(t_vec2 point, t_bitmap bmp)
 {
-	return (point.x >= 0.0 && point.x <= bmp->x_dim
-			&& point.y >= 0.0 && point.y <= bmp->y_dim);
+	return (point.x >= 0.0 && point.x <= bmp.x_dim
+			&& point.y >= 0.0 && point.y <= bmp.y_dim);
 }
 
-int		inbounds3(t_vec3 point, t_bitmap *bmp, t_cam *cam)
+int		inbounds3(t_vec3 point, t_bitmap bmp, t_cam *cam)
 {
-	return (point.x >= 0.0 && point.x <= bmp->x_dim
-			&& point.y >= 0.0 && point.y <= bmp->y_dim
+	return (point.x >= 0.0 && point.x <= bmp.x_dim
+			&& point.y >= 0.0 && point.y <= bmp.y_dim
 			&& point.z >= cam->z_near && point.z <= cam->z_far);
 }
 
-void	draw_line(t_bitmap *bmp, t_vec2 a, t_vec2 b, t_rgba color)
+void	draw_line(t_bitmap bmp, t_vec2 a, t_vec2 b, t_rgba color)
 {
 	t_vec2	p;
 	t_vec2	step;
@@ -64,7 +64,7 @@ void	draw_line(t_bitmap *bmp, t_vec2 a, t_vec2 b, t_rgba color)
 	}
 }
 
-void	draw_line_gradient(t_bitmap *bmp, t_cam *cam, t_vertex a, t_vertex b)
+void	draw_line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
 	t_vec3	p;
 	t_vec3	step;

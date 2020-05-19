@@ -48,15 +48,15 @@ t_cam		*init_cam(t_things *things)
 
 	if (!(cam = (t_cam *)malloc(sizeof(*cam))))
 		return (fail("memory allocation failed.\n"));
-	cam->z_buf_size = things->bitmap->x_dim * things->bitmap->y_dim;
-	cam->z_buf_stride = things->bitmap->x_dim;
+	cam->z_buf_size = things->bitmap.x_dim * things->bitmap.y_dim;
+	cam->z_buf_stride = things->bitmap.x_dim;
 	cam->z_buf = (float *)malloc(sizeof(*cam->z_buf) * cam->z_buf_size);
 	if (things->map != NULL)
 	{
 		cam->world.x = things->map->row_size / 2;
 		cam->world.y = things->map->row_num / 2;
 		cam->world.z = (things->map->z_min + things->map->z_max) / 2;
-		cam->zoom = 0.5 * things->bitmap->x_dim / things->map->row_size;
+		cam->zoom = 0.5 * things->bitmap.x_dim / things->map->row_size;
 		cam->dist = 0.75 * (things->map->row_size + things->map->row_num);
 	}
 	cam->z_near = 1;
@@ -78,7 +78,7 @@ t_map		*init_map(const char *filename)
 	g->rows = NULL;
 	if ((fd = open(filename, O_RDONLY)) > 2)
 	{
-		res = read_map(fd, g);
+		res = load_map(fd, g);
 		close(fd);
 		if (res < 0 || g->row_num == 0)
 		{
@@ -96,18 +96,16 @@ t_map		*init_map(const char *filename)
 	return (fail("failed to open file.\n"));
 }
 
-t_bitmap	*init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim)
+t_bitmap	init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim)
 {
-	t_bitmap	*bitmap;
+	t_bitmap	bitmap;
 	int			bpp;
 	int			stride;
 	int			endianness;
 
-	if (!(bitmap = (t_bitmap *)malloc(sizeof(*bitmap))))
-		return (fail("memory allocation failed.\n"));
-	bitmap->data = (unsigned int *)mlx_get_data_addr(mlx_img_ptr,
+	bitmap.data = (unsigned int *)mlx_get_data_addr(mlx_img_ptr,
 			&bpp, &stride, &endianness);
-	bitmap->x_dim = x_dim;
-	bitmap->y_dim = y_dim;
+	bitmap.x_dim = x_dim;
+	bitmap.y_dim = y_dim;
 	return (bitmap);
 }

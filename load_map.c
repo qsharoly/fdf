@@ -85,7 +85,7 @@ static int		rg_abort(t_list **rows, char *line, t_vertex *row,
 	return (-2);
 }
 
-int				read_map(int fd, t_map *map)
+int				load_map(int fd, t_map *map)
 {
 	t_vertex	*row;
 	char		*line;

@@ -49,7 +49,7 @@ typedef struct	s_cam
 	enum e_projkind	projection;
 }				t_cam;
 
-t_vec3		project(t_vec3 point, t_cam *cam, t_bitmap *bmp);
+t_vec3		project(t_vec3 point, t_cam *cam, t_bitmap bmp);
 void		cam_setup_perspective(t_cam *cam);
 void		cam_setup_axonometric(t_cam *cam);
 void		cam_setup_military(t_cam *cam);
