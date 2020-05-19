@@ -22,10 +22,34 @@ void			lst_del_fdf_row(void *row, size_t size)
 	free(row);
 }
 
-static t_vertex	*read_row(int j, char *line, int *count)
+static char		*next_entry(char *cur)
+{
+	while (*cur && *cur != ' ')
+		cur++;
+	while (*cur && *cur == ' ')
+		cur++;
+	return (cur);
+}
+
+static int		count_entries(const char *line)
+{
+	char	*cur;
+	int		count;
+
+	count = 0;
+	cur = (char *)line;
+	while (*cur)
+	{
+		cur = next_entry(cur);
+		count++;
+	}
+	return (count);
+}
+
+static t_vertex	*read_row(int j, const char *line, int *count)
 {
 	t_vertex	*row;
-	char		**words;
+	char		*cur;
 	int			i;
 	static char	wait_anim[4][4] = {"[-]", "[\\]", "[|]", "[/]"};
 
@@ -34,21 +58,20 @@ static t_vertex	*read_row(int j, char *line, int *count)
 		ft_putstr_fd("\033[16DLoading map: ", 2);
 		ft_putstr_fd(wait_anim[j / 40 % 4], 2);
 	}
-	if ((words = ft_strsplit_n(line, ' ', count)))
-		if ((row = malloc(sizeof(t_vertex) * *count)))
-		{
-			i = 0;
-			while (i < *count)
-			{
-				row[i].vec = make_float3(i, j, ft_atoi(words[i]));
-				row[i].col = int_to_rgba(0);
-				free(words[i]);
-				i++;
-			}
-			free(words);
-			return (row);
-		}
-	return (NULL);
+	*count = count_entries(line);
+	row = malloc(sizeof(t_vertex) * *count);
+	if (!row)
+		return (NULL);
+	i = 0;
+	cur = (char *)line;
+	while (i < *count)
+	{
+		row[i].vec = make_float3(i, j, ft_atoi(cur));
+		row[i].col = int_to_rgba(0);
+		cur = next_entry(cur);
+		i++;
+	}
+	return (row);
 }
 
 static int		rg_abort(t_list **rows, char *line, t_vertex *row,
