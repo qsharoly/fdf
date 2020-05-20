@@ -113,3 +113,4 @@ int				load_map(int fd, t_map *map)
 	free(line);
 	return (gnl_status);
 }
+

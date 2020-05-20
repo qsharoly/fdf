@@ -13,7 +13,7 @@
 #include "vector.h"
 #include "projection.h"
 
-t_vec3	project(t_vec3 point, t_cam *cam, t_bitmap bmp)
+t_vec3	project(t_vec3 point, const t_cam *cam, t_bitmap bmp)
 {
 	t_vec3	scr;
 	float	ray_len;

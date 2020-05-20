@@ -20,7 +20,7 @@ endif
 MLX = $(MLX_DIR)/libmlx.a
 
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
-CCFLAGS = -Wall -Wextra -Werror
+CCFLAGS += -Wall -Wextra -Werror
 INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
 LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
 LIB_FLAGS += -lft -lmlx
@@ -31,10 +31,29 @@ ifeq ($(debug), yes)
 	CCFLAGS += -g
 endif
 
-SRC = main.c startup.c load_map.c map_make_colors.c ft_fmax.c ft_fmin.c\
-	  bitmap.c make_rect.c make_float3.c normalize3.c draw.c draw_z_buf.c\
-	  draw_map.c vector2.c vector3.c rotations.c projection.c hud.c keyboard.c\
-	  ft_itoa_float.c ft_put_float.c cam_move.c
+SRC = main.c\
+	  startup.c\
+	  load_map.c\
+	  map_make_colors.c\
+	  construct_mesh.c\
+	  ft_fmax.c\
+	  ft_fmin.c\
+	  bitmap.c\
+	  make_rect.c\
+	  make_vec3.c\
+	  normalize3.c\
+	  draw.c\
+	  draw_zbuf.c\
+	  draw_mesh.c\
+	  vector2.c\
+	  vector3.c\
+	  rotations.c\
+	  projection.c\
+	  hud.c\
+	  keyboard.c\
+	  ft_itoa_float.c\
+	  ft_put_float.c\
+	  cam_move.c
 
 OBJ = $(SRC:%.c=$(OBJDIR)/%.o)
 DEPS = $(SRC:%.c=$(DEPDIR)/%.d)

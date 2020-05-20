@@ -33,7 +33,7 @@ int		inbounds(t_vec2 point, t_bitmap bmp)
 			&& point.y >= 0.0 && point.y <= bmp.y_dim);
 }
 
-int		inbounds3(t_vec3 point, t_bitmap bmp, t_cam *cam)
+int		inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam)
 {
 	return (point.x >= 0.0 && point.x <= bmp.x_dim
 			&& point.y >= 0.0 && point.y <= bmp.y_dim

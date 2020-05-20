@@ -13,26 +13,26 @@
 #include "draw.h"
 #include "palette.h"
 
-void			reset_z_buf(t_cam *cam)
+void			reset_zbuf(t_cam *cam)
 {
 	t_uint		i;
 
 	i = 0;
-	while (i < cam->z_buf_size)
+	while (i < cam->zbuf_size)
 	{
-		cam->z_buf[i] = INFINITY;
+		cam->zbuf[i] = INFINITY;
 		i++;
 	}
 }
 
-static float	get_z_buf(t_cam *cam, t_uint x, t_uint y)
+static float	get_zbuf(t_cam *cam, t_uint x, t_uint y)
 {
-	return (*(cam->z_buf + y * cam->z_buf_stride + x));
+	return (*(cam->zbuf + y * cam->zbuf_stride + x));
 }
 
-static void		set_z_buf(t_cam *cam, t_uint x, t_uint y, float val)
+static void		set_zbuf(t_cam *cam, t_uint x, t_uint y, float val)
 {
-	*(cam->z_buf + y * cam->z_buf_stride + x) = val;
+	*(cam->zbuf + y * cam->zbuf_stride + x) = val;
 }
 
 /*
@@ -41,7 +41,7 @@ static void		set_z_buf(t_cam *cam, t_uint x, t_uint y, float val)
 **	all elements of z_buf are set to +INFINITY
 */
 
-void			draw_line_gradient_z_buf(t_bitmap bmp, t_cam *cam,
+void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 					t_vertex a, t_vertex b)
 {
 	t_vec3	p;
@@ -61,9 +61,9 @@ void			draw_line_gradient_z_buf(t_bitmap bmp, t_cam *cam,
 	while (t < 1)
 	{
 		if (inbounds3(p, bmp, cam)
-			&& p.z < get_z_buf(cam, p.x, p.y))
+			&& p.z < get_zbuf(cam, p.x, p.y))
 		{
-			set_z_buf(cam, p.x, p.y, p.z);
+			set_zbuf(cam, p.x, p.y, p.z);
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
 		}
 		t += dt;

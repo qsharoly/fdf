@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 16:33:11 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/20 04:47:18 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,13 @@
 # include "projection.h"
 # include "draw.h"
 
+# define GOOD 1
+# define FAIL 0
+
 # define XDIM 640
 # define YDIM 480
+
+# define TOGGLE(var) ((var) = (!(var)))
 
 typedef struct	s_map
 {
@@ -32,19 +37,31 @@ typedef struct	s_map
 	int			row_num;
 }				t_map;
 
+typedef struct	s_edge
+{
+	t_vertex	v1;
+	t_vertex	v2;
+}				t_edge;
+
+typedef struct	s_mesh
+{
+	t_edge		*edges;
+	int			len;
+}				t_mesh;
+
 typedef struct	s_state
 {
-	int			stop_program;
-	int			animation_pause;
-	int			animation_step;
-	int			redraw;
-	int			bench;
-	int			bench_frames;
-	int			print_keycodes;
-	int			draw_stats;
-	int			draw_helpers;
-	int			draw_controls;
-	int			use_z_buf;
+	int				bench_max_frames;
+	unsigned int	stop_program:1;
+	unsigned int	animation_pause:1;
+	unsigned int	animation_step:1;
+	unsigned int	redraw:1;
+	unsigned int	bench:1;
+	unsigned int	print_keycodes:1;
+	unsigned int	draw_stats:1;
+	unsigned int	draw_helpers:1;
+	unsigned int	draw_controls:1;
+	unsigned int	use_zbuf:1;
 }				t_state;
 
 typedef struct	s_things
@@ -53,31 +70,32 @@ typedef struct	s_things
 	void		*window;
 	void		*mlx_image;
 	t_bitmap	bitmap;
-	t_state		*state;
-	t_map		*map;
-	t_cam		*cam;
+	t_state		state;
+	t_mesh		mesh;
+	t_map		map;
+	t_cam		cam;
 }				t_things;
 
+int				fail(char *msg);
 float			ft_fmin(float a, float b);
 float			ft_fmax(float a, float b);
 void			ft_put_float(float a);
 char			*ft_itoa_float(float a);
-t_state			*init_state(void);
-t_cam			*init_cam(t_things *things);
-t_map			*init_map(const char *filename);
-t_bitmap		init_bitmap(void *mlx_img_ptr, int x_dim, int y_dim);
+t_state			init_state(void);
+int				init_cam(t_cam *cam, t_things *things);
+int				init_map(t_map *map, const char *filename);
+int				init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim);
 void			lst_del_fdf_row(void *row, size_t size);
 int				load_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
-void			draw_map(t_bitmap bmp, t_cam *cam, t_map *map, t_list *rows);
-void			draw_map_z_buf(t_bitmap bmp, t_cam *cam, t_map *map,
-					t_list *rows);
+int				construct_mesh(t_mesh *mesh, const t_map *map);
+void			draw_mesh(t_bitmap bmp, t_cam *cam, t_mesh mesh, int use_zbuf);
 void			reset_cam_position(t_things *things);
 void			draw_helpers(t_bitmap bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
-void			toggle(int *var);
+//void			toggle(int *var);
 void			free_things_and_exit(t_things *things);
 int				key_controls(int keycode, t_things *param);
 

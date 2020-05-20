@@ -14,17 +14,17 @@
 
 void	reset_cam_position(t_things *things)
 {
-	if (things->map != NULL)
+	if (things->map.rows != NULL)
 	{
-		things->cam->world.x = things->map->row_size / 2;
-		things->cam->world.y = things->map->row_num / 2;
-		things->cam->world.z = (things->map->z_min + things->map->z_max) / 2;
+		things->cam.world.x = things->map.row_size / 2;
+		things->cam.world.y = things->map.row_num / 2;
+		things->cam.world.z = (things->map.z_min + things->map.z_max) / 2;
 	}
 	else
 	{
-		things->cam->world = ORIGIN;
+		things->cam.world = ORIGIN;
 	}
-	things->cam->rot = ORIGIN;
+	things->cam.rot = ORIGIN;
 }
 
 void	translate_cam(t_cam *cam, int command)

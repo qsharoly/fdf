@@ -87,19 +87,19 @@ void		draw_hud(t_things *my, float frame)
 {
 	char		s1[120];
 
-	if (my->state->draw_stats == 1)
+	if (my->state.draw_stats == 1)
 	{
 		s1[0] = '\0';
 		ft_append(s1, "frame ", frame);
-		ft_append(s1, ", zoom = ", my->cam->zoom);
-		if (my->state->use_z_buf)
+		ft_append(s1, ", zoom = ", my->cam.zoom);
+		if (my->state.use_zbuf)
 			ft_strcat(s1, ", z_buf on");
 		else
 			ft_strcat(s1, ", z_buf off");
 		ft_strcat(s1, ", projection = ");
-		ft_strcat(s1, g_projnames[my->cam->projection]);
+		ft_strcat(s1, g_projnames[my->cam.projection]);
 		mlx_string_put(my->mlx, my->window, 10, 10, 0x00FFFFFF, s1);
 	}
-	if (my->state->draw_controls == 1)
+	if (my->state.draw_controls == 1)
 		draw_controls(my->mlx, my->window);
 }
