@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:12:49 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 16:57:05 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,18 +51,6 @@ int		init_cam(t_cam *cam, t_things *things)
 		return (fail("failed to malloc z-buffer\n"));
 	if (things->map.rows != NULL)
 	{
-/*<<<<<<< HEAD
-		cam->target.x = things->map.row_size / 2;
-		cam->target.y = things->map.row_num / 2;
-		cam->target.z = (things->map.z_min + things->map.z_max) / 2;
-		cam->zoom = 0.5 * things->bitmap.x_dim / things->map.row_size;
-		cam->dist = 0.75 * (things->map.row_size + things->map.row_num);
-	}
-	cam->z_near = 1;
-	cam->z_far = 2 * cam->dist;
-	cam->angle = ORIGIN;
-	cam->projection = Axonometric;
-=======*/
 		cam->target.x = things->map.row_size / 2;
 		cam->target.y = things->map.row_num / 2;
 		cam->target.z = (things->map.z_min + things->map.z_max) / 2;

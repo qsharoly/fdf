@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:03:20 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 18:17:57 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,11 @@ void		draw_hud(t_things *my, float frame)
 		s1[0] = '\0';
 		ft_append(s1, "frame ", frame);
 		ft_append(s1, ", zoom = ", my->cam.zoom);
+		ft_append(s1, ", cam.angle[x = ", my->cam.angle.x);
+		ft_append(s1, ", y = ", my->cam.angle.y);
+		ft_append(s1, ", z = ", my->cam.angle.z);
 		if (my->state.use_zbuf)
-			ft_strcat(s1, ", z_buf on");
+			ft_strcat(s1, "], z_buf on");
 		else
 			ft_strcat(s1, ", z_buf off");
 		ft_strcat(s1, ", projection = ");

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 16:05:37 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 19:27:41 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,15 +166,15 @@ t_mat4	rot_mat4_simple(char axis, float angle)
 	{
 		m.m[0][0] = cos(angle);
 		m.m[0][2] = -sin(angle);
-		m.m[2][0] = cos(angle);
-		m.m[2][2] = sin(angle);
+		m.m[2][0] = sin(angle);
+		m.m[2][2] = cos(angle);
 	}
 	else if (axis == Z)
 	{
 		m.m[0][0] = cos(angle);
 		m.m[0][1] = -sin(angle);
-		m.m[1][0] = cos(angle);
-		m.m[1][1] = sin(angle);
+		m.m[1][0] = sin(angle);
+		m.m[1][1] = cos(angle);
 	}
 	return (m);
 }
@@ -202,42 +202,45 @@ t_mat4	rot_mat4(t_vec3 dir, float angle)
 	return (m);
 }
 
-/*
-t_mat4	orthograaphic_mat4(t_cam *cam, t_bitmap *bmp)
+t_mat4	orthographic_mat4(t_cam *cam, t_bitmap bmp)
 {
 	t_mat4	m;
 	float	top;
 	float	right;
-	float	aspect;
+	float	f;
+	float	n;
 
 	m = zero_mat4();
 	top = tan(0.5 * cam->fov) * cam->z_near;
-	aspect = (float)bmp->x_dim / bmp->y_dim;
-	right = top * aspect;
-	m.m[0][0] = cam->z_near / top;
-	m.m[1][1] = cam->z_near / right;
-	m.m[2][2] = -2 / (cam->z_far - cam->z_near);
-	m.m[2][3] = -(cam->z_far + cam->z_near) / (cam->z_far - cam->z_near);
+	right = top * bmp.x_dim / bmp.y_dim;
+	f = cam->z_far;
+	n = cam->z_near;
+	m.m[0][0] = n / top;
+	m.m[1][1] = n / right;
+	m.m[2][2] = -2 / (f - n);
+	m.m[2][3] = -(f + n) / (f - n);
 	m.m[3][3] = 1;
 	return (m);
 }
-*/
+
 t_mat4	perspective_mat4(t_cam *cam, t_bitmap bmp)
 {
 	t_mat4	m;
 	float	top;
 	float	right;
-	float	aspect;
+	float	f;
+	float	n;
 
 	m = zero_mat4();
 	top = tan(0.5 * cam->fov) * cam->z_near;
-	aspect = (float)bmp.x_dim / bmp.y_dim;
-	right = top * aspect;
-	m.m[0][0] = cam->z_near / top;
-	m.m[1][1] = cam->z_near / right;
-	m.m[2][2] = -(cam->z_far + cam->z_near) / (cam->z_far - cam->z_near);
-	m.m[2][3] = -2 * cam->z_far * cam->z_near / (cam->z_far - cam->z_near);
-	m.m[3][2] = -1;
+	right = top * bmp.x_dim / bmp.y_dim;
+	f = cam->z_far;
+	n = cam->z_near;
+	m.m[0][0] = n / top;
+	m.m[1][1] = n / right;
+	m.m[2][2] = f / (f - n);
+	m.m[2][3] = - f * n / (f - n);
+	m.m[3][2] = 1;
 	return (m);
 }
 
@@ -246,15 +249,28 @@ void	calc_pipeline(t_cam *cam, t_bitmap bmp)
 	t_mat4	translation;
 	t_mat4	rotation;
 	t_mat4	distance;
-	t_mat4	perspective;
+	t_mat4	prj;
 	t_mat4	scaling;
 
 	translation = translation_mat4(-cam->target.x, -cam->target.y, -cam->target.z);
-	rotation = rot_mat4(cross(cam->dir, ZUNIT), acos(dot(cam->dir, ZUNIT)));
-	distance = translation_mat4(0, 0, cam->dist);
-	perspective = perspective_mat4(cam, bmp);
-	scaling = scaling_mat4(cam->zoom * bmp.y_dim, cam->zoom * bmp.x_dim, 1);
-	cam->pipeline = compose(scaling, compose(perspective, compose(distance, compose(rotation, translation))));
+	rotation = compose(rot_mat4_simple(X, cam->angle.x), compose(rot_mat4_simple(Y, cam->angle.y), rot_mat4_simple(Z, cam->angle.z)));
+	distance = translation_mat4(0, 0, -cam->dist);
+	if (cam->projection == Perspective)
+	{
+		scaling = scaling_mat4(cam->zoom * bmp.y_dim, cam->zoom * bmp.x_dim, -1);
+		prj = perspective_mat4(cam, bmp);
+	}
+	else if (cam->projection == Axonometric)
+	{
+		scaling = scaling_mat4(cam->zoom * bmp.y_dim, cam->zoom * bmp.x_dim, 1);
+		prj = orthographic_mat4(cam, bmp);
+	}
+	else
+	{
+		scaling = identity_mat4();
+		prj = identity_mat4();
+	}
+	cam->pipeline = compose(prj, compose(scaling, compose(distance, compose(rotation, translation))));
 }
 
 t_vec3	persp_divide(t_vec4 v)

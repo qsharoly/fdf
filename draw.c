@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 16:03:51 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 19:33:56 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@ int		inbounds(t_vec2 point, t_bitmap bmp)
 			&& point.y >= 0.0 && point.y <= bmp.y_dim);
 }
 
+//TODO: correct z culling
 int		inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam)
 {
+	(void)cam;
 	return (point.x >= 0.0 && point.x <= bmp.x_dim
-			&& point.y >= 0.0 && point.y <= bmp.y_dim
-			&& point.z >= cam->z_near && point.z <= cam->z_far);
+			&& point.y >= 0.0 && point.y <= bmp.y_dim);
+			//&& point.z >= 0 && point.z <= 1);
 }
 
 void	draw_line(t_bitmap bmp, t_vec2 a, t_vec2 b, t_rgba color)

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:10:05 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 18:13:40 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,8 @@ void		cam_setup_perspective(t_cam *cam)
 
 void		cam_setup_axonometric(t_cam *cam)
 {
-	cam->dir = ZUNIT;
-	cam->dir = rot_x(M_PI / 3 + cam->angle.x, cam->dir);
-	cam->dir = rot_z(M_PI * 3 / 4 + cam->angle.z, cam->dir);
-	cam->dir = normalize3(cam->dir);
-	cam->right = scale(XUNIT, -1);
-	cam->right = rot_z(M_PI * 3 / 4 + cam->angle.z, cam->right);
-	cam->right = normalize3(cam->right);
+	cam->dir = scale(ZUNIT, -1);
+	cam->right = XUNIT;
 	cam->up = cross(cam->dir, cam->right);
 	cam->proj_dir = cam->dir;
 }

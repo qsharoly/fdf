@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/21 12:51:11 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 18:55:23 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	reset_cam_position(t_things *things)
 
 void	translate_cam(t_cam *cam, int command)
 {
+	/*
 	t_vec3	lateral;
 	float	step;
 
@@ -50,4 +51,13 @@ void	translate_cam(t_cam *cam, int command)
 		cam->target = add3(cam->target, scale(cam->right, step));
 	else if (command == STRAFE_LEFT)
 		cam->target = add3(cam->target, scale(cam->right, -step));
+		*/
+	if (command == GO_FWD)
+		cam->target = add3(cam->target, rot_z(-cam->angle.z, YUNIT));
+	else if (command == GO_BACK)
+		cam->target = sub3(cam->target, rot_z(-cam->angle.z, YUNIT));
+	else if (command == STRAFE_RIGHT)
+		cam->target = add3(cam->target, rot_z(-cam->angle.z, XUNIT));
+	else if (command == STRAFE_LEFT)
+		cam->target = sub3(cam->target, rot_z(-cam->angle.z, XUNIT));
 }

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:14:16 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 17:22:00 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static int	the_loop(t_things *my)
 	if (my->state.redraw == 0)
 	{
 		my->cam.angle.z += 0.05 * M_PI / 100;
-		my->cam.angle.x += (-1) * 0.5 * M_PI / 200;
+	//	my->cam.angle.x += (-1) * 0.5 * M_PI / 200;
 	}
 	frame++;
 	//g_cam_setup_func[my->cam->projection](my->cam);
