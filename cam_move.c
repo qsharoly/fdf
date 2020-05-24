@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cam_movement.c                                     :+:      :+:    :+:   */
+/*   cam_move.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 18:00:22 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 12:51:11 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@ void	reset_cam_position(t_things *things)
 {
 	if (things->map.rows != NULL)
 	{
-		things->cam.world.x = things->map.row_size / 2;
-		things->cam.world.y = things->map.row_num / 2;
-		things->cam.world.z = (things->map.z_min + things->map.z_max) / 2;
+		things->cam.target.x = things->map.row_size / 2;
+		things->cam.target.y = things->map.row_num / 2;
+		things->cam.target.z = (things->map.z_min + things->map.z_max) / 2;
 	}
 	else
 	{
-		things->cam.world = ORIGIN;
+		things->cam.target = ORIGIN;
 	}
-	things->cam.rot = ORIGIN;
+	things->cam.angle = ORIGIN;
 }
 
 void	translate_cam(t_cam *cam, int command)
@@ -43,11 +43,11 @@ void	translate_cam(t_cam *cam, int command)
 		normalize3(lateral);
 	}
 	if (command == GO_FWD)
-		cam->world = add_vec3(cam->world, scalar_mul(lateral, step));
+		cam->target = add3(cam->target, scale(lateral, step));
 	else if (command == GO_BACK)
-		cam->world = add_vec3(cam->world, scalar_mul(lateral, -step));
+		cam->target = add3(cam->target, scale(lateral, -step));
 	else if (command == STRAFE_RIGHT)
-		cam->world = add_vec3(cam->world, scalar_mul(cam->right, step));
+		cam->target = add3(cam->target, scale(cam->right, step));
 	else if (command == STRAFE_LEFT)
-		cam->world = add_vec3(cam->world, scalar_mul(cam->right, -step));
+		cam->target = add3(cam->target, scale(cam->right, -step));
 }

@@ -35,7 +35,6 @@ SRC = main.c\
 	  startup.c\
 	  load_map.c\
 	  map_make_colors.c\
-	  construct_mesh.c\
 	  ft_fmax.c\
 	  ft_fmin.c\
 	  bitmap.c\
@@ -44,7 +43,7 @@ SRC = main.c\
 	  normalize3.c\
 	  draw.c\
 	  draw_zbuf.c\
-	  draw_mesh.c\
+	  draw_map.c\
 	  vector2.c\
 	  vector3.c\
 	  rotations.c\

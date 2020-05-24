@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/20 04:46:59 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/21 12:44:01 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,14 @@ t_state		init_state(void)
 {
 	t_state	state;
 
+	state.window_width = XDIM;
+	state.window_height = YDIM;
 	state.bench_max_frames = BENCHMARK_FRAMES;
 	state.stop_program = 0;
-	state.animation_pause = START_PAUSED;
+	state.animation_pause = 1;
 	state.animation_step = 0;
 	state.redraw = 1;
-	state.bench = DO_BENCH;
+	state.bench = 0;
 	state.print_keycodes = 0;
 	state.draw_stats = 1;
 	state.draw_helpers = 1;
@@ -49,15 +51,15 @@ int		init_cam(t_cam *cam, t_things *things)
 		return (fail("failed to malloc z-buffer\n"));
 	if (things->map.rows != NULL)
 	{
-		cam->world.x = things->map.row_size / 2;
-		cam->world.y = things->map.row_num / 2;
-		cam->world.z = (things->map.z_min + things->map.z_max) / 2;
+		cam->target.x = things->map.row_size / 2;
+		cam->target.y = things->map.row_num / 2;
+		cam->target.z = (things->map.z_min + things->map.z_max) / 2;
 		cam->zoom = 0.5 * things->bitmap.x_dim / things->map.row_size;
 		cam->dist = 0.75 * (things->map.row_size + things->map.row_num);
 	}
 	cam->z_near = 1;
 	cam->z_far = 2 * cam->dist;
-	cam->rot = ORIGIN;
+	cam->angle = ORIGIN;
 	cam->projection = Axonometric;
 	cam->altitude_mult = 1;
 	return (GOOD);

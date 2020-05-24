@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 15:05:19 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 13:23:23 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,6 @@ void	draw_line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 		if (inbounds3(p, bmp, cam))
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
 		t += dt;
-		p = add_vec3(p, step);
+		p = add3(p, step);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 16:40:59 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 13:24:53 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,11 @@ void		draw_helpers(t_bitmap bitmap, t_cam *cam)
 
 	view.bmp = bitmap;
 	view.cam = cam;
-	draw_edge(view, cam->world, add_vec3(XUNIT, cam->world),
+	draw_edge(view, cam->target, add3(XUNIT, cam->target),
 			PEACH);
-	draw_edge(view, cam->world, add_vec3(YUNIT, cam->world),
+	draw_edge(view, cam->target, add3(YUNIT, cam->target),
 			LIGHTGREEN);
-	draw_edge(view, cam->world, add_vec3(ZUNIT, cam->world),
+	draw_edge(view, cam->target, add3(ZUNIT, cam->target),
 			PURPLE);
 	draw_edge(view, ORIGIN, XUNIT, RED);
 	draw_edge(view, ORIGIN, YUNIT, GREEN);

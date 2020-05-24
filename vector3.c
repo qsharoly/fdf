@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector.c                                           :+:      :+:    :+:   */
+/*   vector3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:33:25 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/15 16:03:15 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 13:31:32 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vector.h"
 
-t_vec3	add_vec3(t_vec3 a, t_vec3 b)
+t_vec3	add3(t_vec3 a, t_vec3 b)
 {
 	t_vec3	sum;
 
@@ -20,6 +20,16 @@ t_vec3	add_vec3(t_vec3 a, t_vec3 b)
 	sum.y = a.y + b.y;
 	sum.z = a.z + b.z;
 	return (sum);
+}
+
+t_vec3	sub3(t_vec3 a, t_vec3 b)
+{
+	t_vec3	diff;
+
+	diff.x = a.x - b.x;
+	diff.y = a.y - b.y;
+	diff.z = a.z - b.z;
+	return (diff);
 }
 
 float	dot(t_vec3 a, t_vec3 b)
@@ -37,7 +47,7 @@ t_vec3	cross(t_vec3 a, t_vec3 b)
 	return (c);
 }
 
-t_vec3	scalar_mul(t_vec3 vec, float s)
+t_vec3	scale(t_vec3 vec, float s)
 {
 	vec.x *= s;
 	vec.y *= s;

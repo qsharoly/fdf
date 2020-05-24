@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 17:58:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 17:58:12 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 13:23:04 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,5 @@
 
 t_vec3	normalize3(t_vec3 vec)
 {
-	return (scalar_mul(vec, 1 / length3(vec)));
+	return (scale(vec, 1 / length3(vec)));
 }

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:27:49 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 17:59:24 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 13:22:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@ typedef struct	s_vec3
 
 float		squared(float a);
 float		length2(t_vec2 a, t_vec2 b);
-t_vec2		add_vec2(t_vec2 a, t_vec2 b);
+t_vec2		add2(t_vec2 a, t_vec2 b);
 t_vec2		take_xy(t_vec3 point);
-t_vec3		add_vec3(t_vec3 a, t_vec3 b);
-t_vec3		sub_vec3(t_vec3 a, t_vec3 b);
+t_vec3		add3(t_vec3 a, t_vec3 b);
+t_vec3		sub3(t_vec3 a, t_vec3 b);
 float		dot(t_vec3 a, t_vec3 b);
 t_vec3		cross(t_vec3 a, t_vec3 b);
-t_vec3		scalar_mul(t_vec3 vec, float s);
+t_vec3		scale(t_vec3 vec, float s);
 float		length3(t_vec3 vec);
 t_vec3		normalize3(t_vec3 vec);
 t_vec3		vec3(float x, float y, float z);

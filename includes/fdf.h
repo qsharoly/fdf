@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/20 04:47:18 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/21 08:22:04 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,6 @@
 
 # define GOOD 1
 # define FAIL 0
-
-# define XDIM 640
-# define YDIM 480
 
 # define TOGGLE(var) ((var) = (!(var)))
 
@@ -43,14 +40,10 @@ typedef struct	s_edge
 	t_vertex	v2;
 }				t_edge;
 
-typedef struct	s_mesh
-{
-	t_edge		*edges;
-	int			len;
-}				t_mesh;
-
 typedef struct	s_state
 {
+	int				window_width;
+	int				window_height;
 	int				bench_max_frames;
 	unsigned int	stop_program:1;
 	unsigned int	animation_pause:1;
@@ -71,7 +64,6 @@ typedef struct	s_things
 	void		*mlx_image;
 	t_bitmap	bitmap;
 	t_state		state;
-	t_mesh		mesh;
 	t_map		map;
 	t_cam		cam;
 }				t_things;
@@ -89,8 +81,8 @@ void			lst_del_fdf_row(void *row, size_t size);
 int				load_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
-int				construct_mesh(t_mesh *mesh, const t_map *map);
-void			draw_mesh(t_bitmap bmp, t_cam *cam, t_mesh mesh, int use_zbuf);
+void			draw_map(t_bitmap bmp, t_cam *cam, const t_map *map,
+				void (*draw_line)(t_bitmap, t_cam *, t_vertex, t_vertex));
 void			reset_cam_position(t_things *things);
 void			draw_helpers(t_bitmap bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);

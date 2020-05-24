@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 16:32:50 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 12:40:48 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,13 @@ void	camera_movements(int keycode, t_things *my)
 	if (keycode == K_CAM_RESET)
 		reset_cam_position(my);
 	else if (keycode == K_CAM_TURN_LEFT)
-		my->cam.rot.z += M_PI / 64;
+		my->cam.angle.z += M_PI / 64;
 	else if (keycode == K_CAM_TURN_RIGHT)
-		my->cam.rot.z -= M_PI / 64;
+		my->cam.angle.z -= M_PI / 64;
 	else if (keycode == K_CAM_NOSE_DOWN)
-		my->cam.rot.x += M_PI / 64;
+		my->cam.angle.x += M_PI / 64;
 	else if (keycode == K_CAM_NOSE_UP)
-		my->cam.rot.x -= M_PI / 64;
+		my->cam.angle.x -= M_PI / 64;
 	else if (keycode == K_CAM_GO_FWD)
 		translate_cam(&my->cam, GO_FWD);
 	else if (keycode == K_CAM_GO_BACK)

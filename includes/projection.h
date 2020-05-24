@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 15:01:30 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/21 12:43:45 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ enum			e_projkind
 
 typedef struct	s_cam
 {
-	t_vec3			world;
+	t_vec3			target;
 	t_vec3			dir;
 	t_vec3			up;
 	t_vec3			right;
 	t_vec3			proj_dir;
-	t_vec3			rot;
+	t_vec3			angle;
 	float			dist;
 	float			z_near;
 	float			z_far;
