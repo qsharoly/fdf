@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2020/05/24 14:01:49 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/24 16:04:15 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static t_vertex	p(t_vertex v, t_cam *cam)
 	t_vertex	screen;
 
 	screen.vec = to_screen(v.vec, cam->pipeline);
-	screen.color = v.color;
+	screen.col = v.col;
 	return (screen);
 }
 

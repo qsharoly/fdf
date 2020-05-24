@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/11/26 19:43:41 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/05/24 16:05:37 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ float	dot4(float a[4], float b[4])
 	return (a[X] * b[X] + a[Y] * b[Y] + a[Z] * b[Z] + a[W] * b[W]);
 }
 
-t_vec4	point4(t_float3 v)
+t_vec4	point4(t_vec3 v)
 {
 	t_vec4	new;
 
@@ -40,7 +40,7 @@ t_vec4	point4(t_float3 v)
 	return (new);
 }
 
-t_vec4	direction4(t_float3 v)
+t_vec4	direction4(t_vec3 v)
 {
 	t_vec4	dir;
 
@@ -179,7 +179,7 @@ t_mat4	rot_mat4_simple(char axis, float angle)
 	return (m);
 }
 
-t_mat4	rot_mat4(t_float3 dir, float angle)
+t_mat4	rot_mat4(t_vec3 dir, float angle)
 {
 	t_mat4	m;
 	float	sin_a;
@@ -222,7 +222,7 @@ t_mat4	orthograaphic_mat4(t_cam *cam, t_bitmap *bmp)
 	return (m);
 }
 */
-t_mat4	perspective_mat4(t_cam *cam, t_bitmap *bmp)
+t_mat4	perspective_mat4(t_cam *cam, t_bitmap bmp)
 {
 	t_mat4	m;
 	float	top;
@@ -231,7 +231,7 @@ t_mat4	perspective_mat4(t_cam *cam, t_bitmap *bmp)
 
 	m = zero_mat4();
 	top = tan(0.5 * cam->fov) * cam->z_near;
-	aspect = (float)bmp->x_dim / bmp->y_dim;
+	aspect = (float)bmp.x_dim / bmp.y_dim;
 	right = top * aspect;
 	m.m[0][0] = cam->z_near / top;
 	m.m[1][1] = cam->z_near / right;
@@ -241,7 +241,7 @@ t_mat4	perspective_mat4(t_cam *cam, t_bitmap *bmp)
 	return (m);
 }
 
-void	calc_pipeline(t_cam *cam, t_bitmap *bmp)
+void	calc_pipeline(t_cam *cam, t_bitmap bmp)
 {
 	t_mat4	translation;
 	t_mat4	rotation;
@@ -249,17 +249,17 @@ void	calc_pipeline(t_cam *cam, t_bitmap *bmp)
 	t_mat4	perspective;
 	t_mat4	scaling;
 
-	translation = translation_mat4(-cam->world.x, -cam->world.y, -cam->world.z);
+	translation = translation_mat4(-cam->target.x, -cam->target.y, -cam->target.z);
 	rotation = rot_mat4(cross(cam->dir, ZUNIT), acos(dot(cam->dir, ZUNIT)));
 	distance = translation_mat4(0, 0, cam->dist);
 	perspective = perspective_mat4(cam, bmp);
-	scaling = scaling_mat4(cam->zoom * bmp->y_dim, cam->zoom * bmp->x_dim, 1);
+	scaling = scaling_mat4(cam->zoom * bmp.y_dim, cam->zoom * bmp.x_dim, 1);
 	cam->pipeline = compose(scaling, compose(perspective, compose(distance, compose(rotation, translation))));
 }
 
-t_float3	persp_divide(t_vec4 v)
+t_vec3	persp_divide(t_vec4 v)
 {
-	t_float3	screen;
+	t_vec3	screen;
 
 	screen.x = v.v[X] / v.v[W];
 	screen.y = v.v[Y] / v.v[W];
@@ -267,9 +267,9 @@ t_float3	persp_divide(t_vec4 v)
 	return (screen);
 }
 
-t_float3	to_screen(t_float3 point, t_mat4 pipeline)
+t_vec3	to_screen(t_vec3 point, t_mat4 pipeline)
 {
-	t_float3	screen;
+	t_vec3	screen;
 
 	screen = persp_divide(transform(pipeline, point4(point)));
 	screen.x = 0.5 * 640 + screen.x;
