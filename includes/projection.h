@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:14:54 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/28 00:08:19 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct	s_cam
 	float			z_far;
 	float			fov;
 	float			zoom;
-	float			altitude_mult;
+	float			altitude_scale;
 	float			*zbuf;
 	t_uint			zbuf_size;
 	t_uint			zbuf_stride;
@@ -62,6 +62,6 @@ t_mat4		perspective_mat4(t_cam *cam, t_bitmap bmp);
 t_mat4		orthographic_mat4(t_cam *cam, t_bitmap bmp);
 t_vec3		persp_divide(t_vec4 v);
 void		calc_pipeline(t_cam *cam, t_bitmap bmp);
-t_vec3		to_screen(t_vec3 point, t_mat4 pipeline);
+t_vec3		to_screen(t_vec3 point, const t_cam *cam);
 
 #endif

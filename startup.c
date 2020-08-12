@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 16:57:05 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/27 23:47:23 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int		init_cam(t_cam *cam, t_things *things)
 	cam->fov = 0.5 * M_PI;
 	cam->angle = ORIGIN;
 	cam->projection = Perspective;
-	cam->altitude_mult = 1;
+	cam->altitude_scale = 1;
 	return (GOOD);
 }
 

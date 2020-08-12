@@ -68,7 +68,7 @@ $(NAME): $(OBJ) $(MLX) $(LFT)
 	gcc -o $(NAME) $(OBJ)\
 		$(LIB_PATHS)\
 		$(INC_PATHS)\
-		$(LIB_FLAGS) $(MLX_DEPS)
+		$(LIB_FLAGS)
 
 $(OBJDIR)/%.o: %.c $(DEPDIR)/%.d
 	gcc $(DEPFLAGS) $(CCFLAGS) -c -o $@ $< $(INC_PATHS) 

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:14:59 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 18:13:40 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/27 23:47:30 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_vec3	project(t_vec3 point, const t_cam *cam, t_bitmap bmp)
 	float	persp;
 
 	point = add3(point, scale(cam->target, -1));
-	point.z *= cam->altitude_mult;
+	point.z *= cam->altitude_scale;
 	scr.z = (cam->dist - dot(point, cam->dir)) / dot(cam->dir, cam->proj_dir);
 	if (cam->projection == Perspective)
 		ray_len = scr.z;

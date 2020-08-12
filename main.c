@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 17:22:00 by debby            ###   ########.fr       */
+/*   Updated: 2020/08/13 01:38:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ static int	the_loop(t_things *my)
 {
 	static int		frame = 0;
 	static double	avg_drawing_time = 0;
+	int				usec;
 
 	if (my->state.bench && frame > my->state.bench_max_frames)
 	{
@@ -86,8 +87,9 @@ static int	the_loop(t_things *my)
 	//g_cam_setup_func[my->cam->projection](my->cam);
 	cam_setup_perspective(&my->cam);
 	calc_pipeline(&my->cam, my->bitmap);
-	avg_drawing_time = (avg_drawing_time * (frame - 1) + draw_geometry(my)) / frame;
-	draw_hud(my, frame);
+	usec = draw_geometry(my);
+	avg_drawing_time = (avg_drawing_time * (frame - 1) + usec) / frame;
+	draw_hud(my, avg_drawing_time);
 	my->state.redraw = 0;
 	return (0);
 }

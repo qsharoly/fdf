@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 18:17:57 by debby            ###   ########.fr       */
+/*   Updated: 2020/08/13 01:37:08 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ void		draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color)
 	t_vec2	aa;
 	t_vec2	bb;
 
-	aa = take_xy(to_screen(a, view.cam->pipeline));
-	bb = take_xy(to_screen(b, view.cam->pipeline));
+	aa = take_xy(to_screen(a, view.cam));
+	bb = take_xy(to_screen(b, view.cam));
 	draw_line(view.bmp, aa, bb, color);
 }
 
@@ -83,15 +83,15 @@ static void	ft_append(char *tgt, char *varname, float varval)
 	free(valstr);
 }
 
-void		draw_hud(t_things *my, float frame)
+void		draw_hud(t_things *my, float usec)
 {
 	char		s1[120];
 
 	if (my->state.draw_stats == 1)
 	{
 		s1[0] = '\0';
-		ft_append(s1, "frame ", frame);
-		ft_append(s1, ", zoom = ", my->cam.zoom);
+		ft_append(s1, "", usec);
+		ft_append(s1, "us , zoom = ", my->cam.zoom);
 		ft_append(s1, ", cam.angle[x = ", my->cam.angle.x);
 		ft_append(s1, ", y = ", my->cam.angle.y);
 		ft_append(s1, ", z = ", my->cam.angle.z);

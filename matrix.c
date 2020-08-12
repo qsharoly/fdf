@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 19:27:41 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/28 01:44:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,8 +253,9 @@ void	calc_pipeline(t_cam *cam, t_bitmap bmp)
 	t_mat4	scaling;
 
 	translation = translation_mat4(-cam->target.x, -cam->target.y, -cam->target.z);
+	translation = compose(scaling_mat4(1, 1, cam->altitude_scale), translation);
 	rotation = compose(rot_mat4_simple(X, cam->angle.x), compose(rot_mat4_simple(Y, cam->angle.y), rot_mat4_simple(Z, cam->angle.z)));
-	distance = translation_mat4(0, 0, -cam->dist);
+	distance = translation_mat4(0, 0, cam->dist);
 	if (cam->projection == Perspective)
 	{
 		scaling = scaling_mat4(cam->zoom * bmp.y_dim, cam->zoom * bmp.x_dim, -1);
@@ -270,24 +271,24 @@ void	calc_pipeline(t_cam *cam, t_bitmap bmp)
 		scaling = identity_mat4();
 		prj = identity_mat4();
 	}
-	cam->pipeline = compose(prj, compose(scaling, compose(distance, compose(rotation, translation))));
+	cam->pipeline = compose(prj, compose(distance, compose(scaling, compose(rotation, translation))));
 }
 
 t_vec3	persp_divide(t_vec4 v)
 {
-	t_vec3	screen;
+	t_vec3	res;
 
-	screen.x = v.v[X] / v.v[W];
-	screen.y = v.v[Y] / v.v[W];
-	screen.z = v.v[Z] / v.v[W];
-	return (screen);
+	res.x = v.v[X] / v.v[W];
+	res.y = v.v[Y] / v.v[W];
+	res.z = v.v[Z] / v.v[W];
+	return (res);
 }
 
-t_vec3	to_screen(t_vec3 point, t_mat4 pipeline)
+t_vec3	to_screen(t_vec3 point, const t_cam *cam)
 {
 	t_vec3	screen;
 
-	screen = persp_divide(transform(pipeline, point4(point)));
+	screen = persp_divide(transform(cam->pipeline, point4(point)));
 	screen.x = 0.5 * 640 + screen.x;
 	screen.y = 0.5 * 480 + screen.y;
 	return (screen);

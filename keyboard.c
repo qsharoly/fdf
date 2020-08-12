@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/21 12:40:48 by debby            ###   ########.fr       */
+/*   Updated: 2020/05/27 23:47:40 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ void	controls_who_need_redraw(int keycode, t_things *my)
 	else if (keycode == K_ZOOM_OUT)
 		my->cam.zoom *= 0.8;
 	else if (keycode == K_ALTITUDE_SCALE_UP)
-		my->cam.altitude_mult *= 1.2;
+		my->cam.altitude_scale *= 1.2;
 	else if (keycode == K_ALTITUDE_SCALE_DOWN)
-		my->cam.altitude_mult *= 0.8;
+		my->cam.altitude_scale *= 0.8;
 	else if (keycode == K_TOGGLE_ZBUF)
 		TOGGLE(my->state.use_zbuf);
 	else

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:40:11 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/27 16:25:28 by qsharoly         ###   ########.fr       */
+/*   Updated: 2020/08/13 02:13:24 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # if __APPLE__
 #  define ESC 53
 #  define SPACEBAR 49
+#  define COMMA 43
+#  define PERIOD 47
 #  define LETTER_A 0
 #  define LETTER_B 11
 #  define LETTER_C 8
@@ -42,8 +44,6 @@
 #  define LETTER_X 7
 #  define LETTER_Y 16
 #  define LETTER_Z 6
-#  define COMMA 43
-#  define PERIOD 47
 #  define L_SHIFT 257
 #  define R_SHIFT 258
 # endif
@@ -57,20 +57,25 @@
 #  define LETTER_B 98
 #  define LETTER_C 99
 #  define LETTER_D 100
+#  define LETTER_E 101
+#  define LETTER_F 102
 #  define LETTER_G 103
 #  define LETTER_H 104
 #  define LETTER_I 105
 #  define LETTER_J 106
 #  define LETTER_K 107
 #  define LETTER_L 108
+#  define LETTER_M 109
+#  define LETTER_N 110
 #  define LETTER_O 111
 #  define LETTER_P 112
 #  define LETTER_Q 113
 #  define LETTER_R 114
+#  define LETTER_S 115
 #  define LETTER_T 116
 #  define LETTER_U 117
-#  define LETTER_N 110
-#  define LETTER_S 115
+#  define LETTER_V 118
+#  define LETTER_W 119
 #  define LETTER_X 120
 #  define LETTER_Y 121
 #  define LETTER_Z 122
