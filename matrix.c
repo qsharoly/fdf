@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/28 01:44:54 by debby            ###   ########.fr       */
+/*   Updated: 2021/02/06 22:57:09 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ t_mat4	perspective_mat4(t_cam *cam, t_bitmap bmp)
 	return (m);
 }
 
-void	calc_pipeline(t_cam *cam, t_bitmap bmp)
+void	calc_camera_transform(t_cam *cam, t_bitmap bmp)
 {
 	t_mat4	translation;
 	t_mat4	rotation;
@@ -271,7 +271,7 @@ void	calc_pipeline(t_cam *cam, t_bitmap bmp)
 		scaling = identity_mat4();
 		prj = identity_mat4();
 	}
-	cam->pipeline = compose(prj, compose(distance, compose(scaling, compose(rotation, translation))));
+	cam->transform = compose(prj, compose(distance, compose(scaling, compose(rotation, translation))));
 }
 
 t_vec3	persp_divide(t_vec4 v)
@@ -284,12 +284,12 @@ t_vec3	persp_divide(t_vec4 v)
 	return (res);
 }
 
-t_vec3	to_screen(t_vec3 point, const t_cam *cam)
+t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam)
 {
-	t_vec3	screen;
+	t_vec3	pixel;
 
-	screen = persp_divide(transform(cam->pipeline, point4(point)));
-	screen.x = 0.5 * 640 + screen.x;
-	screen.y = 0.5 * 480 + screen.y;
-	return (screen);
+	pixel = persp_divide(transform(cam->transform, point4(point)));
+	pixel.x = 0.5 * 640 + pixel.x;
+	pixel.y = 0.5 * 480 + pixel.y;
+	return (pixel);
 }

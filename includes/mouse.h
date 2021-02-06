@@ -1,21 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_put_float.c                                     :+:      :+:    :+:   */
+/*   mouse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/27 14:45:10 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/29 18:56:47 by qsharoly         ###   ########.fr       */
+/*   Created: 2019/10/29 14:52:00 by qsharoly          #+#    #+#             */
+/*   Updated: 2019/10/29 14:53:20 by qsharoly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include <math.h>
+#ifndef MOUSE_H
+# define MOUSE_H
 
-void	ft_put_float(float a)
-{
-	ft_putnbr(trunc(a));
-	ft_putchar('.');
-	ft_putnbr(trunc((a - trunc(a)) * 1000));
-}
+# define LMB 1
+# define RMB 2
+# define MMB 3
+# define MWHEELUP 4
+# define MWHEELDOWN 5
+
+#endif

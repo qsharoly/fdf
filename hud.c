@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/08/13 01:37:08 by debby            ###   ########.fr       */
+/*   Updated: 2021/02/06 22:45:53 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ void		draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color)
 	t_vec2	aa;
 	t_vec2	bb;
 
-	aa = take_xy(to_screen(a, view.cam));
-	bb = take_xy(to_screen(b, view.cam));
+	aa = take_xy(geom_to_pixel(a, view.cam));
+	bb = take_xy(geom_to_pixel(b, view.cam));
 	draw_line(view.bmp, aa, bb, color);
 }
 
@@ -78,7 +78,7 @@ static void	ft_append(char *tgt, char *varname, float varval)
 	char *valstr;
 
 	ft_strcat(tgt, varname);
-	valstr = ft_itoa_float(varval);
+	valstr = ft_mini_dtoa(varval);
 	ft_strcat(tgt, valstr);
 	free(valstr);
 }

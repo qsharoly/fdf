@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/28 00:08:19 by debby            ###   ########.fr       */
+/*   Updated: 2021/02/06 23:16:00 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,8 @@ enum			e_projkind
 
 typedef struct	s_cam
 {
-	t_mat4			pipeline;
+	t_mat4			transform;
 	t_vec3			target;
-	t_vec3			dir;
-	t_vec3			up;
-	t_vec3			right;
-	t_vec3			proj_dir;
 	t_vec3			angle;
 	float			dist;
 	float			z_near;
@@ -52,16 +48,11 @@ typedef struct	s_cam
 	enum e_projkind	projection;
 }				t_cam;
 
-t_vec3		project(t_vec3 point, const t_cam *cam, t_bitmap bmp);
-void		cam_setup_perspective(t_cam *cam);
-void		cam_setup_axonometric(t_cam *cam);
-void		cam_setup_military(t_cam *cam);
-void		cam_setup_cavalier(t_cam *cam);
-void		translate_cam(t_cam *cam, int command);
+void		cam_walk(t_cam *cam, int direction);
 t_mat4		perspective_mat4(t_cam *cam, t_bitmap bmp);
 t_mat4		orthographic_mat4(t_cam *cam, t_bitmap bmp);
 t_vec3		persp_divide(t_vec4 v);
-void		calc_pipeline(t_cam *cam, t_bitmap bmp);
-t_vec3		to_screen(t_vec3 point, const t_cam *cam);
+void		calc_camera_transform(t_cam *cam, t_bitmap bmp);
+t_vec3		geom_to_pixel(t_vec3 point, const t_cam *cam);
 
 #endif

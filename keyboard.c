@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/27 23:47:40 by debby            ###   ########.fr       */
+/*   Updated: 2021/02/06 23:16:22 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ void	camera_movements(int keycode, t_things *my)
 	else if (keycode == K_CAM_NOSE_UP)
 		my->cam.angle.x -= M_PI / 64;
 	else if (keycode == K_CAM_GO_FWD)
-		translate_cam(&my->cam, GO_FWD);
+		cam_walk(&my->cam, GO_FWD);
 	else if (keycode == K_CAM_GO_BACK)
-		translate_cam(&my->cam, GO_BACK);
+		cam_walk(&my->cam, GO_BACK);
 	else if (keycode == K_CAM_STRAFE_LEFT)
-		translate_cam(&my->cam, STRAFE_LEFT);
+		cam_walk(&my->cam, STRAFE_LEFT);
 	else if (keycode == K_CAM_STRAFE_RIGHT)
-		translate_cam(&my->cam, STRAFE_RIGHT);
+		cam_walk(&my->cam, STRAFE_RIGHT);
 }
 
 void	controls_who_need_redraw(int keycode, t_things *my)

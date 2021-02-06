@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/21 08:22:04 by debby            ###   ########.fr       */
+/*   Updated: 2021/02/06 22:32:57 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,7 @@ typedef struct	s_things
 int				fail(char *msg);
 float			ft_fmin(float a, float b);
 float			ft_fmax(float a, float b);
-void			ft_put_float(float a);
-char			*ft_itoa_float(float a);
+char			*ft_mini_dtoa(float a);
 t_state			init_state(void);
 int				init_cam(t_cam *cam, t_things *things);
 int				init_map(t_map *map, const char *filename);
@@ -90,5 +89,7 @@ int				draw_controls(void *mlx_ptr, void *mlx_window);
 //void			toggle(int *var);
 void			free_things_and_exit(t_things *things);
 int				key_controls(int keycode, t_things *param);
+int				mouse_move(int x, int y, t_things *th);
+int				mouse_button(int button, int x, int y, t_things *th);
 
 #endif

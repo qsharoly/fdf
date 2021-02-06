@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2020/05/27 23:04:48 by debby            ###   ########.fr       */
+/*   Updated: 2021/02/06 22:43:37 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,13 @@
 #include <stdio.h>
 #include "matrix.h"
 
-/*
-static t_vertex	p(t_vertex v, t_cam *cam, t_bitmap *bmp)
-{
-	t_vertex	projected;
-
-	projected.vec = project(world.vec, cam, bmp);
-	projected.col = world.col;
-	return (projected);
-}
-*/
-
 static t_vertex	p(t_vertex v, t_cam *cam)
 {
-	t_vertex	screen;
+	t_vertex	pixel;
 
-	screen.vec = to_screen(v.vec, cam);
-	screen.col = v.col;
-	return (screen);
+	pixel.vec = geom_to_pixel(v.vec, cam);
+	pixel.col = v.col;
+	return (pixel);
 }
 
 void			draw_map(t_bitmap bmp, t_cam *cam, const t_map *map,

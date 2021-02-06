@@ -32,9 +32,9 @@ ifeq ($(debug), yes)
 endif
 
 SRC = main.c\
-	  startup.c\
+	  init.c\
 	  load_map.c\
-	  map_make_colors.c\
+	  map_colors.c\
 	  ft_fmax.c\
 	  ft_fmin.c\
 	  bitmap.c\
@@ -47,11 +47,10 @@ SRC = main.c\
 	  vector2.c\
 	  vector3.c\
 	  rotations.c\
-	  projection.c\
 	  hud.c\
 	  keyboard.c\
-	  ft_itoa_float.c\
-	  ft_put_float.c\
+	  mouse.c\
+	  ft_mini_dtoa.c\
 	  cam_move.c\
 	  matrix.c
 
