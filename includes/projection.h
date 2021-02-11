@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:16:00 by debby            ###   ########.fr       */
+/*   Updated: 2021/02/11 14:31:29 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ enum			e_projkind
 
 typedef struct	s_cam
 {
-	t_mat4			transform;
+	t_mat4			matrix;
 	t_vec3			target;
 	t_vec3			angle;
 	float			dist;
@@ -49,10 +49,10 @@ typedef struct	s_cam
 }				t_cam;
 
 void		cam_walk(t_cam *cam, int direction);
-t_mat4		perspective_mat4(t_cam *cam, t_bitmap bmp);
-t_mat4		orthographic_mat4(t_cam *cam, t_bitmap bmp);
+void		perspective_mat4(t_mat4, t_cam *cam, t_bitmap bmp);
+void		orthographic_mat4(t_mat4, t_cam *cam, t_bitmap bmp);
 t_vec3		persp_divide(t_vec4 v);
-void		calc_camera_transform(t_cam *cam, t_bitmap bmp);
+void		calc_camera_matrix(t_cam *cam, t_bitmap bmp);
 t_vec3		geom_to_pixel(t_vec3 point, const t_cam *cam);
 
 #endif
