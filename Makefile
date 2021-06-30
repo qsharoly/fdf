@@ -45,8 +45,6 @@ SRC = main.c\
 	  ft_fmax.c\
 	  ft_fmin.c\
 	  bitmap.c\
-	  make_rect.c\
-	  make_vec3.c\
 	  normalize3.c\
 	  draw.c\
 	  draw_zbuf.c\

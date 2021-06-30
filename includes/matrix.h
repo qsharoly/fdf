@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 13:56:16 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:14:22 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 21:15:11 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef	struct	s_m4
 }				t_mat4;
 
 float	dot4(float a[4], float b[4]);
-t_vec4	point4(t_vec3 v);
 t_vec4	direction4(t_vec3 v);
 t_vec4	apply(t_mat4 m, t_vec4 v);
 t_mat4	transpose(t_mat4 m);

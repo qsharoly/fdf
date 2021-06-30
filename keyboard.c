@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 14:09:10 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 20:35:46 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	key_release(int keycode, t_things *th)
 void	camera_movements(int keycode, t_things *th)
 {
 	if (keycode == K_CAM_RESET)
-		reset_cam_position(th);
+		reset_cam(th);
 	else if (keycode == K_CAM_TURN_LEFT)
 		th->cam.angle.z += M_PI / 64;
 	else if (keycode == K_CAM_TURN_RIGHT)

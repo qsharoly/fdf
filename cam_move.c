@@ -6,13 +6,13 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 14:47:14 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 20:35:05 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	reset_cam_position(t_things *things)
+void	reset_cam(t_things *things)
 {
 	if (things->map.rows != NULL)
 	{
@@ -25,6 +25,7 @@ void	reset_cam_position(t_things *things)
 		things->cam.target = ORIGIN;
 	}
 	things->cam.angle = ORIGIN;
+	things->cam.zoom = 1;
 }
 
 void	cam_walk(t_cam *cam, int command)

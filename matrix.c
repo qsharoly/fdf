@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 22:57:09 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 21:15:23 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,13 +29,13 @@ float	dot4(float a[4], float b[4])
 	return (a[X] * b[X] + a[Y] * b[Y] + a[Z] * b[Z] + a[W] * b[W]);
 }
 
-t_vec4	point4(t_vec3 v)
+static t_vec4	point4(float x, float y, float z)
 {
 	t_vec4	new;
 
-	new.v[X] = v.x;
-	new.v[Y] = v.y;
-	new.v[Z] = v.z;
+	new.v[X] = x;
+	new.v[Y] = y;
+	new.v[Z] = z;
 	new.v[W] = 1;
 	return (new);
 }
@@ -276,19 +276,19 @@ void	calc_camera_transform(t_cam *cam, t_bitmap bmp)
 
 t_vec3	persp_divide(t_vec4 v)
 {
+	float	invw;
 	t_vec3	res;
 
-	res.x = v.v[X] / v.v[W];
-	res.y = v.v[Y] / v.v[W];
-	res.z = v.v[Z] / v.v[W];
+	invw = 1 / v.v[W];
+	res = (t_vec3){v.v[X] * invw, v.v[Y] * invw, v.v[Z] * invw};
 	return (res);
 }
 
-t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam)
+t_vec3	geom_to_pixel(t_vec3 pt, const t_cam *cam)
 {
 	t_vec3	pixel;
 
-	pixel = persp_divide(transform(cam->transform, point4(point)));
+	pixel = persp_divide(transform(cam->transform, point4(pt.x, pt.y, pt.z)));
 	pixel.x = 0.5 * 640 + pixel.x;
 	pixel.y = 0.5 * 480 + pixel.y;
 	return (pixel);

@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   make_float3.c                                      :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/06 13:04:29 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/06 13:05:24 by qsharoly         ###   ########.fr       */
+/*   Created: 2019/09/06 18:41:00 by qsharoly          #+#    #+#             */
+/*   Updated: 2021/06/30 20:28:53 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "vector.h"
+#include "libft.h"
 
-t_vec3	vec3(float x, float y, float z)
+void	*ft_memset32(void *b, int c, size_t len)
 {
-	t_vec3	v;
+	size_t	i;
 
-	v.x = x;
-	v.y = y;
-	v.z = z;
-	return (v);
+	i = 0;
+	while (i < len)
+	{
+		*((int *)b + i) = c;
+		i++;
+	}
+	return (b);
 }

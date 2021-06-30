@@ -6,3 +6,4 @@ fdf
 *.dSYM
 .DS_Store
 *.swp
+*perf*

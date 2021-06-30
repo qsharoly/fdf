@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 18:26:50 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 20:48:44 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void		free_things_and_exit(t_things *things)
 }
 
 static void	bmp_clear(t_bitmap bmp, int color) {
-	ft_memset(bmp.data, color, bmp.x_dim * bmp.y_dim * sizeof(int));
+	ft_memset32(bmp.data, color, bmp.x_dim * bmp.y_dim);
 }
 
 static int	draw_geometry(t_things *th)
