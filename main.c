@@ -6,13 +6,14 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:09:34 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 13:33:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/time.h>
 #include <stdio.h>
 #include "mlx.h"
+#include "mlx_int.h"
 #include "libft.h"
 #include "fdf.h"
 #include "palette.h"
@@ -125,32 +126,30 @@ static void		get_options(t_things *things, int argc, char **argv)
 int			main(int argc, char **argv)
 {
 	t_things	th;
-	char		*caption;
-	int			status;
+	int			outcome;
 
-	caption = NULL;
 	if (argc > 1)
 	{
 		th.state = init_state();
 		get_options(&th, argc, argv);
-		status = init_map(&th.map, argv[argc - 1]);
-		if (status == FAIL)
+		outcome = init_map(&th.map, argv[argc - 1]);
+		if (outcome == FAIL)
 			return (-1);
 		ft_putstr_fd("\033[3Dok.\n", 2);
-		caption = ft_strjoin("my fdf : ", argv[argc - 1]);
 	}
 	else
 		put_usage_and_exit();
 	th.mlx = mlx_init();
-	th.window = mlx_new_window(th.mlx, th.state.window_width, th.state.window_height, caption);
-	free(caption);
-	th.mlx_image = mlx_new_image(th.mlx, th.state.window_width, th.state.window_height);
-	init_bitmap(&th.bitmap, th.mlx_image, th.state.window_width, th.state.window_height);
+	th.window = mlx_new_window(th.mlx, XDIM, YDIM, "fdf");
+	th.mlx_image = mlx_new_image(th.mlx, XDIM, YDIM);
+	init_bitmap(&th.bitmap, th.mlx_image, XDIM, YDIM);
 	init_cam(&th.cam, &th);
 	mlx_loop_hook(th.mlx, the_loop, &th);
 	mlx_key_hook(th.window, key_controls, &th);
-	mlx_mouse_hook(th.window, mouse_button, &th);
-	mlx_hook(th.window, 6, 1L << 6, mouse_move, &th);
+	//mlx_mouse_hook(th.window, mouse_press, &th);
+	mlx_hook(th.window, ButtonPress, ButtonPressMask, mouse_press, &th);
+	mlx_hook(th.window, ButtonRelease, ButtonReleaseMask, mouse_release, &th);
+	mlx_hook(th.window, MotionNotify, PointerMotionMask, mouse_move, &th);
 	mlx_loop(th.mlx);
 	return (0);
 }

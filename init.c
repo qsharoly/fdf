@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   startup.c                                          :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/27 23:47:23 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 13:40:25 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ t_state		init_state(void)
 {
 	t_state	state;
 
-	state.window_width = XDIM;
-	state.window_height = YDIM;
+	state.dragging = 0;
 	state.bench_max_frames = BENCHMARK_FRAMES;
 	state.stop_program = 0;
 	state.animation_pause = 1;

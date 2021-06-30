@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 22:32:57 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 13:40:45 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ typedef struct	s_edge
 
 typedef struct	s_state
 {
-	int				window_width;
-	int				window_height;
 	int				bench_max_frames;
+	unsigned int	dragging;
+	int				mousex;
+	int				mousey;
 	unsigned int	stop_program:1;
 	unsigned int	animation_pause:1;
 	unsigned int	animation_step:1;
@@ -90,6 +91,7 @@ int				draw_controls(void *mlx_ptr, void *mlx_window);
 void			free_things_and_exit(t_things *things);
 int				key_controls(int keycode, t_things *param);
 int				mouse_move(int x, int y, t_things *th);
-int				mouse_button(int button, int x, int y, t_things *th);
+int				mouse_press(int button, int x, int y, t_things *th);
+int				mouse_release(int button, int x, int y, t_things *th);
 
 #endif
