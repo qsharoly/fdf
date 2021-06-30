@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 22:45:53 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 15:35:11 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,36 +73,36 @@ void		draw_helpers(t_bitmap bitmap, t_cam *cam)
 	draw_edge(view, ORIGIN, ZUNIT, BLUE);
 }
 
-static void	ft_append(char *tgt, char *varname, float varval)
+static void	ft_append(char *tgt, char *description, float value)
 {
-	char *valstr;
+	char *tmp;
 
-	ft_strcat(tgt, varname);
-	valstr = ft_mini_dtoa(varval);
-	ft_strcat(tgt, valstr);
-	free(valstr);
+	ft_strcat(tgt, description);
+	tmp = ft_mini_dtoa(value);
+	ft_strcat(tgt, tmp);
+	free(tmp);
 }
 
-void		draw_hud(t_things *my, float usec)
+void		draw_hud(t_things *th, float usec)
 {
 	char		s1[120];
 
-	if (my->state.draw_stats == 1)
+	if (th->state.draw_stats == 1)
 	{
 		s1[0] = '\0';
 		ft_append(s1, "", usec);
-		ft_append(s1, "us , zoom = ", my->cam.zoom);
-		ft_append(s1, ", cam.angle[x = ", my->cam.angle.x);
-		ft_append(s1, ", y = ", my->cam.angle.y);
-		ft_append(s1, ", z = ", my->cam.angle.z);
-		if (my->state.use_zbuf)
+		ft_append(s1, "us , zoom = ", th->cam.zoom);
+		ft_append(s1, ", cam.angle[x = ", th->cam.angle.x);
+		ft_append(s1, ", y = ", th->cam.angle.y);
+		ft_append(s1, ", z = ", th->cam.angle.z);
+		if (th->state.use_zbuf)
 			ft_strcat(s1, "], z_buf on");
 		else
 			ft_strcat(s1, ", z_buf off");
 		ft_strcat(s1, ", projection = ");
-		ft_strcat(s1, g_projnames[my->cam.projection]);
-		mlx_string_put(my->mlx, my->window, 10, 10, 0x00FFFFFF, s1);
+		ft_strcat(s1, g_projnames[th->cam.projection]);
+		mlx_string_put(th->mlx, th->window, 10, 10, 0x00FFFFFF, s1);
 	}
-	if (my->state.draw_controls == 1)
-		draw_controls(my->mlx, my->window);
+	if (th->state.draw_controls == 1)
+		draw_controls(th->mlx, th->window);
 }

@@ -6,14 +6,14 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 14:45:44 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/08/20 21:46:26 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 15:29:39 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
 #include "libft.h"
 
-char		*ft_mini_dtoa(double a)
+char		*ft_mini_dtoa(float a)
 {
 	char		*s;
 	char		*intstr;
