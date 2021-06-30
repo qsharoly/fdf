@@ -6,81 +6,87 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:16:22 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 14:09:10 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "keyboard.h"
 #include "fdf.h"
 
-void	toggle(int *var)
+int	key_release(int keycode, t_things *th)
 {
-	*var = !*var;
+	if (keycode == L_SHIFT || keycode == R_SHIFT)
+	{
+		th->state.dragging &= ~SHIFT_MASK;
+	}
+	return (0);
 }
 
-void	camera_movements(int keycode, t_things *my)
+void	camera_movements(int keycode, t_things *th)
 {
 	if (keycode == K_CAM_RESET)
-		reset_cam_position(my);
+		reset_cam_position(th);
 	else if (keycode == K_CAM_TURN_LEFT)
-		my->cam.angle.z += M_PI / 64;
+		th->cam.angle.z += M_PI / 64;
 	else if (keycode == K_CAM_TURN_RIGHT)
-		my->cam.angle.z -= M_PI / 64;
+		th->cam.angle.z -= M_PI / 64;
 	else if (keycode == K_CAM_NOSE_DOWN)
-		my->cam.angle.x += M_PI / 64;
+		th->cam.angle.x += M_PI / 64;
 	else if (keycode == K_CAM_NOSE_UP)
-		my->cam.angle.x -= M_PI / 64;
+		th->cam.angle.x -= M_PI / 64;
 	else if (keycode == K_CAM_GO_FWD)
-		cam_walk(&my->cam, GO_FWD);
+		cam_walk(&th->cam, GO_FWD);
 	else if (keycode == K_CAM_GO_BACK)
-		cam_walk(&my->cam, GO_BACK);
+		cam_walk(&th->cam, GO_BACK);
 	else if (keycode == K_CAM_STRAFE_LEFT)
-		cam_walk(&my->cam, STRAFE_LEFT);
+		cam_walk(&th->cam, STRAFE_LEFT);
 	else if (keycode == K_CAM_STRAFE_RIGHT)
-		cam_walk(&my->cam, STRAFE_RIGHT);
+		cam_walk(&th->cam, STRAFE_RIGHT);
 }
 
-void	controls_who_need_redraw(int keycode, t_things *my)
+void	controls_who_need_redraw(int keycode, t_things *th)
 {
 	if (keycode == K_DRAW_STATS)
-		TOGGLE(my->state.draw_stats);
+		TOGGLE(th->state.draw_stats);
 	else if (keycode == K_DRAW_AXIS)
-		TOGGLE(my->state.draw_helpers);
+		TOGGLE(th->state.draw_helpers);
 	else if (keycode == K_DRAW_CONTROLS)
-		TOGGLE(my->state.draw_controls);
+		TOGGLE(th->state.draw_controls);
 	else if (keycode == K_NEXT_PROJECTION)
-		my->cam.projection = (my->cam.projection + 1) % N_PROJECTION_KINDS;
+		th->cam.projection = (th->cam.projection + 1) % N_PROJECTION_KINDS;
 	else if (keycode == K_ZOOM_IN)
-		my->cam.zoom *= 1.2;
+		th->cam.zoom *= 1.2;
 	else if (keycode == K_ZOOM_OUT)
-		my->cam.zoom *= 0.8;
+		th->cam.zoom *= 0.8;
 	else if (keycode == K_ALTITUDE_SCALE_UP)
-		my->cam.altitude_scale *= 1.2;
+		th->cam.altitude_scale *= 1.2;
 	else if (keycode == K_ALTITUDE_SCALE_DOWN)
-		my->cam.altitude_scale *= 0.8;
+		th->cam.altitude_scale *= 0.8;
 	else if (keycode == K_TOGGLE_ZBUF)
-		TOGGLE(my->state.use_zbuf);
+		TOGGLE(th->state.use_zbuf);
 	else
-		camera_movements(keycode, my);
+		camera_movements(keycode, th);
 }
 
-int		key_controls(int keycode, t_things *my)
+int		key_press(int keycode, t_things *th)
 {
-	my->state.redraw = 0;
-	if (my->state.print_keycodes)
+	th->state.redraw = 0;
+	if (th->state.print_keycodes)
 		ft_putnbr_endl(keycode);
-	if (keycode == K_EXIT1 || keycode == K_EXIT2)
-		free_things_and_exit(my);
+	if (keycode == L_SHIFT || keycode == R_SHIFT)
+		th->state.dragging |= SHIFT_MASK;
+	else if (keycode == K_EXIT1 || keycode == K_EXIT2)
+		free_things_and_exit(th);
 	else if (keycode == K_ANIM_PAUSE)
-		TOGGLE(my->state.animation_pause);
-	else if (keycode == K_ANIM_STEP && my->state.animation_pause)
-		my->state.animation_step = 1;
+		TOGGLE(th->state.animation_pause);
+	else if (keycode == K_ANIM_STEP && th->state.animation_pause)
+		th->state.animation_step = 1;
 	else if (keycode == K_PRINT_KEYCODES)
-		TOGGLE(my->state.print_keycodes);
+		TOGGLE(th->state.print_keycodes);
 	else
 	{
-		my->state.redraw = 1;
-		controls_who_need_redraw(keycode, my);
+		th->state.redraw = 1;
+		controls_who_need_redraw(keycode, th);
 	}
 	return (0);
 }

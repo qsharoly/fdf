@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:40:11 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/08/13 02:13:24 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 13:58:23 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,11 @@
 #  define LETTER_X 120
 #  define LETTER_Y 121
 #  define LETTER_Z 122
+#  define L_SHIFT 65505
+#  define R_SHIFT 65506
 # endif
+
+# define SHIFT_MASK (1<<0)
 
 # define K_EXIT1 ESC
 # define K_EXIT2 LETTER_Q

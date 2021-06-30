@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 13:40:45 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 14:08:21 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ float			ft_fmin(float a, float b);
 float			ft_fmax(float a, float b);
 char			*ft_mini_dtoa(float a);
 t_state			init_state(void);
-int				init_cam(t_cam *cam, t_things *things);
+int				init_cam(t_cam *cam, t_things *th);
 int				init_map(t_map *map, const char *filename);
 int				init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim);
 void			lst_del_fdf_row(void *row, size_t size);
@@ -88,8 +88,9 @@ void			draw_helpers(t_bitmap bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
 //void			toggle(int *var);
-void			free_things_and_exit(t_things *things);
-int				key_controls(int keycode, t_things *param);
+void			free_things_and_exit(t_things *th);
+int				key_press(int keycode, t_things *th);
+int				key_release(int keycode, t_things *th);
 int				mouse_move(int x, int y, t_things *th);
 int				mouse_press(int button, int x, int y, t_things *th);
 int				mouse_release(int button, int x, int y, t_things *th);

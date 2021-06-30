@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 13:33:54 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 14:31:28 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,8 @@ int			main(int argc, char **argv)
 	init_bitmap(&th.bitmap, th.mlx_image, XDIM, YDIM);
 	init_cam(&th.cam, &th);
 	mlx_loop_hook(th.mlx, the_loop, &th);
-	mlx_key_hook(th.window, key_controls, &th);
-	//mlx_mouse_hook(th.window, mouse_press, &th);
+	mlx_hook(th.window, KeyPress, KeyPressMask, key_press, &th);
+	mlx_hook(th.window, KeyRelease, KeyReleaseMask, key_release, &th);
 	mlx_hook(th.window, ButtonPress, ButtonPressMask, mouse_press, &th);
 	mlx_hook(th.window, ButtonRelease, ButtonReleaseMask, mouse_release, &th);
 	mlx_hook(th.window, MotionNotify, PointerMotionMask, mouse_move, &th);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:16:00 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 14:50:12 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct	s_cam
 }				t_cam;
 
 void		cam_walk(t_cam *cam, int direction);
+void		cam_drag(t_cam *cam, float dx, float dy);
 t_mat4		perspective_mat4(t_cam *cam, t_bitmap bmp);
 t_mat4		orthographic_mat4(t_cam *cam, t_bitmap bmp);
 t_vec3		persp_divide(t_vec4 v);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:18:11 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 14:47:14 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,15 @@ void	cam_walk(t_cam *cam, int command)
 		cam->target = add3(cam->target, rot_z(-cam->angle.z, XUNIT));
 	else if (command == STRAFE_LEFT)
 		cam->target = sub3(cam->target, rot_z(-cam->angle.z, XUNIT));
+}
+
+//TODO: why must negate dx and dy?
+void	cam_drag(t_cam *cam, float dx, float dy)
+{
+	t_vec3	delta;
+
+	delta.x = -dx;
+	delta.y = -dy;
+	delta.z = 0;
+	cam->target = add3(cam->target, delta);
 }
