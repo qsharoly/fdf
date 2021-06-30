@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:07:29 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 18:36:12 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static t_vertex	*read_row(int j, const char *line, int *count)
 	while (i < *count)
 	{
 		row[i].vec = vec3(i, j, ft_atoi(cur));
-		row[i].col = int_to_rgba(0);
+		row[i].col = 0x00000000;
 		cur = next_entry(cur);
 		i++;
 	}

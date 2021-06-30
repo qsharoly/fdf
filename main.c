@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 15:41:21 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 18:26:50 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static int	draw_geometry(t_things *th)
 	int				dt;
 	void			(*draw_func)(t_bitmap, t_cam *, t_vertex, t_vertex);
 
-	bmp_clear(th->bitmap, rgba_to_int(BLACK));
+	bmp_clear(th->bitmap, BLACK);
 	gettimeofday(&t1, NULL);
 	if (th->state.use_zbuf) {
 		reset_zbuf(&th->cam);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 16:04:03 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 19:51:21 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 	if (!inbounds3(a.vec, bmp, cam) && !inbounds3(b.vec, bmp, cam))
 		return ;
 	p = a.vec;
-	if ((dt = 1 / length2(take_xy(a.vec), take_xy(b.vec))) < 0.0001)
+	if ((dt = 1 / len2(a.vec.x, a.vec.y, b.vec.x, b.vec.y)) < 0.0001)
 		return ;
 	step.x = (b.vec.x - a.vec.x) * dt;
 	step.y = (b.vec.y - a.vec.y) * dt;
@@ -60,13 +60,15 @@ void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 	t = 0;
 	while (t < 1)
 	{
-		if (inbounds(take_xy(p), bmp)//inbounds3(p, bmp, cam)
+		if (inbounds(p.x, p.y, bmp)//inbounds3(p, bmp, cam)
 			&& p.z < get_zbuf(cam, p.x, p.y))
 		{
 			set_zbuf(cam, p.x, p.y, p.z);
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
 		}
 		t += dt;
-		p = add3(p, step);
+		p.x += step.x;
+		p.y += step.y;
+		p.z += step.z;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 15:35:11 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 18:39:53 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,11 @@ int			draw_controls(void *mlx_ptr, void *mlx_window)
 	return (0);
 }
 
-void		draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color)
+void		draw_edge(t_view view, t_vec3 a, t_vec3 b, int color)
 {
-	t_vec2	aa;
-	t_vec2	bb;
-
-	aa = take_xy(geom_to_pixel(a, view.cam));
-	bb = take_xy(geom_to_pixel(b, view.cam));
-	draw_line(view.bmp, aa, bb, color);
+	a = geom_to_pixel(a, view.cam);
+	b = geom_to_pixel(b, view.cam);
+	draw_line(view.bmp, a, b, color);
 }
 
 void		draw_helpers(t_bitmap bitmap, t_cam *cam)
