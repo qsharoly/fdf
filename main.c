@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 14:31:28 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 15:41:21 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ static int	the_loop(t_things *th)
 	calc_camera_transform(&th->cam, th->bitmap);
 	usec = draw_geometry(th);
 	avg_drawing_time = (avg_drawing_time * (frame - 1) + usec) / frame;
-	draw_hud(th, avg_drawing_time);
+	draw_hud(th, usec);
 	th->state.redraw = 0;
 	return (0);
 }

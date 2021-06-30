@@ -6,13 +6,14 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 14:32:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 14:52:01 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 16:38:46 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 #include "mouse.h"
 #include "keyboard.h"
+#include "settings.h"
 
 int		mouse_move(int x, int y, t_things *th)
 {
@@ -26,12 +27,13 @@ int		mouse_move(int x, int y, t_things *th)
 		th->state.redraw = 1;
 		if (th->state.dragging & SHIFT_MASK)
 		{
-			th->cam.angle.z += M_PI / 64 * dx;
-			th->cam.angle.x += M_PI / 64 * dy;
+			th->cam.angle.z += M_PI / 128 * dx;
+			th->cam.angle.x += M_PI / 128 * -dy;
 		}
 		else
 		{
-			cam_drag(&th->cam, dx / th->cam.zoom, dy / th->cam.zoom);
+			float	factor = (float)th->map.row_size / (XDIM * th->cam.zoom);
+			cam_drag(&th->cam, dx * factor, dy * factor);
 		}
 	}
 	th->state.mousex = x;

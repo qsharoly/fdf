@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 13:40:25 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 16:19:53 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "mlx.h"
 #include "fdf.h"
 #include "settings.h"
+#include <math.h>
 
 int			fail(char *msg)
 {
@@ -54,7 +55,7 @@ int		init_cam(t_cam *cam, t_things *things)
 		cam->target.y = things->map.row_num / 2;
 		cam->target.z = (things->map.z_min + things->map.z_max) / 2;
 		cam->zoom = 1;
-		cam->dist = 0.75 * (things->map.row_size + things->map.row_num);
+		cam->dist = fmax(things->map.row_size, things->map.row_num);
 	}
 	cam->z_near = 1;
 	cam->z_far = 2 * cam->dist;
