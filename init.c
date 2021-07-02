@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:52:54 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 11:17:37 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int		init_map(t_map *map, const char *filename)
 		return (fail("failed to read from file.\n"));
 	if (map->row_num == 0)
 		return (fail("map empty.\n"));
+	map->projected = malloc(map->row_num * map->row_size * sizeof(t_vertex));
 	map_find_height_range(map);
 	map_make_colors(map);
 	return (GOOD);

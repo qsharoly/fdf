@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:50:16 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 12:20:34 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,10 @@ static int	draw_geometry(t_things *th)
 		draw_func = draw_line_gradient;
 	}
 	if (th->map.rows != NULL)
+	{
+		apply_transform(th->map.projected, &th->map, &th->cam);
 		draw_map(th->bitmap, &th->cam, &th->map, draw_func);
+	}
 	gettimeofday(&t2, NULL);
 	dt = 1000000*(t2.tv_sec - t1.tv_sec) + t2.tv_usec - t1.tv_usec;
 	if (th->state.draw_helpers)

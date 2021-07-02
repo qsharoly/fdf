@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:50:34 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 12:18:59 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 
 typedef struct	s_map
 {
+	t_vertex	*projected;
 	t_list		*rows;
 	float		z_min;
 	float		z_max;
@@ -36,8 +37,8 @@ typedef struct	s_map
 
 typedef struct	s_edge
 {
-	t_vertex	v1;
-	t_vertex	v2;
+	t_vertex	*v1;
+	t_vertex	*v2;
 }				t_edge;
 
 typedef struct	s_state
@@ -81,6 +82,7 @@ void			lst_del_fdf_row(void *row, size_t size);
 int				load_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
+void			apply_transform(t_vertex *res, t_map *map, t_cam *cam);
 void			draw_map(t_bitmap bmp, t_cam *cam, const t_map *map,
 				void (*draw_line)(t_bitmap, t_cam *, t_vertex, t_vertex));
 void			reset_cam(t_things *things);
