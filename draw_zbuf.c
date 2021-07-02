@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:53:42 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 14:02:07 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int		inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam)
 /*
 **  use on projected vertices a and b
 **	Implies that at the start of each frame
-**	all elements of z_buf are set to +INFINITY
+**	all elements of z_buf are set to -INFINITY
 */
 
 void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,

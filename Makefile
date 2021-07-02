@@ -25,7 +25,7 @@ INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
 LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
 LIB_FLAGS += -lft -lmlx
 
-debug = yes
+#debug = yes
 
 ifeq ($(debug), yes)
 	CCFLAGS += -g
