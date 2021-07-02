@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 06:18:11 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 08:35:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void		free_things_and_exit(t_things *things)
 {
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
+	free(things->cam.zbuf);
+	ft_lstdel(&things->map.rows, lst_del_fdf_row);
 	exit(0);
 }
 
@@ -88,8 +90,8 @@ static int	the_loop(t_things *th)
 	}
 	if (th->state.redraw == 0)
 	{
-		th->cam.angle.z += 0.05 * M_PI / 100;
-	//	th->cam.angle.x += (-1) * 0.5 * M_PI / 200;
+		th->cam.angle.z -= 0.05 * M_PI / 100;
+		th->cam.angle.x -= 0.5 * M_PI / 200;
 	}
 	frame++;
 	calc_camera_transform(&th->cam);
