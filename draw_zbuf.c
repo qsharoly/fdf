@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 19:51:21 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 06:19:02 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void			reset_zbuf(t_cam *cam)
 	i = 0;
 	while (i < cam->zbuf_size)
 	{
-		cam->zbuf[i] = INFINITY;
+		cam->zbuf[i] = -INFINITY;
 		i++;
 	}
 }
@@ -61,7 +61,7 @@ void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 	while (t < 1)
 	{
 		if (inbounds(p.x, p.y, bmp)//inbounds3(p, bmp, cam)
-			&& p.z < get_zbuf(cam, p.x, p.y))
+			&& p.z > get_zbuf(cam, p.x, p.y))
 		{
 			set_zbuf(cam, p.x, p.y, p.z);
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));

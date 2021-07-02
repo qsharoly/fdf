@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 16:19:53 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 06:29:16 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,13 @@ int		init_cam(t_cam *cam, t_things *things)
 		cam->target.x = things->map.row_size / 2;
 		cam->target.y = things->map.row_num / 2;
 		cam->target.z = (things->map.z_min + things->map.z_max) / 2;
-		cam->zoom = 1;
 		cam->dist = fmax(things->map.row_size, things->map.row_num);
+		cam->zoom = 1;
 	}
 	cam->z_near = 1;
 	cam->z_far = 2 * cam->dist;
 	cam->fov = 0.5 * M_PI;
+	cam->aspect = (float)things->bitmap.y_dim / things->bitmap.x_dim;
 	cam->angle = ORIGIN;
 	cam->projection = Perspective;
 	cam->altitude_scale = 1;
