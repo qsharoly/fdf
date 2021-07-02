@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:31:20 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 19:50:56 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 15:47:10 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ void			draw_edge(t_view view, t_vec3 a, t_vec3 b, int color);
 void			draw_line_gradient(t_bitmap bmp, t_cam *cam,
 					t_vertex a, t_vertex b);
 void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
+					t_vertex a, t_vertex b);
+void			line_dda_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 					t_vertex a, t_vertex b);
 void			reset_zbuf(t_cam *cam);
 

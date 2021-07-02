@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 14:02:07 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 15:58:55 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,43 @@ void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 		p.x += step.x;
 		p.y += step.y;
 		p.z += step.z;
+	}
+}
+
+void	line_dda_gradient_zbuf(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
+{
+	float	x, y;
+	float	dx, dy;
+	float	step;
+	float	z, dz;
+	int		i;
+
+	if (!inbounds3(a.vec, bmp, cam) && !inbounds3(b.vec, bmp, cam))
+		return ;
+	dx = b.vec.x - a.vec.x;
+	dy = b.vec.y - a.vec.y;
+	if (fabs(dx) >= fabs(dy))
+		step = fabs(dx);
+	else
+		step = fabs(dy);
+	dx = dx / step;
+	dy = dy / step;
+	dz = (b.vec.z - a.vec.z) / step;
+	x = a.vec.x;
+	y = a.vec.y;
+	z = a.vec.z;
+	i = 0;
+	while (i <= step)
+	{
+		if (inbounds(x, y, bmp)//inbounds3(p, bmp, cam)
+			&& z > get_zbuf(cam, x, y))
+		{
+			set_zbuf(cam, x, y, z);
+			set_pixel(bmp, x, y, mix(a.col, b.col, (float)(step - i) / step));
+		}
+		x += dx;
+		y += dy;
+		z += dz;
+		i++;
 	}
 }
