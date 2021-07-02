@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/11 14:31:29 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 05:26:12 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct	s_cam
 	float			z_far;
 	float			fov;
 	float			zoom;
+	float			aspect;
 	float			altitude_scale;
 	float			*zbuf;
 	t_uint			zbuf_size;
@@ -51,7 +52,6 @@ typedef struct	s_cam
 void		cam_walk(t_cam *cam, int direction);
 void		perspective_mat4(t_mat4, t_cam *cam, t_bitmap bmp);
 void		orthographic_mat4(t_mat4, t_cam *cam, t_bitmap bmp);
-t_vec3		persp_divide(t_vec4 v);
 void		calc_camera_matrix(t_cam *cam, t_bitmap bmp);
 t_vec3		geom_to_pixel(t_vec3 point, const t_cam *cam);
 

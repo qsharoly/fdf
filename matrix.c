@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 04:44:31 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 05:40:23 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ float	dot4(const t_vec4 a, const t_vec4 b)
 	return (a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3]);
 }
 
-void	point4(t_vec4 tgt, t_vec3 src)
+void	point4(t_vec4 tgt, const t_vec3 src)
 {
 	tgt[X] = src.x;
 	tgt[Y] = src.y;
@@ -27,7 +27,7 @@ void	point4(t_vec4 tgt, t_vec3 src)
 	tgt[W] = 1;
 }
 
-void	direction4(t_vec4 tgt, t_vec3 src)
+void	direction4(t_vec4 tgt, const t_vec3 src)
 {
 	tgt[X] = src.x;
 	tgt[Y] = src.y;
@@ -38,11 +38,15 @@ void	direction4(t_vec4 tgt, t_vec3 src)
 void	transform(const t_mat4 m, t_vec4 v)
 {
 	t_vec4 t;
+
 	t[X] = dot4(m[0], v);
 	t[Y] = dot4(m[1], v);
 	t[Z] = dot4(m[2], v);
 	t[W] = dot4(m[3], v);
-	ft_memcpy(v, t, 4 * sizeof(*v));
+	v[X] = t[X];
+	v[Y] = t[Y];
+	v[Z] = t[Z];
+	v[W] = t[W];
 }
 
 void	compose(t_mat4 b, const t_mat4 a)
@@ -99,27 +103,32 @@ void	scaling_mat4(t_mat4 m, float x_scale, float y_scale, float z_scale)
 
 void	rot_mat4_simple(t_mat4 m, char axis, float angle)
 {
+	float	cos_a;
+	float	sin_a;
+
+	cos_a = cos(angle);
+	sin_a = sin(angle);
 	identity_mat4(m);
 	if (axis == X)
 	{
-		m[1][1] = cos(angle);
-		m[1][2] = -sin(angle);
-		m[2][1] = sin(angle);
-		m[2][2] = cos(angle);
+		m[1][1] = cos_a;
+		m[1][2] = -sin_a;
+		m[2][1] = sin_a;
+		m[2][2] = cos_a;
 	}
 	else if (axis == Y)
 	{
-		m[0][0] = cos(angle);
-		m[0][2] = -sin(angle);
-		m[2][0] = sin(angle);
-		m[2][2] = cos(angle);
+		m[0][0] = cos_a;
+		m[0][2] = -sin_a;
+		m[2][0] = sin_a;
+		m[2][2] = cos_a;
 	}
 	else if (axis == Z)
 	{
-		m[0][0] = cos(angle);
-		m[0][1] = -sin(angle);
-		m[1][0] = sin(angle);
-		m[1][1] = cos(angle);
+		m[0][0] = cos_a;
+		m[0][1] = -sin_a;
+		m[1][0] = sin_a;
+		m[1][1] = cos_a;
 	}
 }
 
@@ -153,7 +162,7 @@ void	orthographic_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
 
 	(void)bmp;
 	top = tan(0.5 * cam->fov) * cam->dist;
-	right = top * bmp.y_dim / bmp.x_dim;
+	right = top * cam->aspect;
 	f = cam->z_far;
 	n = cam->z_near;
 	zero_mat4(m);
@@ -173,7 +182,7 @@ void	perspective_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
 
 	(void)bmp;
 	top = tan(0.5 * cam->fov) * cam->z_near;
-	right = top * bmp.y_dim / bmp.x_dim;
+	right = top * cam->aspect;
 	n = cam->z_near;
 	f = cam->z_far;
 	zero_mat4(m);
@@ -182,28 +191,18 @@ void	perspective_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
 	m[2][2] = f / (f - n);
 	m[2][3] = f * n / (f - n);
 	m[3][2] = -1;
-	/*
-	(void)cam;
-	(void)bmp;
-	zero_mat4(m);
-	m[0][0] = 1;
-	m[1][1] = 1;
-	m[2][2] = 1;
-	m[2][3] = 1;
-	m[3][2] = -1;
-	*/
 }
 
 void	calc_camera_matrix(t_cam *cam, t_bitmap bmp)
 {
-	t_mat4	t;
-	t_mat4	zstretch;
-	t_mat4	rx;
-	t_mat4	ry;
-	t_mat4	rz;
-	t_mat4	dist;
-	t_mat4	proj;
-	t_mat4	zoom;
+	static t_mat4	t;
+	static t_mat4	zstretch;
+	static t_mat4	rx;
+	static t_mat4	ry;
+	static t_mat4	rz;
+	static t_mat4	dist;
+	static t_mat4	proj;
+	static t_mat4	zoom;
 
 	translation_mat4(t, -cam->target.x, -cam->target.y, -cam->target.z);
 	scaling_mat4(zstretch, 1, 1, cam->altitude_scale);
@@ -224,17 +223,14 @@ void	calc_camera_matrix(t_cam *cam, t_bitmap bmp)
 	compose(cam->matrix, dist);
 	compose(cam->matrix, proj);
 	compose(cam->matrix, zoom);
-
 }
 
-t_vec3	persp_divide(t_vec4 v)
+static void	persp_divide(t_vec4 v)
 {
-	t_vec3	res;
-
-	res.x = v[X] / v[W];
-	res.y = v[Y] / v[W];
-	res.z = v[Z] / v[W];
-	return (res);
+	v[X] /= v[W];
+	v[Y] /= v[W];
+	v[Z] /= v[W];
+	v[W] = 1;
 }
 
 t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam)
@@ -244,8 +240,9 @@ t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam)
 
 	point4(p4, point);
 	transform(cam->matrix, p4);
-	pixel = persp_divide(p4);
-	pixel.x = (pixel.x + 1) * XDIM / 2;
-	pixel.y = (pixel.y + 1) * YDIM / 2;
+	persp_divide(p4);
+	pixel.x = (p4[X] + 1) * XDIM / 2;
+	pixel.y = (p4[Y] + 1) * YDIM / 2;
+	pixel.z = p4[Z];
 	return (pixel);
 }
