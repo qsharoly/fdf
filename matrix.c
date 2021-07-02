@@ -6,11 +6,12 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/11 15:59:07 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 04:44:31 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "projection.h"
+#include "settings.h"
 #include "libft.h"
 
 float	dot4(const t_vec4 a, const t_vec4 b)
@@ -44,7 +45,7 @@ void	transform(const t_mat4 m, t_vec4 v)
 	ft_memcpy(v, t, 4 * sizeof(*v));
 }
 
-void	mmul(t_mat4 a, const t_mat4 b)
+void	compose(t_mat4 b, const t_mat4 a)
 {
 	int		i;
 	int		j;
@@ -62,7 +63,7 @@ void	mmul(t_mat4 a, const t_mat4 b)
 		}
 		j++;
 	}
-	ft_memcpy(a, prod, 16*sizeof(float));
+	ft_memcpy(b, prod, 16*sizeof(float));
 }
 
 void	zero_mat4(t_mat4 m)
@@ -150,14 +151,15 @@ void	orthographic_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
 	float	f;
 	float	n;
 
-	zero_mat4(m);
-	top = tan(0.5 * cam->fov) * cam->z_near;
-	right = top * bmp.x_dim / bmp.y_dim;
+	(void)bmp;
+	top = tan(0.5 * cam->fov) * cam->dist;
+	right = top * bmp.y_dim / bmp.x_dim;
 	f = cam->z_far;
 	n = cam->z_near;
-	m[0][0] = n / top;
-	m[1][1] = n / right;
-	m[2][2] = -2 / (f - n);
+	zero_mat4(m);
+	m[0][0] = 1 / top;
+	m[1][1] = 1 / right;
+	m[2][2] = 2 / (f - n);
 	m[2][3] = -(f + n) / (f - n);
 	m[3][3] = 1;
 }
@@ -166,61 +168,63 @@ void	perspective_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
 {
 	float	top;
 	float	right;
-	float	f;
-	float	n;
+	float	n; //near: from eye to screen
+	float	f; //far: from eye to clipping plane
 
-	zero_mat4(m);
+	(void)bmp;
 	top = tan(0.5 * cam->fov) * cam->z_near;
-	right = top * bmp.x_dim / bmp.y_dim;
-	f = cam->z_far;
+	right = top * bmp.y_dim / bmp.x_dim;
 	n = cam->z_near;
+	f = cam->z_far;
+	zero_mat4(m);
 	m[0][0] = n / top;
 	m[1][1] = n / right;
 	m[2][2] = f / (f - n);
-	m[2][3] = - f * n / (f - n);
-	m[3][2] = 1;
+	m[2][3] = f * n / (f - n);
+	m[3][2] = -1;
+	/*
+	(void)cam;
+	(void)bmp;
+	zero_mat4(m);
+	m[0][0] = 1;
+	m[1][1] = 1;
+	m[2][2] = 1;
+	m[2][3] = 1;
+	m[3][2] = -1;
+	*/
 }
 
 void	calc_camera_matrix(t_cam *cam, t_bitmap bmp)
 {
 	t_mat4	t;
+	t_mat4	zstretch;
 	t_mat4	rx;
 	t_mat4	ry;
 	t_mat4	rz;
-	t_mat4	s;
 	t_mat4	dist;
-	t_mat4	p;
+	t_mat4	proj;
+	t_mat4	zoom;
 
 	translation_mat4(t, -cam->target.x, -cam->target.y, -cam->target.z);
+	scaling_mat4(zstretch, 1, 1, cam->altitude_scale);
 	rot_mat4_simple(rx, X, cam->angle.x);
 	rot_mat4_simple(ry, Y, cam->angle.y);
 	rot_mat4_simple(rz, Z, cam->angle.z);
-	scaling_mat4(s, 1, 1, cam->altitude_scale);
-	identity_mat4(cam->matrix);
-	mmul(cam->matrix, s);
-	mmul(cam->matrix, rz);
-	mmul(cam->matrix, ry);
-	mmul(cam->matrix, rx);
-	mmul(cam->matrix, t);
-	translation_mat4(dist, 0, 0, cam->dist);
+	translation_mat4(dist, 0, 0, -(cam->z_near + cam->dist));
 	if (cam->projection == Perspective)
-	{
-		scaling_mat4(s, cam->zoom * bmp.y_dim, cam->zoom * bmp.x_dim, 1);
-		perspective_mat4(p, cam, bmp);
-	}
-	else if (cam->projection == Axonometric)
-	{
-		scaling_mat4(s, cam->zoom * bmp.y_dim, cam->zoom * bmp.x_dim, 1);
-		orthographic_mat4(p, cam, bmp);
-	}
+		perspective_mat4(proj, cam, bmp);
 	else
-	{
-		identity_mat4(s);
-		identity_mat4(p);
-	}
-	mmul(cam->matrix, dist);
-	mmul(cam->matrix, s);
-	mmul(cam->matrix, p);
+		orthographic_mat4(proj, cam, bmp);
+	scaling_mat4(zoom, cam->zoom, cam->zoom, cam->zoom);
+	identity_mat4(cam->matrix);
+	compose(cam->matrix, t);
+	compose(cam->matrix, zstretch);
+	compose(cam->matrix, rx);
+	compose(cam->matrix, rz);
+	compose(cam->matrix, dist);
+	compose(cam->matrix, proj);
+	compose(cam->matrix, zoom);
+
 }
 
 t_vec3	persp_divide(t_vec4 v)
@@ -241,7 +245,7 @@ t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam)
 	point4(p4, point);
 	transform(cam->matrix, p4);
 	pixel = persp_divide(p4);
-	pixel.x = 0.5 * 640 + pixel.x;
-	pixel.y = 0.5 * 480 + pixel.y;
+	pixel.x = (pixel.x + 1) * XDIM / 2;
+	pixel.y = (pixel.y + 1) * YDIM / 2;
 	return (pixel);
 }

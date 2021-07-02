@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/11 15:31:13 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 04:43:57 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void			reset_zbuf(t_cam *cam)
 	i = 0;
 	while (i < cam->zbuf_size)
 	{
-		cam->zbuf[i] = INFINITY;
+		cam->zbuf[i] = -INFINITY;
 		i++;
 	}
 }
@@ -33,6 +33,15 @@ static float	get_zbuf(t_cam *cam, t_uint x, t_uint y)
 static void		set_zbuf(t_cam *cam, t_uint x, t_uint y, float val)
 {
 	*(cam->zbuf + y * cam->zbuf_stride + x) = val;
+}
+
+//TODO: correct z culling
+int		inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam)
+{
+	(void)cam;
+	return (point.x >= 0.0 && point.x <= bmp.x_dim
+			&& point.y >= 0.0 && point.y <= bmp.y_dim
+			&& point.z <= 0);
 }
 
 /*
@@ -61,7 +70,7 @@ void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 	while (t < 1)
 	{
 		if (inbounds(take_xy(p), bmp)
-			&& p.z < get_zbuf(cam, p.x, p.y))
+			&& p.z > get_zbuf(cam, p.x, p.y))
 		{
 			set_zbuf(cam, p.x, p.y, p.z);
 			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));

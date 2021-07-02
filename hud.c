@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/11 13:03:19 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 03:44:41 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,11 @@ void		draw_helpers(t_bitmap bitmap, t_cam *cam)
 	view.bmp = bitmap;
 	view.cam = cam;
 	draw_edge(view, cam->target, add3(XUNIT, cam->target),
-			PEACH);
+			RED);
 	draw_edge(view, cam->target, add3(YUNIT, cam->target),
-			LIGHTGREEN);
+			GREEN);
 	draw_edge(view, cam->target, add3(ZUNIT, cam->target),
-			PURPLE);
+			BLUE);
 	draw_edge(view, ORIGIN, XUNIT, RED);
 	draw_edge(view, ORIGIN, YUNIT, GREEN);
 	draw_edge(view, ORIGIN, ZUNIT, BLUE);
@@ -83,6 +83,11 @@ static void	ft_append(char *tgt, char *varname, float varval)
 	free(valstr);
 }
 
+float	rad2deg(float radians)
+{
+	return (radians * 180 / M_PI);
+}
+
 void		draw_hud(t_things *my, float usec)
 {
 	char		s1[120];
@@ -92,9 +97,9 @@ void		draw_hud(t_things *my, float usec)
 		s1[0] = '\0';
 		ft_append(s1, "", usec);
 		ft_append(s1, "us , zoom = ", my->cam.zoom);
-		ft_append(s1, ", cam.angle[x = ", my->cam.angle.x);
-		ft_append(s1, ", y = ", my->cam.angle.y);
-		ft_append(s1, ", z = ", my->cam.angle.z);
+		ft_append(s1, ", cam.angle[x = ", rad2deg(my->cam.angle.x));
+		ft_append(s1, ", y = ", rad2deg(my->cam.angle.y));
+		ft_append(s1, ", z = ", rad2deg(my->cam.angle.z));
 		if (my->state.use_zbuf)
 			ft_strcat(s1, "], z_buf on");
 		else
@@ -102,7 +107,17 @@ void		draw_hud(t_things *my, float usec)
 		ft_strcat(s1, ", projection = ");
 		ft_strcat(s1, g_projnames[my->cam.projection]);
 		mlx_string_put(my->mlx, my->window, 10, 10, 0x00FFFFFF, s1);
+		s1[0] = '\0';
+		ft_append(s1, "fov = ", rad2deg(my->cam.fov));
+		mlx_string_put(my->mlx, my->window, 10, 10 + 10, 0x00FFFFFF, s1);
 	}
+	t_vec2		p;
+	p = take_xy(geom_to_pixel(add3(my->cam.target, XUNIT), &my->cam));
+	mlx_string_put(my->mlx, my->window, p.x, p.y, 0x00ff003f, "x axis!");
+	p = take_xy(geom_to_pixel(add3(my->cam.target, YUNIT), &my->cam));
+	mlx_string_put(my->mlx, my->window, p.x, p.y, 0x0000ff3f, "y axis!");
+	p = take_xy(geom_to_pixel(add3(my->cam.target, ZUNIT), &my->cam));
+	mlx_string_put(my->mlx, my->window, p.x, p.y, 0x00003fff, "z axis!");
 	if (my->state.draw_controls == 1)
 		draw_controls(my->mlx, my->window);
 }

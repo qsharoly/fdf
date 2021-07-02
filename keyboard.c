@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:16:22 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 03:48:50 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,16 @@ void	camera_movements(int keycode, t_things *my)
 		cam_walk(&my->cam, STRAFE_LEFT);
 	else if (keycode == K_CAM_STRAFE_RIGHT)
 		cam_walk(&my->cam, STRAFE_RIGHT);
+	else if (keycode == EQUALS)
+	{
+		my->cam.fov += M_PI / 32;
+		my->cam.fov = fmin(my->cam.fov, M_PI);
+	}
+	else if (keycode == MINUS)
+	{
+		my->cam.fov -= M_PI / 32;
+		my->cam.fov = fmax(my->cam.fov, 10.0 / 180 * M_PI);
+	}
 }
 
 void	controls_who_need_redraw(int keycode, t_things *my)

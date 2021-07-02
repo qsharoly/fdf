@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   startup.c                                          :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/27 23:47:23 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 03:09:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ int		init_cam(t_cam *cam, t_things *things)
 		cam->target.x = things->map.row_size / 2;
 		cam->target.y = things->map.row_num / 2;
 		cam->target.z = (things->map.z_min + things->map.z_max) / 2;
+		cam->dist = fmax(things->map.row_size, things->map.row_num);
 		cam->zoom = 1;
-		cam->dist = 0.75 * (things->map.row_size + things->map.row_num);
 	}
 	cam->z_near = 1;
 	cam->z_far = 2 * cam->dist;

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:40:11 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/08/13 02:13:24 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 03:47:17 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,9 @@
 #  define ESC 65307
 #  define SPACEBAR 32
 #  define COMMA 44
+#  define MINUS 45
 #  define PERIOD 46
+#  define EQUALS 61
 #  define LETTER_A 97
 #  define LETTER_B 98
 #  define LETTER_C 99
