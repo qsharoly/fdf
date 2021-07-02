@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 03:44:41 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 09:56:25 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,11 @@ int			draw_controls(void *mlx_ptr, void *mlx_window)
 	return (0);
 }
 
-void		draw_edge(t_view view, t_vec3 a, t_vec3 b, t_rgba color)
+void		draw_edge(t_view view, t_vec3 a, t_vec3 b, int color)
 {
-	t_vec2	aa;
-	t_vec2	bb;
-
-	aa = take_xy(geom_to_pixel(a, view.cam));
-	bb = take_xy(geom_to_pixel(b, view.cam));
-	draw_line(view.bmp, aa, bb, color);
+	a = geom_to_pixel(a, view.cam);
+	b = geom_to_pixel(b, view.cam);
+	draw_line(view.bmp, a, b, color);
 }
 
 void		draw_helpers(t_bitmap bitmap, t_cam *cam)
@@ -73,14 +70,14 @@ void		draw_helpers(t_bitmap bitmap, t_cam *cam)
 	draw_edge(view, ORIGIN, ZUNIT, BLUE);
 }
 
-static void	ft_append(char *tgt, char *varname, float varval)
+static void	ft_append(char *tgt, char *description, float value)
 {
-	char *valstr;
+	char *tmp;
 
-	ft_strcat(tgt, varname);
-	valstr = ft_mini_dtoa(varval);
-	ft_strcat(tgt, valstr);
-	free(valstr);
+	ft_strcat(tgt, description);
+	tmp = ft_mini_dtoa(value);
+	ft_strcat(tgt, tmp);
+	free(tmp);
 }
 
 float	rad2deg(float radians)
@@ -88,36 +85,26 @@ float	rad2deg(float radians)
 	return (radians * 180 / M_PI);
 }
 
-void		draw_hud(t_things *my, float usec)
+void		draw_hud(t_things *th, float usec)
 {
 	char		s1[120];
 
-	if (my->state.draw_stats == 1)
+	if (th->state.draw_stats == 1)
 	{
 		s1[0] = '\0';
 		ft_append(s1, "", usec);
-		ft_append(s1, "us , zoom = ", my->cam.zoom);
-		ft_append(s1, ", cam.angle[x = ", rad2deg(my->cam.angle.x));
-		ft_append(s1, ", y = ", rad2deg(my->cam.angle.y));
-		ft_append(s1, ", z = ", rad2deg(my->cam.angle.z));
-		if (my->state.use_zbuf)
+		ft_append(s1, "us , zoom = ", th->cam.zoom);
+		ft_append(s1, ", cam.angle[x = ", rad2deg(th->cam.angle.x));
+		ft_append(s1, ", y = ", rad2deg(th->cam.angle.y));
+		ft_append(s1, ", z = ", rad2deg(th->cam.angle.z));
+		if (th->state.use_zbuf)
 			ft_strcat(s1, "], z_buf on");
 		else
 			ft_strcat(s1, ", z_buf off");
 		ft_strcat(s1, ", projection = ");
-		ft_strcat(s1, g_projnames[my->cam.projection]);
-		mlx_string_put(my->mlx, my->window, 10, 10, 0x00FFFFFF, s1);
-		s1[0] = '\0';
-		ft_append(s1, "fov = ", rad2deg(my->cam.fov));
-		mlx_string_put(my->mlx, my->window, 10, 10 + 10, 0x00FFFFFF, s1);
+		ft_strcat(s1, g_projnames[th->cam.projection]);
+		mlx_string_put(th->mlx, th->window, 10, 10, 0x00FFFFFF, s1);
 	}
-	t_vec2		p;
-	p = take_xy(geom_to_pixel(add3(my->cam.target, XUNIT), &my->cam));
-	mlx_string_put(my->mlx, my->window, p.x, p.y, 0x00ff003f, "x axis!");
-	p = take_xy(geom_to_pixel(add3(my->cam.target, YUNIT), &my->cam));
-	mlx_string_put(my->mlx, my->window, p.x, p.y, 0x0000ff3f, "y axis!");
-	p = take_xy(geom_to_pixel(add3(my->cam.target, ZUNIT), &my->cam));
-	mlx_string_put(my->mlx, my->window, p.x, p.y, 0x00003fff, "z axis!");
-	if (my->state.draw_controls == 1)
-		draw_controls(my->mlx, my->window);
+	if (th->state.draw_controls == 1)
+		draw_controls(th->mlx, th->window);
 }

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 04:49:23 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 09:52:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "mlx.h"
 #include "fdf.h"
 #include "settings.h"
+#include <math.h>
 
 int			fail(char *msg)
 {
@@ -26,8 +27,7 @@ t_state		init_state(void)
 {
 	t_state	state;
 
-	state.window_width = XDIM;
-	state.window_height = YDIM;
+	state.dragging = 0;
 	state.bench_max_frames = BENCHMARK_FRAMES;
 	state.stop_program = 0;
 	state.animation_pause = 1;
@@ -62,6 +62,7 @@ int		init_cam(t_cam *cam, t_things *things)
 	cam->fov = 0.5 * M_PI;
 	cam->aspect = (float)things->bitmap.y_dim / things->bitmap.x_dim;
 	cam->angle = ORIGIN;
+//	cam->angle = (t_vec3){M_PI / 3, 0, M_PI / 4};
 	cam->projection = Perspective;
 	cam->altitude_scale = 1;
 	return (GOOD);

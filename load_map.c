@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:07:29 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 20:23:40 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 #include "fdf.h"
 #include "bitmap.h"
 
-void			lst_del_fdf_row(void *row, size_t size)
+void	lst_del_fdf_row(void *row, size_t size)
 {
 	if (!row || size == 0)
 		return ;
 	free(row);
 }
 
-static char		*next_entry(char *cur)
+static char	*next_entry(char *cur)
 {
 	while (*cur && *cur != ' ')
 		cur++;
@@ -31,7 +31,7 @@ static char		*next_entry(char *cur)
 	return (cur);
 }
 
-static int		count_entries(const char *line)
+static int	count_entries(const char *line)
 {
 	char	*cur;
 	int		count;
@@ -66,15 +66,15 @@ static t_vertex	*read_row(int j, const char *line, int *count)
 	cur = (char *)line;
 	while (i < *count)
 	{
-		row[i].vec = vec3(i, j, ft_atoi(cur));
-		row[i].col = int_to_rgba(0);
+		row[i].vec = (t_vec3){i, j, ft_atoi(cur)};
+		row[i].col = 0x00000000;
 		cur = next_entry(cur);
 		i++;
 	}
 	return (row);
 }
 
-static int		rg_abort(t_list **rows, char *line, t_vertex *row,
+static int	rg_abort(t_list **rows, char *line, t_vertex *row,
 					char *msg)
 {
 	ft_putstr_fd(msg, 2);
@@ -85,7 +85,7 @@ static int		rg_abort(t_list **rows, char *line, t_vertex *row,
 	return (-2);
 }
 
-int				load_map(int fd, t_map *map)
+int	load_map(int fd, t_map *map)
 {
 	t_vertex	*row;
 	char		*line;
@@ -113,4 +113,3 @@ int				load_map(int fd, t_map *map)
 	free(line);
 	return (gnl_status);
 }
-

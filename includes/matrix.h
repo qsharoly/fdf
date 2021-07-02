@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 13:56:16 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 05:10:43 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 09:52:29 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ float	dot4(const t_vec4 a, const t_vec4 b);
 void	point4(t_vec4 tgt, t_vec3 v);
 void	direction4(t_vec4 tgt, t_vec3 v);
 void	transform(const t_mat4 m, t_vec4 v);
-void	mmul(t_mat4 a, const t_mat4 b);
+void	compose(t_mat4 a, const t_mat4 b);
 void	zero_mat4(t_mat4 m);
 void	identity_mat4(t_mat4 m);
 void	translation_mat4(t_mat4 m, float x, float y, float z);

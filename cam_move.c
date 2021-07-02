@@ -6,13 +6,13 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/06 23:18:11 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 20:35:05 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	reset_cam_position(t_things *things)
+void	reset_cam(t_things *things)
 {
 	if (things->map.rows != NULL)
 	{
@@ -25,6 +25,7 @@ void	reset_cam_position(t_things *things)
 		things->cam.target = ORIGIN;
 	}
 	things->cam.angle = ORIGIN;
+	things->cam.zoom = 1;
 }
 
 void	cam_walk(t_cam *cam, int command)
@@ -37,4 +38,15 @@ void	cam_walk(t_cam *cam, int command)
 		cam->target = add3(cam->target, rot_z(-cam->angle.z, XUNIT));
 	else if (command == STRAFE_LEFT)
 		cam->target = sub3(cam->target, rot_z(-cam->angle.z, XUNIT));
+}
+
+//TODO: why must negate dx and dy?
+void	cam_drag(t_cam *cam, float dx, float dy)
+{
+	t_vec3	delta;
+
+	delta.x = -dx;
+	delta.y = -dy;
+	delta.z = 0;
+	cam->target = add3(cam->target, delta);
 }

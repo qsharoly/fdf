@@ -7,10 +7,12 @@ OBJDIR = objects
 DEPDIR = deps
 DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 
-debug = yes
-
 ifeq ($(debug), yes)
 	CCFLAGS += -g
+endif
+#optimize=yes
+ifeq ($(optimize), yes)
+	CCFLAGS += -O3
 endif
 
 SRC = $(shell ls ft_*.c) get_next_line.c

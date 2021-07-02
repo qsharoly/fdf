@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:27:49 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:06:32 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 17:43:08 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct	s_vec3
 # define ZUNIT (t_vec3) {0.0, 0.0, 1.0}
 
 float		squared(float a);
+float		len2(float ax, float ay, float bx, float by);
 float		length2(t_vec2 a, t_vec2 b);
 t_vec2		add2(t_vec2 a, t_vec2 b);
 t_vec2		take_xy(t_vec3 point);

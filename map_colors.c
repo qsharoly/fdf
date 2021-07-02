@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   map_make_colors.c                                  :+:      :+:    :+:   */
+/*   map_colors.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:15:20 by debby            ###   ########.fr       */
+/*   Updated: 2021/06/30 19:51:06 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void			map_find_height_range(t_map *map)
 	}
 }
 
-static t_rgba	color_from_z(t_vec3 point,
+static int	color_from_z(t_vec3 point,
 					float z_min, float z_mid, float z_max)
 {
 	if (z_max == z_min)

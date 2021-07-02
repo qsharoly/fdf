@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 05:40:23 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 09:39:05 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,14 +153,13 @@ void	rot_mat4(t_mat4 m, t_vec3 dir, float angle)
 	m[3][3] = 1;
 }
 
-void	orthographic_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
+void	orthographic_mat4(t_mat4 m, t_cam *cam)
 {
 	float	top;
 	float	right;
 	float	f;
 	float	n;
 
-	(void)bmp;
 	top = tan(0.5 * cam->fov) * cam->dist;
 	right = top * cam->aspect;
 	f = cam->z_far;
@@ -173,14 +172,13 @@ void	orthographic_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
 	m[3][3] = 1;
 }
 
-void	perspective_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
+void	perspective_mat4(t_mat4 m, t_cam *cam)
 {
 	float	top;
 	float	right;
 	float	n; //near: from eye to screen
 	float	f; //far: from eye to clipping plane
 
-	(void)bmp;
 	top = tan(0.5 * cam->fov) * cam->z_near;
 	right = top * cam->aspect;
 	n = cam->z_near;
@@ -193,7 +191,7 @@ void	perspective_mat4(t_mat4 m, t_cam *cam, t_bitmap bmp)
 	m[3][2] = -1;
 }
 
-void	calc_camera_matrix(t_cam *cam, t_bitmap bmp)
+void	calc_camera_transform(t_cam *cam)
 {
 	static t_mat4	t;
 	static t_mat4	zstretch;
@@ -211,9 +209,9 @@ void	calc_camera_matrix(t_cam *cam, t_bitmap bmp)
 	rot_mat4_simple(rz, Z, cam->angle.z);
 	translation_mat4(dist, 0, 0, -(cam->z_near + cam->dist));
 	if (cam->projection == Perspective)
-		perspective_mat4(proj, cam, bmp);
+		perspective_mat4(proj, cam);
 	else
-		orthographic_mat4(proj, cam, bmp);
+		orthographic_mat4(proj, cam);
 	scaling_mat4(zoom, cam->zoom, cam->zoom, cam->zoom);
 	identity_mat4(cam->matrix);
 	compose(cam->matrix, t);

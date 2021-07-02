@@ -6,13 +6,14 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/02/11 14:28:46 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/02 09:50:16 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <sys/time.h>
 #include <stdio.h>
 #include "mlx.h"
+#include "mlx_int.h"
 #include "libft.h"
 #include "fdf.h"
 #include "palette.h"
@@ -34,11 +35,13 @@ void		free_things_and_exit(t_things *things)
 {
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
+	free(things->cam.zbuf);
+	ft_lstdel(&things->map.rows, lst_del_fdf_row);
 	exit(0);
 }
 
 static void	bmp_clear(t_bitmap bmp, int color) {
-	ft_memset(bmp.data, color, bmp.x_dim * bmp.y_dim * sizeof(int));
+	ft_memset32(bmp.data, color, bmp.x_dim * bmp.y_dim);
 }
 
 static int	draw_geometry(t_things *th)
@@ -48,7 +51,7 @@ static int	draw_geometry(t_things *th)
 	int				dt;
 	void			(*draw_func)(t_bitmap, t_cam *, t_vertex, t_vertex);
 
-	bmp_clear(th->bitmap, rgba_to_int(BLACK));
+	bmp_clear(th->bitmap, BLACK);
 	gettimeofday(&t1, NULL);
 	if (th->state.use_zbuf) {
 		reset_zbuf(&th->cam);
@@ -87,14 +90,14 @@ static int	the_loop(t_things *th)
 	}
 	if (th->state.redraw == 0)
 	{
-		th->cam.angle.z += 0.05 * M_PI / 100;
-	//	th->cam.angle.x += (-1) * 0.5 * M_PI / 200;
+		th->cam.angle.z -= 0.05 * M_PI / 100;
+		th->cam.angle.x -= 0.5 * M_PI / 200;
 	}
 	frame++;
-	calc_camera_matrix(&th->cam, th->bitmap);
+	calc_camera_transform(&th->cam);
 	usec = draw_geometry(th);
 	avg_drawing_time = (avg_drawing_time * (frame - 1) + usec) / frame;
-	draw_hud(th, avg_drawing_time);
+	draw_hud(th, usec);
 	th->state.redraw = 0;
 	return (0);
 }
@@ -125,32 +128,30 @@ static void		get_options(t_things *things, int argc, char **argv)
 int			main(int argc, char **argv)
 {
 	t_things	th;
-	char		*caption;
-	int			status;
+	int			outcome;
 
-	caption = NULL;
 	if (argc > 1)
 	{
 		th.state = init_state();
 		get_options(&th, argc, argv);
-		status = init_map(&th.map, argv[argc - 1]);
-		if (status == FAIL)
+		outcome = init_map(&th.map, argv[argc - 1]);
+		if (outcome == FAIL)
 			return (-1);
 		ft_putstr_fd("\033[3Dok.\n", 2);
-		caption = ft_strjoin("my fdf : ", argv[argc - 1]);
 	}
 	else
 		put_usage_and_exit();
 	th.mlx = mlx_init();
-	th.window = mlx_new_window(th.mlx, th.state.window_width, th.state.window_height, caption);
-	free(caption);
-	th.mlx_image = mlx_new_image(th.mlx, th.state.window_width, th.state.window_height);
-	init_bitmap(&th.bitmap, th.mlx_image, th.state.window_width, th.state.window_height);
+	th.window = mlx_new_window(th.mlx, XDIM, YDIM, "fdf");
+	th.mlx_image = mlx_new_image(th.mlx, XDIM, YDIM);
+	init_bitmap(&th.bitmap, th.mlx_image, XDIM, YDIM);
 	init_cam(&th.cam, &th);
 	mlx_loop_hook(th.mlx, the_loop, &th);
-	mlx_key_hook(th.window, key_controls, &th);
-	mlx_mouse_hook(th.window, mouse_button, &th);
-	mlx_hook(th.window, 6, 1L << 6, mouse_move, &th);
+	mlx_hook(th.window, KeyPress, KeyPressMask, key_press, &th);
+	mlx_hook(th.window, KeyRelease, KeyReleaseMask, key_release, &th);
+	mlx_hook(th.window, ButtonPress, ButtonPressMask, mouse_press, &th);
+	mlx_hook(th.window, ButtonRelease, ButtonReleaseMask, mouse_release, &th);
+	mlx_hook(th.window, MotionNotify, PointerMotionMask, mouse_move, &th);
 	mlx_loop(th.mlx);
 	return (0);
 }

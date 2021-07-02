@@ -6,49 +6,46 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:18:39 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/06 13:21:30 by qsharoly         ###   ########.fr       */
+/*   Updated: 2021/06/30 18:56:54 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "bitmap.h"
 #include <stdlib.h>
 
-t_uint	rgba_to_int(t_rgba color)
+t_uint	rgba_to_int(t_argb color)
 {
-	t_uint	out;
+	int	out;
 
-	out = 0;
+	out = color.a << 24;
 	out += color.r << 16;
 	out += color.g << 8;
 	out += color.b << 0;
 	return (out);
 }
 
-t_rgba	int_to_rgba(int color)
+t_argb	int_to_rgba(int color)
 {
-	t_rgba	rgba;
+	t_argb			argb;
 
-	rgba.r = *((char *)&color + 2);
-	rgba.g = *((char *)&color + 1);
-	rgba.b = *((char *)&color + 0);
-	rgba.a = *((char *)&color + 3);
-	return (rgba);
+	argb.a = (color & 0xff000000) >> 24;
+	argb.r = (color & 0x00ff0000) >> 16;
+	argb.g = (color & 0x0000ff00) >> 8;
+	argb.b = (color & 0x000000ff) >> 0;
+	return (argb);
 }
 
-t_rgba	get_pixel(t_bitmap bmp, t_uint x, t_uint y)
+int		get_pixel(t_bitmap bmp, t_uint x, t_uint y)
 {
-	unsigned int		color;
-
-	color = *(bmp.data + x + y * bmp.x_dim);
-	return (int_to_rgba(color));
+	return (*(bmp.data + x + y * bmp.x_dim));
 }
 
-void	set_pixel(t_bitmap bmp, t_uint x, t_uint y, t_rgba color)
+void	set_pixel(t_bitmap bmp, t_uint x, t_uint y, int color)
 {
-	*(bmp.data + x + y * bmp.x_dim) = rgba_to_int(color);
+	*(bmp.data + x + y * bmp.x_dim) = color;
 }
 
-void	fill_rect(t_bitmap bmp, t_rect rect, t_rgba color)
+void	fill_rect(t_bitmap bmp, t_rect rect, int color)
 {
 	t_uint i;
 	t_uint j;

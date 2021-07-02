@@ -25,11 +25,18 @@ INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
 LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
 LIB_FLAGS += -lft -lmlx
 
-debug = yes
+#debug = yes
 
 ifeq ($(debug), yes)
 	CCFLAGS += -g
 endif
+
+ifeq ($(optimize), yes)
+	CCFLAGS += -O3
+endif
+
+export debug
+export optimize
 
 SRC = main.c\
 	  init.c\
@@ -38,8 +45,6 @@ SRC = main.c\
 	  ft_fmax.c\
 	  ft_fmin.c\
 	  bitmap.c\
-	  make_rect.c\
-	  make_vec3.c\
 	  normalize3.c\
 	  draw.c\
 	  draw_zbuf.c\
