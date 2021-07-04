@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/03 01:09:36 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 05:30:05 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void			map_find_height_range(t_map *map)
 		while (i < map->row_size)
 		{
 			z = ((t_vertex *)rows->content)[i].vec.z;
-			map->z_min = ft_fmin(z, map->z_min);
-			map->z_max = ft_fmax(z, map->z_max);
+			map->z_min = fmin(z, map->z_min);
+			map->z_max = fmax(z, map->z_max);
 			i++;
 		}
 		rows = rows->next;

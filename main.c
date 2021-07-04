@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 02:12:10 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 05:26:59 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,8 @@ static int	the_loop(t_things *th)
 		th->state.animation_step = 1;
 	if (th->state.animation_step)
 	{
-		th->cam.angle.z -= 0.05 * M_PI / 100;
-		th->cam.angle.x -= 0.5 * M_PI / 200;
+		th->cam.angle.z += 0.05 * M_PI / 100;
+		th->cam.angle.x += 0.5 * M_PI / 200;
 		th->state.animation_step = 0;
 		th->state.redraw = 1;
 	}

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 16:08:51 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 00:44:18 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 05:24:55 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ char			*ft_substr(char const *s, unsigned int start, size_t len);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strtrim(char const *s);
 char			**ft_split(char const *s, char c);
-char			**ft_splitn(char const *s, char c, size_t *count);
 char			*ft_itoa(int n);
 t_list			*ft_lstnew(void *content);
 void			ft_lstadd_front(t_list **lst, t_list *new_node);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 01:51:56 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 05:30:27 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,6 @@ typedef struct	s_things
 }				t_things;
 
 int				fail(char *msg);
-float			ft_fmin(float a, float b);
-float			ft_fmax(float a, float b);
 char			*ft_mini_dtoa(float a);
 t_state			init_state(void);
 int				init_cam(t_cam *cam, t_things *th);

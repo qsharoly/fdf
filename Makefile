@@ -42,8 +42,6 @@ SRC = main.c\
 	  init.c\
 	  load_map.c\
 	  map_colors.c\
-	  ft_fmax.c\
-	  ft_fmin.c\
 	  bitmap.c\
 	  normalize3.c\
 	  draw.c\
