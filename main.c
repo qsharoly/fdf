@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 15:48:31 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 02:12:10 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ void		free_things_and_exit(t_things *things)
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
 	free(things->cam.zbuf);
-	ft_lstdel(&things->map.rows, lst_del_fdf_row);
+	free(things->map.projected);
+	ft_lstclear(&things->map.rows, del_map_row);
 	exit(0);
 }
 
@@ -73,6 +74,16 @@ static int	draw_geometry(t_things *th)
 	return (dt);
 }
 
+/*
+** animation step can be caused by
+**	- 'animation_running' == 1
+**	- a dedicated keypress
+** redraw can be caused by
+**	- animation step
+**	- any keypress that requires redraw
+**	- initial render when starting program
+*/
+
 static int	the_loop(t_things *th)
 {
 	static int		frame = 0;
@@ -84,23 +95,23 @@ static int	the_loop(t_things *th)
 		printf("Average is %f\n", avg_drawing_time);
 		free_things_and_exit(th);
 	}
-	if (th->state.animation_pause)
-	{
-		if (th->state.animation_step)
-			th->state.animation_step = 0;
-		else if (th->state.redraw == 0)
-			return (0);
-	}
-	if (th->state.redraw == 0)
+	if (th->state.animation_running)
+		th->state.animation_step = 1;
+	if (th->state.animation_step)
 	{
 		th->cam.angle.z -= 0.05 * M_PI / 100;
 		th->cam.angle.x -= 0.5 * M_PI / 200;
+		th->state.animation_step = 0;
+		th->state.redraw = 1;
 	}
-	frame++;
-	calc_camera_transform(&th->cam);
-	usec = draw_geometry(th);
-	avg_drawing_time = (avg_drawing_time * (frame - 1) + usec) / frame;
-	draw_hud(th, usec);
+	if (th->state.redraw)
+	{
+		frame++;
+		calc_camera_transform(&th->cam);
+		usec = draw_geometry(th);
+		avg_drawing_time = (avg_drawing_time * (frame - 1) + usec) / frame;
+		draw_hud(th, usec);
+	}
 	th->state.redraw = 0;
 	return (0);
 }
@@ -118,7 +129,7 @@ static void		get_options(t_things *things, int argc, char **argv)
 	if (ft_strcmp(argv[arg], "-b") == 0)
 	{
 		things->state.bench = 1;
-		things->state.animation_pause = 0;
+		things->state.animation_running = 1;
 		if (argc > arg + 1 && (i = ft_atoi(argv[arg + 1])) > 0)
 		{
 			things->state.bench_max_frames = i;

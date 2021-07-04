@@ -6,12 +6,13 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:59:20 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/03 02:35:01 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "draw.h"
 
+#define GETA(x) ((x & 0xff000000) >> 24)
 #define GETR(x) ((x & 0x00ff0000) >> 16)
 #define GETG(x) ((x & 0x0000ff00) >> 8)
 #define GETB(x) ((x & 0x000000ff))
@@ -22,6 +23,7 @@ int	mix(int a, int b, float ratio)
 {
 	t_argb	color;
 
+	color.a = GETA(a) * ratio + GETB(b) * (1 - ratio);
 	color.r = sqrt(squared(GETR(a)) * ratio + squared(GETR(b)) * (1 - ratio));
 	color.g = sqrt(squared(GETG(a)) * ratio + squared(GETG(b)) * (1 - ratio));
 	color.b = sqrt(squared(GETB(a)) * ratio + squared(GETB(b)) * (1 - ratio));
@@ -33,6 +35,7 @@ int lerp(int a, int b, float ratio)
 {
 	t_argb	color;
 
+	color.a = GETA(a) * ratio + GETB(b) * (1 - ratio);
 	color.r = GETR(a) * ratio + GETR(b) * (1 - ratio);
 	color.b = GETB(a) * ratio + GETB(b) * (1 - ratio);
 	color.g = GETG(a) * ratio + GETG(b) * (1 - ratio);
@@ -89,7 +92,7 @@ void	draw_line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 	while (t < 1)
 	{
 		if (inbounds3(p, bmp, cam))
-			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
+			set_pixel(bmp, p.x, p.y, mix(a.color, b.color, 1 - t));
 		t += dt;
 		p = add3(p, step);
 	}

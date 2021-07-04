@@ -1,4 +1,5 @@
 NAME = libft.a
+SONAME = libft.so
 CC = gcc
 CCFLAGS = -Wall -Wextra -Werror
 SRCDIR = .
@@ -10,7 +11,6 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 ifeq ($(debug), yes)
 	CCFLAGS += -g
 endif
-#optimize=yes
 ifeq ($(optimize), yes)
 	CCFLAGS += -O3
 endif
@@ -27,18 +27,21 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@echo --- link $(NAME) ---
-	ar rcs $(NAME) $(OBJ)
+	  ar rcs $(NAME) $(OBJ)
+
+so: $(OBJ)
+	$(CC) --shared $(OBJ) -o $(SONAME)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(DEPDIR)/%.d
-	$(CC) $(DEPFLAGS) $(CCFLAGS) -c -o $@ $< -I $(INCDIR)
+	$(CC) -fpic $(DEPFLAGS) $(CCFLAGS) -c -o $@ $< -I $(INCDIR)
 
 $(DEPDIR)/%d: ;
 
 clean:
 	rm -rf $(OBJDIR) $(DEPDIR)
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(SONAME)
 re: fclean
 	make all
 

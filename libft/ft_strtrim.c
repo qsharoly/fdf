@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/09 20:53:32 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/09/11 15:44:40 by qsharoly         ###   ########.fr       */
+/*   Updated: 2021/07/03 03:56:47 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,6 @@ char		*ft_strtrim(char const *s)
 	if (till <= from)
 		result = ft_strdup("");
 	else
-		result = ft_strsub(from, 0, till - from);
+		result = ft_substr(from, 0, till - from);
 	return (result);
 }

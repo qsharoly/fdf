@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 20:35:05 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 03:17:02 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,5 @@ void	cam_drag(t_cam *cam, float dx, float dy)
 	delta.x = -dx;
 	delta.y = -dy;
 	delta.z = 0;
-	cam->target = add3(cam->target, delta);
+	cam->target = add3(cam->target, rot_z(-cam->angle.z, delta));
 }

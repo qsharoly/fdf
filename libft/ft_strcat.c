@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/09 10:20:44 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/09/09 16:31:12 by qsharoly         ###   ########.fr       */
+/*   Updated: 2021/07/03 02:42:26 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	*ft_strcat(char *s1, char const *s2)
 {
 	char	*cur;
 
-	if (s1 == NULL && s2 == NULL)
+	if (s1 == NULL || s2 == NULL)
 		return (NULL);
 	cur = s1 + ft_strlen(s1);
 	while (*s2)

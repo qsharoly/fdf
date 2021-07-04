@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 19:51:06 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/03 01:09:36 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,17 @@ void			map_find_height_range(t_map *map)
 	}
 }
 
-static int	color_from_z(t_vec3 point,
-					float z_min, float z_mid, float z_max)
+static int	color_from_z(float z, float z_min, float z_max)
 {
+	float	z_mid;
+
+	z_mid = (z_max + z_min) / 2;
 	if (z_max == z_min)
 		return (LIGHTGREEN);
-	else if (point.z >= z_mid)
-		return (mix(DARKGREEN, PEACH, (z_max - point.z) / (z_max - z_mid)));
+	else if (z >= z_mid)
+		return (mix(DARKGREEN, PEACH, (z_max - z) / (z_max - z_mid)));
 	else
-		return (mix(DARKGREEN, PURPLE, (z_min - point.z) / (z_min - z_mid)));
+		return (mix(DARKGREEN, PURPLE, (z_min - z) / (z_min - z_mid)));
 }
 
 void			map_make_colors(t_map *map)
@@ -61,8 +63,7 @@ void			map_make_colors(t_map *map)
 		while (i < map->row_size)
 		{
 			vert = &((t_vertex *)rows->content)[i];
-			vert->col = color_from_z(vert->vec, map->z_min,
-					0.5 * (map->z_max + map->z_min), map->z_max);
+			vert->color = color_from_z(vert->vec.z, map->z_min, map->z_max);
 			i++;
 		}
 		rows = rows->next;

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/12 11:45:11 by qsharoly          #+#    #+#             */
-/*   Updated: 2019/10/20 18:59:11 by qsharoly         ###   ########.fr       */
+/*   Updated: 2021/07/03 23:36:29 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static ssize_t	parse_realloc(t_buf *buf, char **line,
 static t_buf	*get_buffer_by_fd(const int fd, t_list **buffers)
 {
 	t_list	*ptr;
-	t_buf	new_buf;
+	t_buf	*new_buf;
 
 	ptr = *buffers;
 	while (ptr)
@@ -71,10 +71,11 @@ static t_buf	*get_buffer_by_fd(const int fd, t_list **buffers)
 			return (ptr->content);
 		ptr = ptr->next;
 	}
-	new_buf.fd = fd;
-	new_buf.delim_pos = NULL;
-	new_buf.len = 0;
-	ft_lstadd(buffers, ft_lstnew(&new_buf, sizeof(t_buf)));
+	new_buf = malloc(sizeof(*new_buf));
+	new_buf->fd = fd;
+	new_buf->delim_pos = NULL;
+	new_buf->len = 0;
+	ft_lstadd_front(buffers, ft_lstnew(new_buf));
 	return ((*buffers)->content);
 }
 

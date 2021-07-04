@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:39:05 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 03:08:38 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,8 +216,8 @@ void	calc_camera_transform(t_cam *cam)
 	identity_mat4(cam->matrix);
 	compose(cam->matrix, t);
 	compose(cam->matrix, zstretch);
-	compose(cam->matrix, rx);
 	compose(cam->matrix, rz);
+	compose(cam->matrix, rx);
 	compose(cam->matrix, dist);
 	compose(cam->matrix, proj);
 	compose(cam->matrix, zoom);

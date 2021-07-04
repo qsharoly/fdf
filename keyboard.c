@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:56:58 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 01:55:44 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,8 @@ int		key_press(int keycode, t_things *th)
 	else if (keycode == K_EXIT1 || keycode == K_EXIT2)
 		free_things_and_exit(th);
 	else if (keycode == K_ANIM_PAUSE)
-		TOGGLE(th->state.animation_pause);
-	else if (keycode == K_ANIM_STEP && th->state.animation_pause)
+		TOGGLE(th->state.animation_running);
+	else if (keycode == K_ANIM_STEP)
 		th->state.animation_step = 1;
 	else if (keycode == K_PRINT_KEYCODES)
 		TOGGLE(th->state.print_keycodes);

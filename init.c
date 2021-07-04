@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 11:17:37 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 01:55:08 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ t_state		init_state(void)
 
 	state.dragging = 0;
 	state.bench_max_frames = BENCHMARK_FRAMES;
+	state.bench = 0;
 	state.stop_program = 0;
-	state.animation_pause = 1;
+	state.animation_running = 0;
 	state.animation_step = 0;
 	state.redraw = 1;
-	state.bench = 0;
 	state.print_keycodes = 0;
 	state.draw_stats = 1;
 	state.draw_helpers = 1;
@@ -73,17 +73,19 @@ int		init_map(t_map *map, const char *filename)
 	int		fd;
 	int		status;
 
+	map->rows = NULL;
+	map->row_num = 0;
+	map->row_size = 0;
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		return (fail("failed to open file.\n"));
-	map->rows = NULL;
+		return (fail("failed to open map file.\n"));
 	status = load_map(fd, map);
 	close(fd);
 	if (status < 0)
 		return (fail("failed to read from file.\n"));
 	if (map->row_num == 0)
 		return (fail("map empty.\n"));
-	map->projected = malloc(map->row_num * map->row_size * sizeof(t_vertex));
+	map->projected = malloc(map->row_num * map->row_size * sizeof(*map->projected));
 	map_find_height_range(map);
 	map_make_colors(map);
 	return (GOOD);

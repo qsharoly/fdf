@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 15:58:55 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/03 01:10:28 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 			&& p.z > get_zbuf(cam, p.x, p.y))
 		{
 			set_zbuf(cam, p.x, p.y, p.z);
-			set_pixel(bmp, p.x, p.y, mix(a.col, b.col, 1 - t));
+			set_pixel(bmp, p.x, p.y, mix(a.color, b.color, 1 - t));
 		}
 		t += dt;
 		p.x += step.x;
@@ -111,7 +111,7 @@ void	line_dda_gradient_zbuf(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 			&& z > get_zbuf(cam, x, y))
 		{
 			set_zbuf(cam, x, y, z);
-			set_pixel(bmp, x, y, mix(a.col, b.col, (float)(step - i) / step));
+			set_pixel(bmp, x, y, mix(a.color, b.color, (float)(step - i) / step));
 		}
 		x += dx;
 		y += dy;

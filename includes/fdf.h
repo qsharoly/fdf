@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 12:38:46 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 01:51:56 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct	s_state
 	int				mousex;
 	int				mousey;
 	unsigned int	stop_program:1;
-	unsigned int	animation_pause:1;
+	unsigned int	animation_running:1;
 	unsigned int	animation_step:1;
 	unsigned int	redraw:1;
 	unsigned int	bench:1;
@@ -78,7 +78,7 @@ t_state			init_state(void);
 int				init_cam(t_cam *cam, t_things *th);
 int				init_map(t_map *map, const char *filename);
 int				init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim);
-void			lst_del_fdf_row(void *row, size_t size);
+void			del_map_row(void *row);
 int				load_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);

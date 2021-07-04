@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 16:08:51 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 20:29:27 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/04 00:44:18 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ typedef struct	s_split_info
 typedef struct	s_list
 {
 	void			*content;
-	size_t			content_size;
 	struct s_list	*next;
 }				t_list;
 
@@ -80,6 +79,7 @@ char			*ft_strnstr(char const *haystack,
 					char const *needle, size_t len);
 int				ft_sqrt(int	nb);
 int				ft_atoi(char const *str);
+void			*ft_calloc(size_t num, size_t size);
 void			*ft_memalloc(size_t size);
 void			ft_memdel(void **ap);
 char			*ft_strnew(size_t size);
@@ -91,19 +91,21 @@ char			*ft_strmap(char const *s, char (*f)(char));
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 int				ft_strequ(char const *s1, char const *s2);
 int				ft_strnequ(char const *s1, char const *s2, size_t n);
-char			*ft_strsub(char const *s, unsigned int start, size_t len);
+char			*ft_substr(char const *s, unsigned int start, size_t len);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strtrim(char const *s);
-char			**ft_strsplit(char const *s, char c);
-char			**ft_strsplit_n(char const *s, char c, int *count);
+char			**ft_split(char const *s, char c);
+char			**ft_splitn(char const *s, char c, size_t *count);
 char			*ft_itoa(int n);
-t_list			*ft_lstnew(void const *content, size_t content_size);
-void			ft_lstadd(t_list **alst, t_list *new_node);
-void			ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
-void			ft_lstdel(t_list **alst, void (*del)(void *, size_t));
-void			ft_lstiter(t_list *lst, void (*f)(t_list *elem));
-t_list			*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
-t_list			*ft_lst_push_tail(t_list **alst, t_list *new_node);
+t_list			*ft_lstnew(void *content);
+void			ft_lstadd_front(t_list **lst, t_list *new_node);
+int				ft_lstsize(t_list *lst);
+t_list			*ft_lstlast(t_list *lst);
+t_list			**ft_lstadd_back(t_list **lst, t_list *new_node);
+void			ft_lstdelone(t_list *lst, void (*del)(void *));
+void			ft_lstclear(t_list **lst, void (*del)(void *));
+void			ft_lstiter(t_list *lst, void (*f)(void *));
+t_list			*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 t_btree			*ft_btree_new_node(void const *content, size_t content_size);
 t_btree			*ft_btree_add_unique(t_btree **tree, t_btree *new_node,
 					int (*cmp)(void *, void *));

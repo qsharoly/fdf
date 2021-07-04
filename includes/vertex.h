@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:06:18 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 18:35:28 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/03 01:08:47 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 # define VERTEX_H
 
 # include "vector.h"
-# include "bitmap.h"
 
 typedef struct	s_vertex
 {
 	t_vec3		vec;
-	int			col;
+	int			color;
 }				t_vertex;
 
 #endif

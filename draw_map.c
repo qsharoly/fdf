@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2021/07/02 12:24:40 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/03 01:11:36 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	apply_transform(t_vertex *res, t_map *map, t_cam *cam)
 		{
 			v = ((t_vertex *)row->content)[i];
 			res[j * map->row_size + i].vec = geom_to_pixel(v.vec, cam);
-			res[j * map->row_size + i].col = v.col;
+			res[j * map->row_size + i].color = v.color;
 			i++;
 		}
 		row = row->next;
