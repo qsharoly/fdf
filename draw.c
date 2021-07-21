@@ -6,42 +6,28 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/03 02:35:01 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/21 21:30:42 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "draw.h"
 
-#define GETA(x) ((x & 0xff000000) >> 24)
-#define GETR(x) ((x & 0x00ff0000) >> 16)
-#define GETG(x) ((x & 0x0000ff00) >> 8)
-#define GETB(x) ((x & 0x000000ff))
-
 // mix: interpolate between colors
 // ratio is expected to be in range [0.0, 1.0]
-int	mix(int a, int b, float ratio)
+int mix(int ai, int bi, float ratio)
 {
-	t_argb	color;
+	t_argb	a;
+	t_argb	b;
+	t_argb	mix;
 
-	color.a = GETA(a) * ratio + GETB(b) * (1 - ratio);
-	color.r = sqrt(squared(GETR(a)) * ratio + squared(GETR(b)) * (1 - ratio));
-	color.g = sqrt(squared(GETG(a)) * ratio + squared(GETG(b)) * (1 - ratio));
-	color.b = sqrt(squared(GETB(a)) * ratio + squared(GETB(b)) * (1 - ratio));
-	return (rgba_to_int(color));
+	a = int_to_rgba(ai);
+	b = int_to_rgba(bi);
+	mix.a = sqrt(a.a*a.a + (b.a*b.a - a.a*a.a) * ratio);
+	mix.r = sqrt(a.r*a.r + (b.r*b.r - a.r*a.r) * ratio);
+	mix.g = sqrt(a.g*a.g + (b.g*b.g - a.g*a.g) * ratio);
+	mix.b = sqrt(a.b*a.b + (b.b*b.b - a.b*a.b) * ratio);
+	return (rgba_to_int(mix));
 }
-
-/*
-int lerp(int a, int b, float ratio)
-{
-	t_argb	color;
-
-	color.a = GETA(a) * ratio + GETB(b) * (1 - ratio);
-	color.r = GETR(a) * ratio + GETR(b) * (1 - ratio);
-	color.b = GETB(a) * ratio + GETB(b) * (1 - ratio);
-	color.g = GETG(a) * ratio + GETG(b) * (1 - ratio);
-	return (rgba_to_int(color));
-}
-*/
 
 int		inbounds(float x, float y, t_bitmap bmp)
 {
@@ -92,7 +78,7 @@ void	draw_line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 	while (t < 1)
 	{
 		if (inbounds3(p, bmp, cam))
-			set_pixel(bmp, p.x, p.y, mix(a.color, b.color, 1 - t));
+			set_pixel(bmp, p.x, p.y, mix(a.color, b.color, t));
 		t += dt;
 		p = add3(p, step);
 	}

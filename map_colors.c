@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 05:30:05 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/21 15:04:37 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ static int	color_from_z(float z, float z_min, float z_max)
 	if (z_max == z_min)
 		return (LIGHTGREEN);
 	else if (z >= z_mid)
-		return (mix(DARKGREEN, PEACH, (z_max - z) / (z_max - z_mid)));
+		return (mix(PEACH, GRASS, (z_max - z) / (z_max - z_mid)));
 	else
-		return (mix(DARKGREEN, PURPLE, (z_min - z) / (z_min - z_mid)));
+		return (mix(GRASS, PURPLE, (z_mid - z) / (z_mid - z_min)));
 }
 
 void			map_make_colors(t_map *map)
