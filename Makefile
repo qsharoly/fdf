@@ -42,13 +42,14 @@ SRC = main.c\
 	  init.c\
 	  load_map.c\
 	  map_colors.c\
+	  color.c\
 	  bitmap.c\
-	  normalize3.c\
 	  draw.c\
 	  draw_zbuf.c\
 	  draw_map.c\
 	  vector2.c\
 	  vector3.c\
+	  normalize3.c\
 	  rotations.c\
 	  hud.c\
 	  keyboard.c\

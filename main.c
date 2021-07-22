@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 05:26:59 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:10:12 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "mlx_int.h"
 #include "libft.h"
 #include "fdf.h"
-#include "palette.h"
+#include "color.h"
 #include "keyboard.h"
 #include "mouse.h"
 #include "settings.h"
@@ -59,7 +59,7 @@ static int	draw_geometry(t_things *th)
 		draw_func = line_dda_gradient_zbuf;
 	}
 	else {
-		draw_func = draw_line_gradient;
+		draw_func = line_gradient;
 	}
 	if (th->map.rows != NULL)
 	{
