@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:56:25 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:11:49 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "mlx.h"
 #include "libft.h"
 #include "fdf.h"
-#include "palette.h"
+#include "color.h"
 
 extern const char	*g_projnames[4];
 
@@ -50,7 +50,7 @@ void		draw_edge(t_view view, t_vec3 a, t_vec3 b, int color)
 {
 	a = geom_to_pixel(a, view.cam);
 	b = geom_to_pixel(b, view.cam);
-	draw_line(view.bmp, a, b, color);
+	line_solid(view.bmp, a, b, color);
 }
 
 void		draw_helpers(t_bitmap bitmap, t_cam *cam)

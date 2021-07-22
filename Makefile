@@ -42,13 +42,14 @@ SRC = main.c\
 	  init.c\
 	  load_map.c\
 	  map_colors.c\
+	  color.c\
 	  bitmap.c\
-	  normalize3.c\
 	  draw.c\
 	  draw_zbuf.c\
 	  draw_map.c\
 	  vector2.c\
 	  vector3.c\
+	  normalize3.c\
 	  rotations.c\
 	  hud.c\
 	  keyboard.c\
@@ -63,11 +64,11 @@ DEPS = $(SRC:%.c=$(DEPDIR)/%.d)
 $(shell mkdir -p $(OBJDIR))
 $(shell mkdir -p $(DEPDIR))
 
-all: $(NAME)
+all: $(BIN)
 
 $(BIN): $(OBJ) $(MLX) $(LFT)
-	@echo "# linking $(NAME)"
-	gcc -o $(NAME) $(OBJ)\
+	@echo "# linking $(BIN)"
+	gcc -o $(BIN) $(OBJ)\
 		$(LIB_PATHS)\
 		$(INC_PATHS)\
 		$(LIB_FLAGS)
@@ -88,7 +89,7 @@ $(LFT):
 clean:
 	rm -rf $(OBJDIR) $(DEPDIR)
 fclean: clean
-	rm -rf $(NAME)
+	rm -rf $(BIN)
 	make -C $(MLX_DIR) clean
 	make -C $(LFT_DIR) fclean
 re: fclean

@@ -6,13 +6,13 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:43:24 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/21 15:04:37 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:10:18 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "fdf.h"
-#include "palette.h"
+#include "color.h"
 
 void			map_find_height_range(t_map *map)
 {

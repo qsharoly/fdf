@@ -6,28 +6,12 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/21 21:30:42 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:11:05 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "draw.h"
-
-// mix: interpolate between colors
-// ratio is expected to be in range [0.0, 1.0]
-int mix(int ai, int bi, float ratio)
-{
-	t_argb	a;
-	t_argb	b;
-	t_argb	mix;
-
-	a = int_to_rgba(ai);
-	b = int_to_rgba(bi);
-	mix.a = sqrt(a.a*a.a + (b.a*b.a - a.a*a.a) * ratio);
-	mix.r = sqrt(a.r*a.r + (b.r*b.r - a.r*a.r) * ratio);
-	mix.g = sqrt(a.g*a.g + (b.g*b.g - a.g*a.g) * ratio);
-	mix.b = sqrt(a.b*a.b + (b.b*b.b - a.b*a.b) * ratio);
-	return (rgba_to_int(mix));
-}
+#include "color.h"
 
 int		inbounds(float x, float y, t_bitmap bmp)
 {
@@ -35,7 +19,7 @@ int		inbounds(float x, float y, t_bitmap bmp)
 			&& y >= 0.0 && y <= bmp.y_dim);
 }
 
-void	draw_line(t_bitmap bmp, t_vec3 a, t_vec3 b, int color)
+void	line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color)
 {
 	t_vec2	p;
 	t_vec2	step;
@@ -60,7 +44,7 @@ void	draw_line(t_bitmap bmp, t_vec3 a, t_vec3 b, int color)
 	}
 }
 
-void	draw_line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
+void	line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
 	t_vec3	p;
 	t_vec3	step;

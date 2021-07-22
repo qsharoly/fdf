@@ -6,12 +6,12 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/21 14:57:16 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:11:41 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "draw.h"
-#include "palette.h"
+#include "color.h"
 
 void			reset_zbuf(t_cam *cam)
 {
@@ -50,8 +50,7 @@ int		inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam)
 **	all elements of z_buf are set to -INFINITY
 */
 
-void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
-					t_vertex a, t_vertex b)
+void	line_gradient_zbuf(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 {
 	t_vec3	p;
 	t_vec3	step;

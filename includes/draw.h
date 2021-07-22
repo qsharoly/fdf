@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:31:20 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 15:47:10 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:04:03 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ int				mix(int col1, int col2, float ratio);
 //int				lerp(int col1, int col2, float ratio);
 int				inbounds(float x, float y, t_bitmap bmp);
 int				inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam);
-void			draw_line(t_bitmap bmp, t_vec3 a, t_vec3 b, int color);
+void			line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color);
 void			draw_edge(t_view view, t_vec3 a, t_vec3 b, int color);
-void			draw_line_gradient(t_bitmap bmp, t_cam *cam,
+void			line_gradient(t_bitmap bmp, t_cam *cam,
 					t_vertex a, t_vertex b);
-void			draw_line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
+void			line_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 					t_vertex a, t_vertex b);
 void			line_dda_gradient_zbuf(t_bitmap bmp, t_cam *cam,
 					t_vertex a, t_vertex b);
