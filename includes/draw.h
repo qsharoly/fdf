@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:31:20 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:04:03 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:20:00 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@ typedef struct	s_view
 	t_cam		*cam;
 }				t_view;
 
-int				mix(int col1, int col2, float ratio);
-//int				lerp(int col1, int col2, float ratio);
 int				inbounds(float x, float y, t_bitmap bmp);
 int				inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam);
 void			line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color);

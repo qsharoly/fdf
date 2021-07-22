@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:10:00 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:10:05 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:35:00 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define BITMAP_H
 
 typedef unsigned int	t_uint;
-typedef unsigned char	t_uchar;
 typedef struct			s_uint2
 {
 	t_uint	x;

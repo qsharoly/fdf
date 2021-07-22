@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:41:56 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:10:33 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:28:44 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,17 @@
 # define PEACH		0x00fa961e //rgba_to_int((t_rgba) {250, 150, 30, 0})
 # define GRASS		0x001e9650 //rgba_to_int((t_rgba) {30, 150, 80, 0})
 
-typedef struct			s_argb
+typedef struct	s_argb
 {
 	unsigned char	a;
 	unsigned char	r;
 	unsigned char	g;
 	unsigned char	b;
-}						t_argb;
+}				t_argb;
 
-t_argb	int_to_rgba(int color);
-int		rgba_to_int(t_argb color);
+int		mix(int col1, int col2, float ratio);
+//int	lerp(int col1, int col2, float ratio);
+t_argb	int_to_argb(int color);
+int		argb_to_int(t_argb color);
 
 #endif

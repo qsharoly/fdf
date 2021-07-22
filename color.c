@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/22 15:05:51 by debby             #+#    #+#             */
-/*   Updated: 2021/07/22 15:11:29 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 15:31:19 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,25 @@ int mix(int ai, int bi, float ratio)
 	t_argb	b;
 	t_argb	mix;
 
-	a = int_to_rgba(ai);
-	b = int_to_rgba(bi);
+	a = int_to_argb(ai);
+	b = int_to_argb(bi);
 	mix.a = sqrt(a.a*a.a + (b.a*b.a - a.a*a.a) * ratio);
 	mix.r = sqrt(a.r*a.r + (b.r*b.r - a.r*a.r) * ratio);
 	mix.g = sqrt(a.g*a.g + (b.g*b.g - a.g*a.g) * ratio);
 	mix.b = sqrt(a.b*a.b + (b.b*b.b - a.b*a.b) * ratio);
-	return (rgba_to_int(mix));
+	return (argb_to_int(mix));
 }
 
 
-int		rgba_to_int(t_argb color)
+int		argb_to_int(t_argb color)
 {
 	int	out;
 
-	out = color.a << 24;
-	out += color.r << 16;
-	out += color.g << 8;
-	out += color.b << 0;
+	out = color.a << 24 | color.r << 16 | color.g << 8 | color.b;
 	return (out);
 }
 
-t_argb	int_to_rgba(int color)
+t_argb	int_to_argb(int color)
 {
 	t_argb			argb;
 
