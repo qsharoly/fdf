@@ -1,4 +1,4 @@
-NAME = fdf
+NAME ?= fdf
 INCDIR = includes
 OBJDIR = objs
 DEPDIR = deps
