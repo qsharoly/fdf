@@ -1,4 +1,4 @@
-NAME ?= fdf
+BIN ?= fdf
 INCDIR = includes
 OBJDIR = objs
 DEPDIR = deps
@@ -63,11 +63,11 @@ DEPS = $(SRC:%.c=$(DEPDIR)/%.d)
 $(shell mkdir -p $(OBJDIR))
 $(shell mkdir -p $(DEPDIR))
 
-all: $(NAME)
+all: $(BIN)
 
-$(NAME): $(OBJ) $(MLX) $(LFT)
-	@echo "# linking $(NAME)"
-	gcc -o $(NAME) $(OBJ)\
+$(BIN): $(OBJ) $(MLX) $(LFT)
+	@echo "# linking $(BIN)"
+	gcc -o $(BIN) $(OBJ)\
 		$(LIB_PATHS)\
 		$(INC_PATHS)\
 		$(LIB_FLAGS)
@@ -88,7 +88,7 @@ $(LFT):
 clean:
 	rm -rf $(OBJDIR) $(DEPDIR)
 fclean: clean
-	rm -rf $(NAME)
+	rm -rf $(BIN)
 	make -C $(MLX_DIR) clean
 	make -C $(LFT_DIR) fclean
 re: fclean
