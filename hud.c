@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 19:44:28 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 19:51:02 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,29 +20,27 @@ extern const char	*g_projnames[4];
 
 int			draw_controls(void *mlx_ptr, void *mlx_window)
 {
-	int		white;
 	void	*mp;
 	void	*mw;
 	int		v;
 
 	mp = mlx_ptr;
 	mw = mlx_window;
-	white = 0x00ffffff;
 	v = 30;
-	mlx_string_put(mp, mw, 20, v += 20, white, "yhuo = rotate cam");
-	mlx_string_put(mp, mw, 20, v += 20, white, "ijkl = translate cam");
-	mlx_string_put(mp, mw, 20, v += 20, white, "  ,. = zoom in/out");
-	mlx_string_put(mp, mw, 20, v += 20, white, "  tg = altitude adjust +/-");
-	mlx_string_put(mp, mw, 20, v += 20, white, "   p = switch projection");
-	mlx_string_put(mp, mw, 20, v += 20, white, "   r = reset cam");
-	mlx_string_put(mp, mw, 20, v += 20, white, "   z = show stats");
-	mlx_string_put(mp, mw, 20, v += 20, white, "   x = show axis");
-	mlx_string_put(mp, mw, 20, v += 20, white, "   a = print keycodes");
-	mlx_string_put(mp, mw, 20, v += 20, white, "   c = show controls");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    b = toggle z buffer");
-	mlx_string_put(mp, mw, 20, v += 20, white, "space = (un)pause animation");
-	mlx_string_put(mp, mw, 20, v += 20, white, "    n = next frame if paused");
-	mlx_string_put(mp, mw, 20, v += 20, white, "q, esc = quit");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "yhuo = rotate cam");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "ijkl = translate cam");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "  ,. = zoom in/out");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "  tg = altitude adjust +/-");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "   p = switch projection");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "   r = reset cam");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "   z = show stats");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "   x = show axis");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "   a = print keycodes");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "   c = show controls");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "    b = toggle z buffer");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "space = (un)pause animation");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "    n = next frame if paused");
+	mlx_string_put(mp, mw, 20, v += 20, WHITE, "q, esc = quit");
 	return (0);
 }
 
@@ -100,7 +98,7 @@ void		draw_hud(t_things *th, float usec)
 			ft_strcat(s1, ", z_buf off");
 		ft_strcat(s1, ", projection = ");
 		ft_strcat(s1, g_projnames[th->cam.projection]);
-		mlx_string_put(th->mlx, th->window, 10, 10, 0x00FFFFFF, s1);
+		mlx_string_put(th->mlx, th->window, 10, 10, WHITE, s1);
 	}
 	if (th->state.draw_controls == 1)
 		draw_controls(th->mlx, th->window);
