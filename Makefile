@@ -1,4 +1,4 @@
-NAME ?= fdf
+BIN ?= fdf
 INCDIR = includes
 OBJDIR = objs
 DEPDIR = deps
@@ -65,7 +65,7 @@ $(shell mkdir -p $(DEPDIR))
 
 all: $(NAME)
 
-$(NAME): $(OBJ) $(MLX) $(LFT)
+$(BIN): $(OBJ) $(MLX) $(LFT)
 	@echo "# linking $(NAME)"
 	gcc -o $(NAME) $(OBJ)\
 		$(LIB_PATHS)\
