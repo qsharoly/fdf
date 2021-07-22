@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:10:12 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 18:50:07 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static int	draw_geometry(t_things *th)
 	gettimeofday(&t1, NULL);
 	if (th->state.use_zbuf) {
 		reset_zbuf(&th->cam);
-		draw_func = line_dda_gradient_zbuf;
+		draw_func = line_gradient_zbuf;
 	}
 	else {
 		draw_func = line_gradient;

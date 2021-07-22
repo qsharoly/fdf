@@ -47,7 +47,6 @@ SRC = main.c\
 	  draw.c\
 	  draw_zbuf.c\
 	  draw_map.c\
-	  vector2.c\
 	  vector3.c\
 	  normalize3.c\
 	  rotations.c\

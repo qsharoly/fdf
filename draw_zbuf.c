@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:11:41 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 18:42:20 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	line_gradient_zbuf(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 	if (!inbounds3(a.vec, bmp, cam) && !inbounds3(b.vec, bmp, cam))
 		return ;
 	p = a.vec;
-	if ((dt = 1 / len2(a.vec.x, a.vec.y, b.vec.x, b.vec.y)) < 0.0001)
+	if ((dt = 1 / fmax(fabs(a.vec.x - b.vec.x), fabs(a.vec.y - b.vec.y))) < 0.0001)
 		return ;
 	step.x = (b.vec.x - a.vec.x) * dt;
 	step.y = (b.vec.y - a.vec.y) * dt;
@@ -116,5 +116,44 @@ void	line_dda_gradient_zbuf(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 		y += dy;
 		z += dz;
 		i++;
+	}
+}
+
+void	line_bresenham(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
+{
+	int	x = a.vec.x, y = a.vec.y;
+	int	x1 = b.vec.x, y1 = b.vec.y;
+	int dx = fabs(x - x1);
+	int dy = -fabs(y - y1);
+	int sx = x < x1 ? 1 : -1;
+	int sy = y < y1 ? 1 : -1;
+	int	err = dx + dy, e2;
+	float dz = (b.vec.z - a.vec.z);
+	float sz = dz / fmax(dx, -dy);
+	float z = a.vec.z;
+	float t = 0, st = 1 / fmax(dx, -dy);
+	while (1)
+	{
+		(void)cam;
+		if (inbounds(x, y, bmp) && z > get_zbuf(cam, x, y))
+		{
+			set_zbuf(cam, x, y, z);
+			set_pixel(bmp, x, y, mix(a.color, b.color, t));
+		}
+		e2 = 2*err;
+		if (e2 >= dy)
+		{
+			if (x == x1) break;
+			err += dy;
+			x += sx;
+		}
+		if (e2 <= dx)
+		{
+			if (y == y1) break;
+			err += dx;
+			y += sy;
+		}
+		z += sz;
+		t += st;
 	}
 }

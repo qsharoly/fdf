@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:11:05 by debby            ###   ########.fr       */
+/*   Updated: 2021/07/22 18:56:48 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ void	line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color)
 {
 	t_vec2	p;
 	t_vec2	step;
-	float		dt;
-	float		t;
+	float	dt;
+	float	t;
 
 	p.x = a.x;
 	p.y = a.y;
-	dt = 1 / len2(a.x, a.y, b.x, b.y);
+	dt = 1 / fmax(fabs(a.x - b.x), fabs(a.y - b.y));
 	if (dt < 0.00001)
 		return ;
 	step.x = (b.x - a.x) * dt;
@@ -54,7 +54,7 @@ void	line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
 	if (!inbounds3(a.vec, bmp, cam) && !inbounds3(b.vec, bmp, cam))
 		return ;
 	p = a.vec;
-	dt = 1 / len2(a.vec.x, a.vec.y, b.vec.x, b.vec.y);
+	dt = 1 / fmax(fabs(a.vec.x - b.vec.x), fabs(a.vec.y - b.vec.y));
 	step.x = (b.vec.x - a.vec.x) * dt;
 	step.y = (b.vec.y - a.vec.y) * dt;
 	step.z = (b.vec.z - a.vec.z) * dt;
