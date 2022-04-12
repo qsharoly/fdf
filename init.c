@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 01:55:08 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 13:19:39 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,21 @@ t_state		init_state(void)
 	return (state);
 }
 
+int		init_zbuffer(t_things *things)
+{
+	t_zbuffer	zb;
+
+	zb.size = things->bitmap.x_dim * things->bitmap.y_dim;
+	zb.stride = things->bitmap.x_dim;
+	zb.z = malloc(sizeof(*zb.z) * zb.size);
+	if (!zb.z)
+		return (fail("failed to malloc z-buffer\n"));
+	things->zbuffer = zb;
+	return (OK);
+}
+
 int		init_cam(t_cam *cam, t_things *things)
 {
-	cam->zbuf_size = things->bitmap.x_dim * things->bitmap.y_dim;
-	cam->zbuf_stride = things->bitmap.x_dim;
-	cam->zbuf = malloc(sizeof(*cam->zbuf) * cam->zbuf_size);
-	if (!cam->zbuf)
-		return (fail("failed to malloc z-buffer\n"));
 	if (things->map.rows != NULL)
 	{
 		cam->target.x = things->map.row_size / 2;
@@ -65,7 +73,63 @@ int		init_cam(t_cam *cam, t_things *things)
 //	cam->angle = (t_vec3){M_PI / 3, 0, M_PI / 4};
 	cam->projection = Perspective;
 	cam->altitude_scale = 1;
-	return (GOOD);
+	return (OK);
+}
+
+static void	map_assign_colors(t_map *map)
+{
+	int			i;
+	t_list		*rows;
+
+	rows = map->rows;
+	while (rows)
+	{
+		i = 0;
+		while (i < map->row_size)
+		{
+			float z = ((t_vertex *)rows->content)[i].vec.z;
+			float relative_altitude = ((z - map->z_min) / (map->z_max - map->z_min));
+			((t_vertex *)rows->content)[i].color_id = (COLOR_TABLE_SIZE - 1) * relative_altitude;
+			i++;
+		}
+		rows = rows->next;
+	}
+}
+
+static void	map_make_edges(t_edge **edgesptr, int *size, int map_row_num, int map_row_size)
+{
+	int	i;
+	int	j;
+	int	current;
+	t_edge *edges;
+	
+	*size = (map_row_num - 1) * map_row_size + map_row_num * (map_row_size - 1);
+
+	(*edgesptr) = malloc(*size * sizeof(*edges));
+	edges = *edgesptr;
+	current = 0;
+	j = 0;
+	while (j < map_row_num)
+	{
+		i = 0;
+		while (i < map_row_size)
+		{
+			if (i < map_row_size - 1)
+			{
+				edges[current].start = i + j * map_row_size;
+				edges[current].end = (i + 1) + j * map_row_size;
+				current++;
+			}
+			if (j < map_row_num - 1)
+			{
+				edges[current].start = i + j * map_row_size;
+				edges[current].end = i + (j + 1) * map_row_size;
+				current++;
+			}
+			i++;
+		}
+		j++;
+	}
 }
 
 int		init_map(t_map *map, const char *filename)
@@ -86,9 +150,9 @@ int		init_map(t_map *map, const char *filename)
 	if (map->row_num == 0)
 		return (fail("map empty.\n"));
 	map->projected = malloc(map->row_num * map->row_size * sizeof(*map->projected));
-	map_find_height_range(map);
-	map_make_colors(map);
-	return (GOOD);
+	map_assign_colors(map);
+	map_make_edges(&map->edges, &map->edges_size, map->row_num, map->row_size);
+	return (OK);
 }
 
 int		init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim)
@@ -103,5 +167,5 @@ int		init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim
 		return (fail("falied to get image data address\n"));
 	bitmap->x_dim = x_dim;
 	bitmap->y_dim = y_dim;
-	return (GOOD);
+	return (OK);
 }

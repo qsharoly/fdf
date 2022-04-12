@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 01:04:45 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 13:19:48 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	count_entries(const char *line)
 	return (count);
 }
 
-static t_vertex	*read_row(int j, const char *line, int *count)
+static t_vertex	*read_row(int j, const char *line, int *count, float *z_min, float *z_max)
 {
 	t_vertex	*row;
 	char		*cur;
@@ -64,7 +64,9 @@ static t_vertex	*read_row(int j, const char *line, int *count)
 	cur = (char *)line;
 	while (i < *count)
 	{
-		row[i] = (t_vertex){ .vec = {i, j, ft_atoi(cur)}, .color = 0x00000000 };
+		row[i] = (t_vertex){ .vec = {i, j, ft_atoi(cur)} };
+		*z_min = fmin(row[i].vec.z, *z_min);
+		*z_max = fmax(row[i].vec.z, *z_max);
 		cur = next_entry(cur);
 		i++;
 	}
@@ -95,7 +97,7 @@ int	load_map(int fd, t_map *map)
 	tail_ptr = &map->rows;
 	while ((gnl_status = get_next_line(fd, &line)) > 0)
 	{
-		row = read_row(j, line, &count);
+		row = read_row(j, line, &count, &map->z_min, &map->z_max);
 		if (!row)
 			return (rg_abort(&map->rows, line, row, "\nalloc fail.\n"));
 		if (j == 0)

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 18:50:07 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 12:22:52 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void		free_things_and_exit(t_things *things)
 {
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
-	free(things->cam.zbuf);
+	free(things->zbuffer.z);
+	free(things->map.edges);
 	free(things->map.projected);
 	ft_lstclear(&things->map.rows, del_map_row);
 	exit(0);
@@ -50,21 +51,21 @@ static int	draw_geometry(t_things *th)
 	struct timeval	t1;
 	struct timeval	t2;
 	int				dt;
-	void			(*draw_func)(t_bitmap, t_cam *, t_vertex, t_vertex);
+	t_line_func		line;
 
 	bmp_clear(th->bitmap, BLACK);
 	gettimeofday(&t1, NULL);
 	if (th->state.use_zbuf) {
-		reset_zbuf(&th->cam);
-		draw_func = line_gradient_zbuf;
+		reset_zbuf(&th->zbuffer);
+		line = line_gradient_zbuf;
 	}
 	else {
-		draw_func = line_gradient;
+		line = line_gradient;
 	}
 	if (th->map.rows != NULL)
 	{
 		apply_transform(th->map.projected, &th->map, &th->cam);
-		draw_map(th->bitmap, &th->cam, &th->map, draw_func);
+		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges, th->map.edges_size, line);
 	}
 	gettimeofday(&t2, NULL);
 	dt = 1000000*(t2.tv_sec - t1.tv_sec) + t2.tv_usec - t1.tv_usec;
@@ -143,6 +144,7 @@ int			main(int argc, char **argv)
 {
 	t_things	th;
 	int			outcome;
+	int			color_table[COLOR_TABLE_SIZE];
 
 	if (argc > 1)
 	{
@@ -159,7 +161,10 @@ int			main(int argc, char **argv)
 	th.window = mlx_new_window(th.mlx, XDIM, YDIM, "fdf");
 	th.mlx_image = mlx_new_image(th.mlx, XDIM, YDIM);
 	init_bitmap(&th.bitmap, th.mlx_image, XDIM, YDIM);
+	init_zbuffer(&th);
 	init_cam(&th.cam, &th);
+	init_color_table(color_table);
+	th.bitmap.color_table = color_table;
 	mlx_loop_hook(th.mlx, the_loop, &th);
 	mlx_hook(th.window, KeyPress, KeyPressMask, key_press, &th);
 	mlx_hook(th.window, KeyRelease, KeyReleaseMask, key_release, &th);

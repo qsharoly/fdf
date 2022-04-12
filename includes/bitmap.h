@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:10:00 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:35:00 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 12:21:32 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct			s_bitmap
 	t_uint			*data;
 	t_uint			x_dim;
 	t_uint			y_dim;
+	int				*color_table;
 }						t_bitmap;
 
 int						get_pixel(t_bitmap bmp, t_uint x, t_uint y);

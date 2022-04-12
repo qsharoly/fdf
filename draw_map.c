@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2021/07/03 01:11:36 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 13:20:14 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	apply_transform(t_vertex *res, t_map *map, t_cam *cam)
 		{
 			v = ((t_vertex *)row->content)[i];
 			res[j * map->row_size + i].vec = geom_to_pixel(v.vec, cam);
-			res[j * map->row_size + i].color = v.color;
+			res[j * map->row_size + i].color_id = v.color_id;
 			i++;
 		}
 		row = row->next;
@@ -39,33 +39,15 @@ void	apply_transform(t_vertex *res, t_map *map, t_cam *cam)
 	}
 }
 
-void	draw_map(t_bitmap bmp, t_cam *cam, const t_map *map,
-				void (*line2d)(t_bitmap, t_cam *, t_vertex, t_vertex))
+void	draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts, t_edge *edges, int edges_size,
+				t_line_func line)
 {
-	int			i;
-	int			j;
-	t_vertex	v1;
-	t_vertex	v2;
+	int	i;
 
-	j = 0;
-	while (j < map->row_num)
+	i = 0;
+	while (i < edges_size)
 	{
-		i = 0;
-		while (i < map->row_size)
-		{
-			v1 = map->projected[j * map->row_size + i];
-			if (i < map->row_size - 1)
-			{
-				v2 = map->projected[j * map->row_size + i + 1];
-				line2d(bmp, cam, v1, v2);
-			}
-			if (j < map->row_num - 1)
-			{
-				v2 = map->projected[(j + 1) * map->row_size + i];
-				line2d(bmp, cam, v1, v2);
-			}
-			i++;
-		}
-		j++;
+		line(bmp, &zb, verts[edges[i].start], verts[edges[i].end]);
+		i++;
 	}
 }

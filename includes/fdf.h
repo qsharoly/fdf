@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 05:30:27 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 13:02:33 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 # include "libft.h"
 # include "bitmap.h"
 # include "vector.h"
-# include "vertex.h"
 # include "projection.h"
 # include "draw.h"
+# include "color.h"
 
-# define GOOD 1
+# define OK 1
 # define FAIL 0
 
 # define TOGGLE(var) ((var) = (!(var)))
@@ -33,13 +33,10 @@ typedef struct	s_map
 	float		z_max;
 	int			row_size;
 	int			row_num;
+	t_edge		*edges;
+	int			edges_size;
+	int 		color_table[COLOR_TABLE_SIZE];
 }				t_map;
-
-typedef struct	s_edge
-{
-	t_vertex	*v1;
-	t_vertex	*v2;
-}				t_edge;
 
 typedef struct	s_state
 {
@@ -68,11 +65,15 @@ typedef struct	s_things
 	t_state		state;
 	t_map		map;
 	t_cam		cam;
+	t_zbuffer	zbuffer;
 }				t_things;
+
+typedef	void (*t_line_func)(t_bitmap bmp, void *user, t_vertex a, t_vertex b);
 
 int				fail(char *msg);
 char			*ft_mini_dtoa(float a);
 t_state			init_state(void);
+int				init_zbuffer(t_things *th);
 int				init_cam(t_cam *cam, t_things *th);
 int				init_map(t_map *map, const char *filename);
 int				init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim);
@@ -81,8 +82,8 @@ int				load_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
 void			apply_transform(t_vertex *res, t_map *map, t_cam *cam);
-void			draw_map(t_bitmap bmp, t_cam *cam, const t_map *map,
-				void (*draw_line)(t_bitmap, t_cam *, t_vertex, t_vertex));
+void			draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts,
+				t_edge *edges, int edges_size, t_line_func line);
 void			reset_cam(t_things *things);
 void			draw_helpers(t_bitmap bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);

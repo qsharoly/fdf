@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 18:56:48 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 13:20:00 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 int		inbounds(float x, float y, t_bitmap bmp)
 {
-	return (x >= 0.0 && x <= bmp.x_dim
-			&& y >= 0.0 && y <= bmp.y_dim);
+	return (0.0 <= x && x <= bmp.x_dim
+			&& 0.0 <= y && y <= bmp.y_dim);
 }
 
 void	line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color)
@@ -44,25 +44,29 @@ void	line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color)
 	}
 }
 
-void	line_gradient(t_bitmap bmp, t_cam *cam, t_vertex a, t_vertex b)
+void	line_gradient(t_bitmap bmp, void *user, t_vertex a, t_vertex b)
 {
 	t_vec3	p;
 	t_vec3	step;
 	float	dt;
 	float	t;
 
-	if (!inbounds3(a.vec, bmp, cam) && !inbounds3(b.vec, bmp, cam))
+	(void)user;
+	if (!inbounds(a.vec.z, a.vec.y, bmp) && !inbounds(b.vec.x, b.vec.y, bmp))
 		return ;
 	p = a.vec;
 	dt = 1 / fmax(fabs(a.vec.x - b.vec.x), fabs(a.vec.y - b.vec.y));
 	step.x = (b.vec.x - a.vec.x) * dt;
 	step.y = (b.vec.y - a.vec.y) * dt;
 	step.z = (b.vec.z - a.vec.z) * dt;
+	int	color_index = a.color_id;
+	int color_step = (b.color_id - a.color_id) * dt;
 	t = 0;
 	while (t < 1)
 	{
-		if (inbounds3(p, bmp, cam))
-			set_pixel(bmp, p.x, p.y, mix(a.color, b.color, t));
+		if (inbounds(p.x, p.y, bmp))
+			set_pixel(bmp, p.x, p.y, bmp.color_table[color_index]);
+		color_index += color_step;
 		t += dt;
 		p = add3(p, step);
 	}
