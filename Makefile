@@ -6,6 +6,7 @@ DEPDIR = deps
 LFT_DIR = libft
 LFT_INC = $(LFT_DIR)/includes
 LFT = $(LFT_DIR)/libft.a
+LIB_FLAGS += -lft -lmlx
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S), Linux)
@@ -23,7 +24,6 @@ DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 CCFLAGS += -Wall -Wextra -Werror
 INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
 LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
-LIB_FLAGS += -lft -lmlx
 
 debug = yes
 
