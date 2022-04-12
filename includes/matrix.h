@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 13:56:16 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:52:29 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:07:42 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define MATRIX_H
 
 # include "vector.h"
-# include "projection.h"
+# include "camera.h"
 
 # define X 0
 # define Y 1

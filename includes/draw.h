@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:31:20 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 13:19:26 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:07:48 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "bitmap.h"
 # include "vector.h"
-# include "projection.h"
+# include "camera.h"
 
 typedef struct	s_vertex
 {

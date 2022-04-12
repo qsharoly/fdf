@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 13:02:33 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:07:37 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "libft.h"
 # include "bitmap.h"
 # include "vector.h"
-# include "projection.h"
+# include "camera.h"
 # include "draw.h"
 # include "color.h"
 

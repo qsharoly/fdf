@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/02 09:57:46 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:00:26 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,6 @@ typedef struct	s_cam
 	float			zoom;
 	float			aspect;
 	float			altitude_scale;
-	float			*zbuf;
-	t_uint			zbuf_size;
-	t_uint			zbuf_stride;
 	enum e_projkind	projection;
 }				t_cam;
 
