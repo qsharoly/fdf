@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 13:19:48 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:36:34 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ int	load_map(int fd, t_map *map)
 	int			j;
 	int			gnl_status;
 
+	map->z_min = 0;
+	map->z_max = 0;
 	j = 0;
 	line = NULL;
 	tail_ptr = &map->rows;

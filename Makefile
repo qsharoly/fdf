@@ -25,15 +25,8 @@ CCFLAGS += -Wall -Wextra -Werror
 INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
 LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
 
-debug = yes
-
-ifeq ($(debug), yes)
-	CCFLAGS += -g
-endif
-
-ifeq ($(optimize), yes)
-	CCFLAGS += -O3
-endif
+debug ?= -g
+optimize ?= -O2
 
 export debug
 export optimize
@@ -73,7 +66,7 @@ $(BIN): $(OBJ) $(MLX) $(LFT)
 		$(LIB_FLAGS)
 
 $(OBJDIR)/%.o: %.c $(DEPDIR)/%.d
-	gcc $(DEPFLAGS) $(CCFLAGS) -c -o $@ $< $(INC_PATHS) 
+	gcc $(debug) $(optimize) $(DEPFLAGS) $(CCFLAGS) -c -o $@ $< $(INC_PATHS) 
 
 $(DEPDIR)/%.d: ;
 
