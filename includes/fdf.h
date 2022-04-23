@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 14:07:37 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 11:02:57 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,18 @@ typedef struct	s_map
 	int 		color_table[COLOR_TABLE_SIZE];
 }				t_map;
 
+typedef struct	s_time_stats
+{
+	double	avg_drawing_usec;
+	double	min_drawing_usec;
+	double	max_drawing_usec;
+	double	total_drawing_seconds;
+}				t_time_stats;
+
 typedef struct	s_state
 {
+	t_time_stats	time_stats;
+	int				frame_count;
 	int				bench_max_frames;
 	unsigned int	dragging;
 	int				mousex;
@@ -81,7 +91,7 @@ void			del_map_row(void *row);
 int				load_map(int fd, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
-void			apply_transform(t_vertex *res, t_map *map, t_cam *cam);
+void			transform_vertices(t_vertex *result, t_map *input, t_cam *cam);
 void			draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts,
 				t_edge *edges, int edges_size, t_line_func line);
 void			reset_cam(t_things *things);

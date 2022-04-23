@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 12:22:52 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 11:03:25 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,16 @@ static void	put_usage_and_exit(void)
 	exit(0);
 }
 
-void		free_things_and_exit(t_things *things)
+void	print_time_stats(int frames, t_time_stats times)
+{
+	printf(" Frames: %d\n", frames);
+	printf(" Total drawing: %fsec\n", times.total_drawing_seconds);
+	printf(" Min: %8.1fus ", times.min_drawing_usec);
+	printf(" Avg: %8.1fus\n", times.avg_drawing_usec);
+	printf(" Max: %8.1fus\n", times.max_drawing_usec);
+}
+
+void	free_things_and_exit(t_things *things)
 {
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
@@ -46,15 +55,11 @@ static void	bmp_clear(t_bitmap bmp, int color) {
 	ft_memset32(bmp.data, color, bmp.x_dim * bmp.y_dim);
 }
 
-static int	draw_geometry(t_things *th)
+static void	draw_geometry(t_things *th)
 {
-	struct timeval	t1;
-	struct timeval	t2;
-	int				dt;
 	t_line_func		line;
 
 	bmp_clear(th->bitmap, BLACK);
-	gettimeofday(&t1, NULL);
 	if (th->state.use_zbuf) {
 		reset_zbuf(&th->zbuffer);
 		line = line_gradient_zbuf;
@@ -64,15 +69,12 @@ static int	draw_geometry(t_things *th)
 	}
 	if (th->map.rows != NULL)
 	{
-		apply_transform(th->map.projected, &th->map, &th->cam);
+		transform_vertices(th->map.projected, &th->map, &th->cam);
 		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges, th->map.edges_size, line);
 	}
-	gettimeofday(&t2, NULL);
-	dt = 1000000*(t2.tv_sec - t1.tv_sec) + t2.tv_usec - t1.tv_usec;
 	if (th->state.draw_helpers)
 		draw_helpers(th->bitmap, &th->cam);
 	mlx_put_image_to_window(th->mlx, th->window, th->mlx_image, 0, 0);
-	return (dt);
 }
 
 /*
@@ -87,31 +89,40 @@ static int	draw_geometry(t_things *th)
 
 static int	the_loop(t_things *th)
 {
-	static int		frame = 0;
-	static double	avg_drawing_time = 0;
-	int				usec;
+	struct timeval	t1;
+	struct timeval	t2;
+	t_time_stats	*times = &th->state.time_stats;
+	double			microsec;
 
-	if (th->state.bench && frame > th->state.bench_max_frames)
+	if (th->state.bench && th->state.frame_count >= th->state.bench_max_frames)
 	{
-		printf("Average is %f\n", avg_drawing_time);
+		print_time_stats(th->state.frame_count, th->state.time_stats);
 		free_things_and_exit(th);
 	}
 	if (th->state.animation_running)
 		th->state.animation_step = 1;
 	if (th->state.animation_step)
 	{
-		th->cam.angle.z += 0.05 * M_PI / 100;
-		th->cam.angle.x += 0.5 * M_PI / 200;
+		th->cam.angle.z -= 0.001 * M_PI;
+		th->cam.angle.x += 0.005 * M_PI;
+		th->cam.zoom += 0.005;
 		th->state.animation_step = 0;
 		th->state.redraw = 1;
 	}
 	if (th->state.redraw)
 	{
-		frame++;
+		th->state.frame_count++;
+		gettimeofday(&t1, NULL);
 		calc_camera_transform(&th->cam);
-		usec = draw_geometry(th);
-		avg_drawing_time = (avg_drawing_time * (frame - 1) + usec) / frame;
-		draw_hud(th, usec);
+		draw_geometry(th);
+		gettimeofday(&t2, NULL);
+		microsec = 1000000*(t2.tv_sec - t1.tv_sec) + t2.tv_usec - t1.tv_usec;
+		double frames = th->state.frame_count;
+		times->avg_drawing_usec = (times->avg_drawing_usec * (frames - 1) + microsec) / frames;
+		times->min_drawing_usec = fmin(microsec, times->min_drawing_usec);
+		times->max_drawing_usec = fmax(microsec, times->max_drawing_usec);
+		times->total_drawing_seconds += microsec / 1000000;
+		draw_hud(th, microsec);
 	}
 	th->state.redraw = 0;
 	return (0);

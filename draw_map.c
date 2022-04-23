@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/12 13:20:14 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 10:59:31 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include "matrix.h"
 
-void	apply_transform(t_vertex *res, t_map *map, t_cam *cam)
+void	transform_vertices(t_vertex *result, t_map *map, t_cam *cam)
 {
 	const t_list	*row;
 	t_vertex		v;
@@ -30,8 +30,8 @@ void	apply_transform(t_vertex *res, t_map *map, t_cam *cam)
 		while (i < map->row_size)
 		{
 			v = ((t_vertex *)row->content)[i];
-			res[j * map->row_size + i].vec = geom_to_pixel(v.vec, cam);
-			res[j * map->row_size + i].color_id = v.color_id;
+			result[j * map->row_size + i].vec = geom_to_pixel(v.vec, cam);
+			result[j * map->row_size + i].color_id = v.color_id;
 			i++;
 		}
 		row = row->next;

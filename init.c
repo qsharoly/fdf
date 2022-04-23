@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 13:19:39 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 11:03:38 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,21 @@ t_state		init_state(void)
 {
 	t_state	state;
 
-	state.dragging = 0;
-	state.bench_max_frames = BENCHMARK_FRAMES;
-	state.bench = 0;
-	state.stop_program = 0;
-	state.animation_running = 0;
-	state.animation_step = 0;
-	state.redraw = 1;
-	state.print_keycodes = 0;
-	state.draw_stats = 1;
-	state.draw_helpers = 1;
-	state.draw_controls = 0;
-	state.use_zbuf = 1;
+	state = (t_state){
+		.dragging = 0,
+		.bench_max_frames = BENCHMARK_FRAMES,
+		.bench = 0,
+		.stop_program = 0,
+		.animation_running = 0,
+		.animation_step = 0,
+		.redraw = 1,
+		.print_keycodes = 0,
+		.draw_stats = 1,
+		.draw_helpers = 1,
+		.draw_controls = 0,
+		.use_zbuf = 1,
+		.time_stats = (t_time_stats){ .min_drawing_usec = +INFINITY },
+	};
 	return (state);
 }
 
