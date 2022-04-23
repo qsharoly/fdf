@@ -35,7 +35,6 @@ SRC = main.c\
 	  init.c\
 	  load_map.c\
 	  color.c\
-	  color_table.c\
 	  bitmap.c\
 	  draw.c\
 	  draw_zbuf.c\

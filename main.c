@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/23 11:03:25 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 21:01:06 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	free_things_and_exit(t_things *things)
 	free(things->zbuffer.z);
 	free(things->map.edges);
 	free(things->map.projected);
-	ft_lstclear(&things->map.rows, del_map_row);
+	free(things->map.vertices);
 	exit(0);
 }
 
@@ -60,16 +60,21 @@ static void	draw_geometry(t_things *th)
 	t_line_func		line;
 
 	bmp_clear(th->bitmap, BLACK);
-	if (th->state.use_zbuf) {
+	if (th->state.use_zbuf)
+	{
 		reset_zbuf(&th->zbuffer);
-		line = line_gradient_zbuf;
+		if (th->cam.zoom > 2)
+			line = line_gradient_zbuf_bigzoom_clamp;
+		else
+			line = line_gradient_zbuf;
 	}
-	else {
+	else
+	{
 		line = line_gradient;
 	}
-	if (th->map.rows != NULL)
+	if (th->map.vertices != NULL)
 	{
-		transform_vertices(th->map.projected, &th->map, &th->cam);
+		transform_vertices_v2(th->map.projected, th->map.vertices, th->map.rows * th->map.per_row, &th->cam);
 		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges, th->map.edges_size, line);
 	}
 	if (th->state.draw_helpers)
@@ -94,9 +99,9 @@ static int	the_loop(t_things *th)
 	t_time_stats	*times = &th->state.time_stats;
 	double			microsec;
 
-	if (th->state.bench && th->state.frame_count >= th->state.bench_max_frames)
+	if (th->state.bench && th->state.frames >= th->state.bench_max_frames)
 	{
-		print_time_stats(th->state.frame_count, th->state.time_stats);
+		print_time_stats(th->state.frames, th->state.time_stats);
 		free_things_and_exit(th);
 	}
 	if (th->state.animation_running)
@@ -111,13 +116,13 @@ static int	the_loop(t_things *th)
 	}
 	if (th->state.redraw)
 	{
-		th->state.frame_count++;
+		th->state.frames++;
 		gettimeofday(&t1, NULL);
 		calc_camera_transform(&th->cam);
 		draw_geometry(th);
 		gettimeofday(&t2, NULL);
 		microsec = 1000000*(t2.tv_sec - t1.tv_sec) + t2.tv_usec - t1.tv_usec;
-		double frames = th->state.frame_count;
+		double frames = th->state.frames;
 		times->avg_drawing_usec = (times->avg_drawing_usec * (frames - 1) + microsec) / frames;
 		times->min_drawing_usec = fmin(microsec, times->min_drawing_usec);
 		times->max_drawing_usec = fmax(microsec, times->max_drawing_usec);
@@ -132,50 +137,46 @@ static int	the_loop(t_things *th)
 ** if option -b is specified, run in benchmark mode
 */
 
-static void		get_options(t_things *things, int argc, char **argv)
+static void		get_options(t_state *state, int argc, char **argv)
 {
-	int		arg;
 	int		i;
+	int		n;
 
-	arg = 1;
-	if (ft_strcmp(argv[arg], "-b") == 0)
+	i = 1;
+	if (ft_strcmp(argv[i], "-b") == 0)
 	{
-		things->state.bench = 1;
-		things->state.animation_running = 1;
-		if (argc > arg + 1 && (i = ft_atoi(argv[arg + 1])) > 0)
+		state->bench = 1;
+		state->animation_running = 1;
+		if (argc > i + 1 && (n = ft_atoi(argv[i + 1])) > 0)
 		{
-			things->state.bench_max_frames = i;
-			arg++;
+			state->bench_max_frames = n;
+			i++;
 		}
-		arg++;
+		i++;
 	}
 }
 
 int			main(int argc, char **argv)
 {
 	t_things	th;
-	int			outcome;
+	int			ok;
 	int			color_table[COLOR_TABLE_SIZE];
 
-	if (argc > 1)
-	{
-		th.state = init_state();
-		get_options(&th, argc, argv);
-		outcome = init_map(&th.map, argv[argc - 1]);
-		if (outcome == FAIL)
-			return (-1);
-		ft_putstr_fd("\033[3Dok.\n", 2);
-	}
-	else
+	if (argc <= 1)
 		put_usage_and_exit();
+	th.state = init_state();
+	get_options(&th.state, argc, argv);
+	ok = init_map(&th.map, argv[argc - 1]);
+	if (!ok)
+		return (-1);
 	th.mlx = mlx_init();
 	th.window = mlx_new_window(th.mlx, XDIM, YDIM, "fdf");
 	th.mlx_image = mlx_new_image(th.mlx, XDIM, YDIM);
 	init_bitmap(&th.bitmap, th.mlx_image, XDIM, YDIM);
-	init_zbuffer(&th);
-	init_cam(&th.cam, &th);
 	init_color_table(color_table);
 	th.bitmap.color_table = color_table;
+	init_zbuffer(&th);
+	th.cam = init_cam(XDIM, YDIM, &th.map);
 	mlx_loop_hook(th.mlx, the_loop, &th);
 	mlx_hook(th.window, KeyPress, KeyPressMask, key_press, &th);
 	mlx_hook(th.window, KeyRelease, KeyReleaseMask, key_release, &th);

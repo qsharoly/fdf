@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 14:32:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 16:38:46 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 20:10:50 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int		mouse_move(int x, int y, t_things *th)
 		}
 		else
 		{
-			float	factor = (float)th->map.row_size / (XDIM * th->cam.zoom);
+			float	factor = (float)th->map.rows / (XDIM * th->cam.zoom);
 			cam_drag(&th->cam, dx * factor, dy * factor);
 		}
 	}

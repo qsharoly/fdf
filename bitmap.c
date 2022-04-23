@@ -6,12 +6,11 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:18:39 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/22 15:05:45 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 20:51:32 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "bitmap.h"
-#include <stdlib.h>
 
 int		get_pixel(t_bitmap bmp, t_uint x, t_uint y)
 {

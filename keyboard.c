@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 01:55:44 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 13:51:52 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,10 @@ int		key_press(int keycode, t_things *th)
 	if (keycode == L_SHIFT || keycode == R_SHIFT)
 		th->state.dragging |= SHIFT_MASK;
 	else if (keycode == K_EXIT1 || keycode == K_EXIT2)
+	{
+		print_time_stats(th->state.frames, th->state.time_stats);
 		free_things_and_exit(th);
+	}
 	else if (keycode == K_ANIM_PAUSE)
 		TOGGLE(th->state.animation_running);
 	else if (keycode == K_ANIM_STEP)

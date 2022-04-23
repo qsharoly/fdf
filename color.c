@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/22 15:05:51 by debby             #+#    #+#             */
-/*   Updated: 2021/07/22 15:31:19 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 19:15:43 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,24 @@ t_argb	int_to_argb(int color)
 	argb.g = (color & 0x0000ff00) >> 8;
 	argb.b = (color & 0x000000ff) >> 0;
 	return (argb);
+}
+
+static int	color_gradient(float t, int bottom, int middle, int top)
+{
+	if (t >= .5)
+		return (mix(top, middle, (1.0 - t) / (1.0 - 0.5)));
+	else
+		return (mix(middle, bottom, (0.5 - t) / (0.5 - 0.0)));
+}
+
+void	init_color_table(int table[COLOR_TABLE_SIZE])
+{
+	int		i;
+
+	i = 0;
+	while (i < COLOR_TABLE_SIZE)
+	{
+		table[i] = color_gradient((float)i / (float)COLOR_TABLE_SIZE, PURPLE, GRASS, PEACH);
+		i++;
+	}
 }

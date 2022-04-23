@@ -6,36 +6,25 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/23 10:59:31 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 21:45:08 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include <sys/time.h>
-#include <stdio.h>
 #include "matrix.h"
 
-void	transform_vertices(t_vertex *result, t_map *map, t_cam *cam)
+void	transform_vertices_v2(t_vertex *result, const t_vertex *vertices, int vertices_size, t_cam *cam)
 {
-	const t_list	*row;
-	t_vertex		v;
 	int				i;
-	int				j;
 
-	row = map->rows;
-	j = 0;
-	while (j < map->row_num)
+	i = 0;
+	while (i < vertices_size)
 	{
-		i = 0;
-		while (i < map->row_size)
-		{
-			v = ((t_vertex *)row->content)[i];
-			result[j * map->row_size + i].vec = geom_to_pixel(v.vec, cam);
-			result[j * map->row_size + i].color_id = v.color_id;
-			i++;
-		}
-		row = row->next;
-		j++;
+		result[i] = (t_vertex){
+			.vec = geom_to_pixel(vertices[i].vec, cam),
+			.color_id = vertices[i].color_id
+		};
+		i++;
 	}
 }
 

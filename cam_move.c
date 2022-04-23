@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 03:17:02 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 20:30:15 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void	reset_cam(t_things *things)
 {
-	if (things->map.rows != NULL)
+	if (things->map.vertices != NULL)
 	{
-		things->cam.target.x = things->map.row_size / 2;
-		things->cam.target.y = things->map.row_num / 2;
+		things->cam.target.x = things->map.per_row / 2;
+		things->cam.target.y = things->map.rows / 2;
 		things->cam.target.z = (things->map.z_min + things->map.z_max) / 2;
 	}
 	else

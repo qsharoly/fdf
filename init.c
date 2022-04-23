@@ -6,21 +6,18 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/23 11:03:38 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/23 20:33:53 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <fcntl.h>
+#include <math.h>
 #include "mlx.h"
 #include "fdf.h"
 #include "settings.h"
-#include <math.h>
 
-int			fail(char *msg)
+void	log_failure(const char *msg)
 {
 	ft_putstr_fd(msg, 2);
-	return (FAIL);
 }
 
 t_state		init_state(void)
@@ -53,80 +50,83 @@ int		init_zbuffer(t_things *things)
 	zb.stride = things->bitmap.x_dim;
 	zb.z = malloc(sizeof(*zb.z) * zb.size);
 	if (!zb.z)
-		return (fail("failed to malloc z-buffer\n"));
+	{
+		log_failure("failed to malloc z-buffer\n");
+		return (FAIL);
+	}
 	things->zbuffer = zb;
 	return (OK);
 }
 
-int		init_cam(t_cam *cam, t_things *things)
+t_cam	init_cam(int window_x_dim, int window_y_dim, const t_map *map)
 {
-	if (things->map.rows != NULL)
-	{
-		cam->target.x = things->map.row_size / 2;
-		cam->target.y = things->map.row_num / 2;
-		cam->target.z = (things->map.z_min + things->map.z_max) / 2;
-		cam->dist = fmax(things->map.row_size, things->map.row_num);
-		cam->zoom = 1;
-	}
-	cam->z_near = 1;
-	cam->z_far = 2 * cam->dist;
-	cam->fov = 0.5 * M_PI;
-	cam->aspect = (float)things->bitmap.y_dim / things->bitmap.x_dim;
-	cam->angle = ORIGIN;
-//	cam->angle = (t_vec3){M_PI / 3, 0, M_PI / 4};
-	cam->projection = Perspective;
-	cam->altitude_scale = 1;
-	return (OK);
+	t_cam	cam;
+	float	dist;
+
+	dist = fmax(map->rows, map->per_row);
+	cam = (t_cam){
+		.target = {
+			.x = map->per_row / 2,
+			.y = map->rows / 2,
+			.z = (map->z_min + map->z_max) / 2
+		},
+		.dist = dist,
+		.zoom = 1,
+		.z_near = 1,
+		.z_far = 2 * dist,
+		.fov = 0.5 * M_PI,
+		.aspect = (float)window_y_dim / window_x_dim,
+		.angle = ORIGIN,
+		.projection = Perspective,
+		.altitude_scale = 1
+	};
+	return (cam);
 }
 
 static void	map_assign_colors(t_map *map)
 {
-	int			i;
-	t_list		*rows;
+	int		i;
+	float	z;
+	float	relative_z;
 
-	rows = map->rows;
-	while (rows)
+	i = 0;
+	while (i < map->rows * map->per_row)
 	{
-		i = 0;
-		while (i < map->row_size)
-		{
-			float z = ((t_vertex *)rows->content)[i].vec.z;
-			float relative_altitude = ((z - map->z_min) / (map->z_max - map->z_min));
-			((t_vertex *)rows->content)[i].color_id = (COLOR_TABLE_SIZE - 1) * relative_altitude;
-			i++;
-		}
-		rows = rows->next;
+		z = map->vertices[i].vec.z;
+		relative_z = ((z - map->z_min) / (map->z_max - map->z_min));
+		map->vertices[i].color_id = (COLOR_TABLE_SIZE - 1) * relative_z;
+		i++;
 	}
 }
 
-static void	map_make_edges(t_edge **edgesptr, int *size, int map_row_num, int map_row_size)
+static void	map_make_edges(t_edge **edgesptr, int *size, int map_per_row, int map_rows)
 {
 	int	i;
 	int	j;
 	int	current;
 	t_edge *edges;
 	
-	*size = (map_row_num - 1) * map_row_size + map_row_num * (map_row_size - 1);
+	*size = (map_per_row - 1) * map_rows + map_per_row * (map_rows - 1);
 
 	(*edgesptr) = malloc(*size * sizeof(*edges));
 	edges = *edgesptr;
 	current = 0;
 	j = 0;
-	while (j < map_row_num)
+	while (j < map_rows)
 	{
 		i = 0;
-		while (i < map_row_size)
+		while (i < map_per_row)
 		{
-			if (i < map_row_size - 1)
+			if (i < map_per_row - 1)
 			{
-				edges[current].start = i + j * map_row_size;
-				edges[current].end = (i + 1) + j * map_row_size;
+				edges[current].start = i + j * map_per_row;
+				edges[current].end = (i + 1) + j * map_per_row;
 				current++;
 			}
-			if (j < map_row_num - 1)
+			if (j < map_rows - 1)
 			{
-				edges[current].start = i + j * map_row_size;
-				edges[current].end = i + (j + 1) * map_row_size;
+				edges[current].start = i + j * map_per_row;
+				edges[current].end = i + (j + 1) * map_per_row;
 				current++;
 			}
 			i++;
@@ -137,24 +137,14 @@ static void	map_make_edges(t_edge **edgesptr, int *size, int map_row_num, int ma
 
 int		init_map(t_map *map, const char *filename)
 {
-	int		fd;
-	int		status;
+	int	status;
 
-	map->rows = NULL;
-	map->row_num = 0;
-	map->row_size = 0;
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-		return (fail("failed to open map file.\n"));
-	status = load_map(fd, map);
-	close(fd);
-	if (status < 0)
-		return (fail("failed to read from file.\n"));
-	if (map->row_num == 0)
-		return (fail("map empty.\n"));
-	map->projected = malloc(map->row_num * map->row_size * sizeof(*map->projected));
+	status = load_map_v2(filename, map);
+	if (status == FAIL)
+		return (FAIL);
 	map_assign_colors(map);
-	map_make_edges(&map->edges, &map->edges_size, map->row_num, map->row_size);
+	map->projected = malloc(map->per_row * map->rows * sizeof(*map->projected));
+	map_make_edges(&map->edges, &map->edges_size, map->per_row, map->rows);
 	return (OK);
 }
 
@@ -167,7 +157,10 @@ int		init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim
 	bitmap->data = (unsigned int *)mlx_get_data_addr((void *)mlx_img_ptr,
 			&bpp, &stride, &endianness);
 	if (!bitmap->data)
-		return (fail("falied to get image data address\n"));
+	{
+		log_failure("falied to get image data address\n");
+		return (FAIL);
+	}
 	bitmap->x_dim = x_dim;
 	bitmap->y_dim = y_dim;
 	return (OK);
