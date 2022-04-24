@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/23 21:01:06 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/24 15:05:27 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,16 +57,13 @@ static void	bmp_clear(t_bitmap bmp, int color) {
 
 static void	draw_geometry(t_things *th)
 {
-	t_line_func		line;
+	t_line_func	line;
 
 	bmp_clear(th->bitmap, BLACK);
 	if (th->state.use_zbuf)
 	{
 		reset_zbuf(&th->zbuffer);
-		if (th->cam.zoom > 2)
-			line = line_gradient_zbuf_bigzoom_clamp;
-		else
-			line = line_gradient_zbuf;
+		line = line_gradient_zbuf;
 	}
 	else
 	{
@@ -75,7 +72,7 @@ static void	draw_geometry(t_things *th)
 	if (th->map.vertices != NULL)
 	{
 		transform_vertices_v2(th->map.projected, th->map.vertices, th->map.rows * th->map.per_row, &th->cam);
-		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges, th->map.edges_size, line);
+		draw_map_clamp(th->bitmap, th->zbuffer, th->map.projected, th->map.edges, th->map.edges_size, line);
 	}
 	if (th->state.draw_helpers)
 		draw_helpers(th->bitmap, &th->cam);

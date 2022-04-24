@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:18:39 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/23 20:51:32 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/24 14:05:28 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,4 @@ int		get_pixel(t_bitmap bmp, t_uint x, t_uint y)
 void	set_pixel(t_bitmap bmp, t_uint x, t_uint y, int color)
 {
 	*(bmp.data + x + y * bmp.x_dim) = color;
-}
-
-void	fill_rect(t_bitmap bmp, t_rect rect, int color)
-{
-	t_uint i;
-	t_uint j;
-
-	j = 0;
-	while (j < rect.height)
-	{
-		i = 0;
-		while (i < rect.width)
-		{
-			set_pixel(bmp, rect.x + i, rect.y + j, color);
-			i++;
-		}
-		j++;
-	}
 }
