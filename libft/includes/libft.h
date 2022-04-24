@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 16:08:51 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/07/04 05:24:55 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/25 02:08:40 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define LIBFT_H
 
 # include <stdlib.h>
+
+# define ITOA_BUF_SIZE 10
 
 typedef struct	s_split_info
 {

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 14:07:29 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/25 02:31:42 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,12 @@ void		draw_helpers(t_bitmap bitmap, t_cam *cam)
 
 static void	ft_append(char *tgt, char *description, float value)
 {
-	char *tmp;
+	char	buf[MINIDTOA_BUF_SIZE];
+	char	*value_str;
 
 	ft_strcat(tgt, description);
-	tmp = ft_mini_dtoa(value);
-	ft_strcat(tgt, tmp);
-	free(tmp);
+	value_str = ft_mini_dtoa(buf, MINIDTOA_BUF_SIZE, value);
+	ft_strcat(tgt, value_str);
 }
 
 float	rad2deg(float radians)

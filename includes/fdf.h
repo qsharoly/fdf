@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/24 13:56:42 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/25 02:35:42 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # define FAIL 0
 
 # define TOGGLE(var) ((var) = (!(var)))
+
+# define MINIDTOA_BUF_SIZE (ITOA_BUF_SIZE * 2 + 3) // sign + dot + '\0'
 
 typedef struct	s_map
 {
@@ -81,7 +83,7 @@ typedef struct	s_things
 typedef	void (*t_line_func)(t_bitmap bmp, void *user, t_vertex a, t_vertex b);
 
 void			log_failure(const char *msg);
-char			*ft_mini_dtoa(float a);
+char			*ft_mini_dtoa(char *buffer, int size, float a);
 t_state			init_state(void);
 int				init_zbuffer(t_things *th);
 t_cam			init_cam(int window_x_dim, int window_y_dim, const t_map *map);
