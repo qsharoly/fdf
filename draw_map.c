@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/25 00:06:13 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/25 00:44:08 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 		}
 		else if (check % 2 == 1)
 		{
-		//	printf("case a, check=%d\n",check);
+			//printf("case a, check=%d\n",check);
 			ap->vec = inter[0];
 			if (check - 1 == 8)
 				bp->vec = inter[3];
@@ -166,26 +166,34 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 		}
 		else if (check == 6)
 		{
-		//	printf("case b\n");
+			//printf("case b\n");
 			ap->vec = inter[1];
 			bp->vec = inter[2];
 		}
 		else if (check == 10)
 		{
-		//	printf("case c\n");
+			//printf("case c\n");
 			ap->vec = inter[1];
 			bp->vec = inter[3];
 		}
 		else if (check == 12)
 		{
-		//	printf("case d\n");
+			//printf("case d\n");
 			ap->vec = inter[2];
 			bp->vec = inter[3];
 		}
 		else
 		{
-		//	printf("bad check\n");
+			//printf("bad check\n");
 			assert(0);
+		}
+		//fixup inverted order of points
+		if ((b.x - a.x) * (bp->vec.x - ap->vec.x) < 0 && (b.y - a.y) * (bp->vec.y - ap->vec.y) < 0)
+		{
+			//printf("inverted!\n");
+			t_vec3 tmp = ap->vec;
+			ap->vec = bp->vec;
+			bp->vec = tmp;
 		}
 		return (1);
 	}

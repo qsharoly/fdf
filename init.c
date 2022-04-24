@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/23 20:33:53 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/25 00:50:07 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,16 @@ static void	map_assign_colors(t_map *map)
 	float	z;
 	float	relative_z;
 
+	if (map->z_max == map->z_min)
+	{
+		i = 0;
+		while (i < map->rows * map->per_row)
+		{
+			map->vertices[i].color_id = (COLOR_TABLE_SIZE - 1) / 2;
+			i++;
+		}
+		return;
+	}
 	i = 0;
 	while (i < map->rows * map->per_row)
 	{
