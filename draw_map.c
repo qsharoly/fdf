@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/25 12:04:00 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/25 12:46:15 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,10 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 	}
 	else
 	{
+		// these definitely do not intersect
+		if ((a.x < 0 && b.x < 0) || (a.x > x_dim && b.x > x_dim)
+				|| (a.y < 0 && b.y < 0) || (a.y > y_dim && b.y > y_dim))
+			return (0);
 		//both a and b are out
 		t_vec3	inter[4];
 		int check = 0;
