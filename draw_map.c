@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/25 00:44:08 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/25 12:04:00 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,8 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 		else
 		{
 			//printf("bad check\n");
-			assert(0);
+			//assert(0);
+			return (0);
 		}
 		//fixup inverted order of points
 		if ((b.x - a.x) * (bp->vec.x - ap->vec.x) < 0 && (b.y - a.y) * (bp->vec.y - ap->vec.y) < 0)
