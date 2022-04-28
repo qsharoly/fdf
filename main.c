@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 05:41:37 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 20:33:43 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,32 +51,23 @@ void	free_things_and_exit(t_things *things)
 	exit(0);
 }
 
-static void	bmp_clear(t_bitmap bmp, int color) {
-	ft_memset32(bmp.data, color, bmp.x_dim * bmp.y_dim);
-}
-
 static void	draw_geometry(t_things *th)
 {
-	t_line_func	line;
-
-	bmp_clear(th->bitmap, BLACK);
+	ft_bzero32(th->bitmap.data, th->bitmap.x_dim * th->bitmap.y_dim);
+	transform_vertices_v2(th->map.projected, th->map.vertices, th->map.rows * th->map.per_row, &th->cam);
 	if (th->state.use_zbuf)
 	{
-		reset_zbuf(&th->zbuffer);
-		line = line_gradient_zbuf;
+		ft_memset32f(th->zbuffer.z, -INFINITY, th->zbuffer.size);
+		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
+				th->map.edges_size, line_gradient_zbuf);
 	}
 	else
 	{
-		line = line_gradient;
-	}
-	if (th->map.vertices != NULL)
-	{
-		transform_vertices_v2(th->map.projected, th->map.vertices, th->map.rows * th->map.per_row, &th->cam);
-		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges, th->map.edges_size, line);
+		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
+			th->map.edges_size, line_gradient);
 	}
 	if (th->state.draw_helpers)
 		draw_helpers(th->bitmap, &th->cam);
-	mlx_put_image_to_window(th->mlx, th->window, th->mlx_image, 0, 0);
 }
 
 /*
@@ -118,6 +109,7 @@ static int	the_loop(t_things *th)
 		calc_camera_transform(&th->cam);
 		draw_geometry(th);
 		gettimeofday(&t2, NULL);
+		mlx_put_image_to_window(th->mlx, th->window, th->mlx_image, 0, 0);
 		microsec = 1000000*(t2.tv_sec - t1.tv_sec) + t2.tv_usec - t1.tv_usec;
 		double frames = th->state.frames;
 		times->avg_drawing_usec = (times->avg_drawing_usec * (frames - 1) + microsec) / frames;

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 05:41:27 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 19:29:47 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define FDF_H
 
 # include "libft.h"
-# include "bitmap.h"
 # include "vector.h"
 # include "camera.h"
 # include "draw.h"

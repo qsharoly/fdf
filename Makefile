@@ -1,4 +1,5 @@
 BIN ?= fdf
+CL ?= clang
 INCDIR = includes
 OBJDIR = objs
 DEPDIR = deps
@@ -26,18 +27,17 @@ INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
 LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
 
 debug ?= -g
-optimize ?= -O2
+optimize ?= -O3
 
 export debug
 export optimize
+export CL
 
 SRC = main.c\
 	  init.c\
 	  load_map.c\
 	  color.c\
-	  bitmap.c\
-	  draw.c\
-	  draw_zbuf.c\
+	  draw_line.c\
 	  draw_map.c\
 	  vector3.c\
 	  normalize3.c\
@@ -59,13 +59,13 @@ all: $(BIN)
 
 $(BIN): $(OBJ) $(MLX) $(LFT)
 	@echo "# linking $(BIN)"
-	gcc -o $(BIN) $(OBJ)\
+	$(CL) -o $(BIN) $(OBJ)\
 		$(LIB_PATHS)\
 		$(INC_PATHS)\
 		$(LIB_FLAGS)
 
 $(OBJDIR)/%.o: %.c $(DEPDIR)/%.d
-	gcc $(debug) $(optimize) $(DEPFLAGS) $(CCFLAGS) -c -o $@ $< $(INC_PATHS) 
+	$(CL) $(debug) $(optimize) $< $(DEPFLAGS) $(CCFLAGS) $(INC_PATHS) -c -o $@
 
 $(DEPDIR)/%.d: ;
 

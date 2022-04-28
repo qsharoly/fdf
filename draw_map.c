@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/28 05:44:28 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 19:46:45 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ void	transform_vertices_v2(t_vertex *result, const t_vertex *vertices, int verti
 	}
 }
 
-static int	is_inside(t_vec3 a, int x_dim, int y_dim)
+int	is_inside(t_vec3 a, int x_dim, int y_dim)
 {
-	return (0 <= a.x && a.x <= x_dim && 0 <= a.y && a.y <= y_dim);
+	return (0.0 <= a.x && a.x <= x_dim && 0.0 <= a.y && a.y <= y_dim);
 }
 
 #include <assert.h>

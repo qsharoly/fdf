@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/25 00:50:07 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 19:24:53 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ int		init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim
 	int			stride;
 	int			endianness;
 
-	bitmap->data = (unsigned int *)mlx_get_data_addr((void *)mlx_img_ptr,
+	bitmap->data = (int *)mlx_get_data_addr((void *)mlx_img_ptr,
 			&bpp, &stride, &endianness);
 	if (!bitmap->data)
 	{

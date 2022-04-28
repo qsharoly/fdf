@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 16:08:51 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/25 02:08:40 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 18:03:38 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ typedef struct	s_btree
 }				t_btree;
 
 void			*ft_memset(void *b, int c, size_t len);
+void			*ft_bzero32(void *bb, size_t len);
 void			*ft_memset32(void *b, int c, size_t num);
+void			*ft_memset32f(void *b, float c, size_t len);
 void			*ft_memcpy(void *dest, const void *src, size_t n);
 void			*ft_memmove(void *dest, const void *src, size_t len);
 void			*ft_memccpy(void *dest, const void *src, int c, size_t n);
