@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/25 02:35:42 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 05:41:27 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,6 @@ void			map_make_colors(t_map *map);
 void			transform_vertices_v2(t_vertex *result, const t_vertex *vertices,
 					int vertices_size, t_cam *cam);
 void			draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts,
-					t_edge *edges, int edges_size, t_line_func line);
-void			draw_map_clamp(t_bitmap bmp, t_zbuffer zb, t_vertex *verts,
 					t_edge *edges, int edges_size, t_line_func line);
 void			reset_cam(t_things *things);
 void			draw_helpers(t_bitmap bitmap, t_cam *cam);

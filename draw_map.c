@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/28 05:37:34 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 05:44:28 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,26 +28,10 @@ void	transform_vertices_v2(t_vertex *result, const t_vertex *vertices, int verti
 	}
 }
 
-void	draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts, t_edge *edges,
-			int edges_size, t_line_func line)
-{
-	int	i;
-
-	i = 0;
-	while (i < edges_size)
-	{
-		line(bmp, &zb, verts[edges[i].start], verts[edges[i].end]);
-		i++;
-	}
-}
-
 static int	is_inside(t_vec3 a, int x_dim, int y_dim)
 {
 	return (0 <= a.x && a.x <= x_dim && 0 <= a.y && a.y <= y_dim);
 }
-
-#define CLAM 1
-#if CLAM
 
 #include <assert.h>
 
@@ -144,12 +128,13 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 	}
 	else
 	{
+		//both a and b are out, but the middle part of the segment
+		//may still intersect with the rectangle.
+
 		// these definitely do not intersect
 		if ((a.x < 0 && b.x < 0) || (a.x > x_dim && b.x > x_dim)
 				|| (a.y < 0 && b.y < 0) || (a.y > y_dim && b.y > y_dim))
 			return (0);
-		//both a and b are out, but the middle part of the segment
-		//may still intersect with the rectangle.
 		t_vec3	intersections[4];
 		int found = 0;
 		found += segments_intersect(a, b, ul, ur, &intersections[found]);
@@ -183,9 +168,8 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 	assert(0);
 	return (0);
 }
-#endif //CLAM
 
-void	draw_map_clamp(t_bitmap bmp, t_zbuffer zb, t_vertex *verts, t_edge *edges,
+void	draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts, t_edge *edges,
 			int edges_size, t_line_func line)
 {
 	int	i;
@@ -195,13 +179,8 @@ void	draw_map_clamp(t_bitmap bmp, t_zbuffer zb, t_vertex *verts, t_edge *edges,
 	{
 		t_vertex a = verts[edges[i].start];
 		t_vertex b = verts[edges[i].end];
-#if CLAM
 		if (clamp(&a, &b, bmp.x_dim, bmp.y_dim))
 			line(bmp, &zb, a, b);
-#else
-		if (is_inside(a.vec, bmp.x_dim, bmp.y_dim) && is_inside(b.vec, bmp.x_dim, bmp.y_dim))
-			line(bmp, &zb, a, b);
-#endif
 		i++;
 	}
 }
