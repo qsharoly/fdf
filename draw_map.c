@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/25 12:46:15 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 05:37:34 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static int	segments_intersect(t_vec3 a, t_vec3 b, t_vec3 c, t_vec3 d,
 	return 0;
 }
 
-// return 0 if segment is fully outside
+// returns 0 if segment is fully outside
 static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 {
 	t_vec3 a = ap->vec;
@@ -108,12 +108,12 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 			bp->vec = inter;
 			return (1);
 		}
-		else if (segments_intersect(a, b, ur, dr, &inter))
+		else if (segments_intersect(a, b, dr, ur, &inter))
 		{
 			bp->vec = inter;
 			return (1);
 		}
-		//printf("bad a_in\n");
+		//dprintf(2, "bad a_in\n");
 		return (0);
 	}
 	else if (b_in)
@@ -134,12 +134,12 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 			ap->vec = inter;
 			return (1);
 		}
-		else if (segments_intersect(a, b, ur, dr, &inter))
+		else if (segments_intersect(a, b, dr, ur, &inter))
 		{
 			ap->vec = inter;
 			return (1);
 		}
-		//printf("bad b_in a:%f %f b:%f %f\n",a.x, a.y, b.x, b.y);
+		//dprintf(2, "bad b_in a:%f %f b:%f %f\n",a.x, a.y, b.x, b.y);
 		return (0);
 	}
 	else
@@ -148,59 +148,36 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 		if ((a.x < 0 && b.x < 0) || (a.x > x_dim && b.x > x_dim)
 				|| (a.y < 0 && b.y < 0) || (a.y > y_dim && b.y > y_dim))
 			return (0);
-		//both a and b are out
-		t_vec3	inter[4];
-		int check = 0;
-		check += segments_intersect(a, b, ul, ur, &inter[0]);
-		check += 2 * segments_intersect(a, b, ul, dl, &inter[1]);
-		check += 4 * segments_intersect(a, b, dl, dr, &inter[2]);
-		check += 8 * segments_intersect(a, b, dr, ur, &inter[3]);
-		if (check == 0)
+		//both a and b are out, but the middle part of the segment
+		//may still intersect with the rectangle.
+		t_vec3	intersections[4];
+		int found = 0;
+		found += segments_intersect(a, b, ul, ur, &intersections[found]);
+		found += segments_intersect(a, b, ur, dr, &intersections[found]);
+		found += segments_intersect(a, b, dr, dl, &intersections[found]);
+		found += segments_intersect(a, b, dl, ul, &intersections[found]);
+		if (found == 2)
 		{
+			ap->vec = intersections[0];
+			bp->vec = intersections[1];
+			//fixup inverted order of points
+			if ((b.x - a.x) * (bp->vec.x - ap->vec.x) < 0
+				&& (b.y - a.y) * (bp->vec.y - ap->vec.y) < 0)
+			{
+				//dprintf(2, "inverted!\n");
+				t_vec3 tmp = ap->vec;
+				ap->vec = bp->vec;
+				bp->vec = tmp;
+			}
+			return (1);
+		}
+		else if (found == 0)
+		{
+			//no intersection
 			return (0);
 		}
-		else if (check % 2 == 1)
-		{
-			//printf("case a, check=%d\n",check);
-			ap->vec = inter[0];
-			if (check - 1 == 8)
-				bp->vec = inter[3];
-			else
-				bp->vec = inter[(check - 1)/2];
-		}
-		else if (check == 6)
-		{
-			//printf("case b\n");
-			ap->vec = inter[1];
-			bp->vec = inter[2];
-		}
-		else if (check == 10)
-		{
-			//printf("case c\n");
-			ap->vec = inter[1];
-			bp->vec = inter[3];
-		}
-		else if (check == 12)
-		{
-			//printf("case d\n");
-			ap->vec = inter[2];
-			bp->vec = inter[3];
-		}
-		else
-		{
-			//printf("bad check\n");
-			//assert(0);
-			return (0);
-		}
-		//fixup inverted order of points
-		if ((b.x - a.x) * (bp->vec.x - ap->vec.x) < 0 && (b.y - a.y) * (bp->vec.y - ap->vec.y) < 0)
-		{
-			//printf("inverted!\n");
-			t_vec3 tmp = ap->vec;
-			ap->vec = bp->vec;
-			bp->vec = tmp;
-		}
-		return (1);
+		//dprintf(2, "bad: must have 2 or 0 intersections when both points are out!\n");
+		return (0);
 	}
 	//never get here
 	assert(0);
