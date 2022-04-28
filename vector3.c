@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:33:25 by qsharoly          #+#    #+#             */
-/*   Updated: 2020/05/24 14:13:15 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 20:43:35 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,39 @@ t_vec3	scale(t_vec3 vec, float s)
 float	length3(t_vec3 vec)
 {
 	return (sqrt(dot(vec, vec)));
+}
+
+t_vec3	normalize3(t_vec3 vec)
+{
+	return (scale(vec, 1 / length3(vec)));
+}
+
+t_vec3	rot_x(float angle, t_vec3 vec)
+{
+	t_vec3	rot;
+
+	rot.x = vec.x;
+	rot.y = cos(angle) * vec.y - sin(angle) * vec.z;
+	rot.z = sin(angle) * vec.y + cos(angle) * vec.z;
+	return (rot);
+}
+
+t_vec3	rot_y(float angle, t_vec3 vec)
+{
+	t_vec3	rot;
+
+	rot.x = cos(angle) * vec.x - sin(angle) * vec.z;
+	rot.y = vec.y;
+	rot.z = sin(angle) * vec.x + cos(angle) * vec.z;
+	return (rot);
+}
+
+t_vec3	rot_z(float angle, t_vec3 vec)
+{
+	t_vec3	rot;
+
+	rot.x = cos(angle) * vec.x - sin(angle) * vec.y;
+	rot.y = sin(angle) * vec.x + cos(angle) * vec.y;
+	rot.z = vec.z;
+	return (rot);
 }

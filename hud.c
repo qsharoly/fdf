@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:38:27 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/25 02:31:42 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 21:59:49 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ int			draw_controls(void *mlx_ptr, void *mlx_window)
 
 static void		draw_edge(t_view view, t_vec3 a, t_vec3 b, int color)
 {
-	a = geom_to_pixel(a, view.cam);
-	b = geom_to_pixel(b, view.cam);
+	a = geom_to_pixel(a, view.cam, view.bmp.x_dim, view.bmp.y_dim);
+	b = geom_to_pixel(b, view.cam, view.bmp.x_dim, view.bmp.y_dim);
 	line_solid(view.bmp, a, b, color);
 }
 

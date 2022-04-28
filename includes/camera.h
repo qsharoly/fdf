@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:15:41 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 19:30:05 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 22:06:26 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,9 @@ typedef struct	s_cam
 
 void		cam_walk(t_cam *cam, int direction);
 void		cam_drag(t_cam *cam, float dx, float dy);
+t_vec3		geom_to_pixel(t_vec3 point, const t_cam *cam, float x_dim, float y_dim);
 void		calc_camera_transform(t_cam *cam);
-t_vec3		geom_to_pixel(t_vec3 point, const t_cam *cam);
+void		orthographic_mat4(t_mat4 m, const t_cam *cam);
+void		perspective_mat4(t_mat4 m, const t_cam *cam);
 
 #endif

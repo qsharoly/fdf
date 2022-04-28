@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 14:32:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/23 20:10:50 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 21:50:27 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "keyboard.h"
 #include "settings.h"
 
-int		mouse_move(int x, int y, t_things *th)
+int	hook_mouse_move(int x, int y, t_things *th)
 {
 	int	dx;
 	int	dy;
@@ -41,7 +41,7 @@ int		mouse_move(int x, int y, t_things *th)
 	return (0);
 }
 
-int		mouse_press(int button, int x, int y, t_things *th)
+int	hook_mouse_press(int button, int x, int y, t_things *th)
 {
 	th->state.redraw = 1;
 	if (button == MWHEELUP)
@@ -57,7 +57,7 @@ int		mouse_press(int button, int x, int y, t_things *th)
 	return (0);
 }
 
-int		mouse_release(int button, int x, int y, t_things *th)
+int	hook_mouse_release(int button, int x, int y, t_things *th)
 {
 	(void)x;
 	(void)y;

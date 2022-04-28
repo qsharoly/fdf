@@ -6,14 +6,14 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/28 19:46:45 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 21:59:28 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
-#include "matrix.h"
 
-void	transform_vertices_v2(t_vertex *result, const t_vertex *vertices, int vertices_size, t_cam *cam)
+void	transform_vertices(t_vertex *result, const t_vertex *vertices,
+		int vertices_size, t_cam *cam, int x_dim, int y_dim)
 {
 	int				i;
 
@@ -21,7 +21,7 @@ void	transform_vertices_v2(t_vertex *result, const t_vertex *vertices, int verti
 	while (i < vertices_size)
 	{
 		result[i] = (t_vertex){
-			.vec = geom_to_pixel(vertices[i].vec, cam),
+			.vec = geom_to_pixel(vertices[i].vec, cam, x_dim, y_dim),
 			.color_id = vertices[i].color_id
 		};
 		i++;

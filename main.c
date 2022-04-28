@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 20:33:43 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 21:59:44 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void	free_things_and_exit(t_things *things)
 static void	draw_geometry(t_things *th)
 {
 	ft_bzero32(th->bitmap.data, th->bitmap.x_dim * th->bitmap.y_dim);
-	transform_vertices_v2(th->map.projected, th->map.vertices, th->map.rows * th->map.per_row, &th->cam);
+	transform_vertices(th->map.projected, th->map.vertices, th->map.rows * th->map.per_row, &th->cam, th->bitmap.x_dim, th->bitmap.y_dim);
 	if (th->state.use_zbuf)
 	{
 		ft_memset32f(th->zbuffer.z, -INFINITY, th->zbuffer.size);
@@ -167,11 +167,11 @@ int			main(int argc, char **argv)
 	init_zbuffer(&th);
 	th.cam = init_cam(XDIM, YDIM, &th.map);
 	mlx_loop_hook(th.mlx, the_loop, &th);
-	mlx_hook(th.window, KeyPress, KeyPressMask, key_press, &th);
-	mlx_hook(th.window, KeyRelease, KeyReleaseMask, key_release, &th);
-	mlx_hook(th.window, ButtonPress, ButtonPressMask, mouse_press, &th);
-	mlx_hook(th.window, ButtonRelease, ButtonReleaseMask, mouse_release, &th);
-	mlx_hook(th.window, MotionNotify, PointerMotionMask, mouse_move, &th);
+	mlx_hook(th.window, KeyPress, KeyPressMask, hook_key_press, &th);
+	mlx_hook(th.window, KeyRelease, KeyReleaseMask, hook_key_release, &th);
+	mlx_hook(th.window, ButtonPress, ButtonPressMask, hook_mouse_press, &th);
+	mlx_hook(th.window, ButtonRelease, ButtonReleaseMask, hook_mouse_release, &th);
+	mlx_hook(th.window, MotionNotify, PointerMotionMask, hook_mouse_move, &th);
 	mlx_loop(th.mlx);
 	return (0);
 }

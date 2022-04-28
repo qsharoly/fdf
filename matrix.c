@@ -6,13 +6,14 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 14:08:01 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 22:06:15 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "camera.h"
-#include "settings.h"
 #include "libft.h"
+#include "vector.h"
+#include "matrix.h"
+#include "camera.h"
 
 float	dot4(const t_vec4 a, const t_vec4 b)
 {
@@ -153,7 +154,7 @@ void	rot_mat4(t_mat4 m, t_vec3 dir, float angle)
 	m[3][3] = 1;
 }
 
-void	orthographic_mat4(t_mat4 m, t_cam *cam)
+void	orthographic_mat4(t_mat4 m, const t_cam *cam)
 {
 	float	top;
 	float	right;
@@ -172,7 +173,7 @@ void	orthographic_mat4(t_mat4 m, t_cam *cam)
 	m[3][3] = 1;
 }
 
-void	perspective_mat4(t_mat4 m, t_cam *cam)
+void	perspective_mat4(t_mat4 m, const t_cam *cam)
 {
 	float	top;
 	float	right;
@@ -228,10 +229,10 @@ static void	persp_divide(t_vec4 v)
 	v[X] /= v[W];
 	v[Y] /= v[W];
 	v[Z] /= v[W];
-	v[W] = 1;
+	v[W] = 1.;
 }
 
-t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam)
+t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam, float x_dim, float y_dim)
 {
 	t_vec3	pixel;
 	t_vec4	p4;
@@ -239,8 +240,8 @@ t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam)
 	point4(p4, point);
 	transform(cam->matrix, p4);
 	persp_divide(p4);
-	pixel.x = (p4[X] + 1) * XDIM / 2;
-	pixel.y = (p4[Y] + 1) * YDIM / 2;
+	pixel.x = (p4[X] + 1.) * x_dim / 2.;
+	pixel.y = (p4[Y] + 1.) * y_dim / 2.;
 	pixel.z = p4[Z];
 	return (pixel);
 }

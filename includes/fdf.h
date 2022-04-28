@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 19:29:47 by debby            ###   ########.fr       */
+/*   Updated: 2022/04/28 21:59:36 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,20 +91,20 @@ int				init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_d
 int 			load_map_v2(const char *filename, t_map *map);
 void			map_find_height_range(t_map *map);
 void			map_make_colors(t_map *map);
-void			transform_vertices_v2(t_vertex *result, const t_vertex *vertices,
-					int vertices_size, t_cam *cam);
+void			transform_vertices(t_vertex *result, const t_vertex *vertices,
+					int vertices_size, t_cam *cam, int x_dim, int y_dim);
 void			draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts,
 					t_edge *edges, int edges_size, t_line_func line);
-void			reset_cam(t_things *things);
 void			draw_helpers(t_bitmap bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
+void			reset_cam(t_things *things);
 void			print_time_stats(int frames, t_time_stats times);
 void			free_things_and_exit(t_things *th);
-int				key_press(int keycode, t_things *th);
-int				key_release(int keycode, t_things *th);
-int				mouse_move(int x, int y, t_things *th);
-int				mouse_press(int button, int x, int y, t_things *th);
-int				mouse_release(int button, int x, int y, t_things *th);
+int				hook_key_press(int keycode, t_things *th);
+int				hook_key_release(int keycode, t_things *th);
+int				hook_mouse_move(int x, int y, t_things *th);
+int				hook_mouse_press(int button, int x, int y, t_things *th);
+int				hook_mouse_release(int button, int x, int y, t_things *th);
 
 #endif

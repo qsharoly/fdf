@@ -40,13 +40,11 @@ SRC = main.c\
 	  draw_line.c\
 	  draw_map.c\
 	  vector3.c\
-	  normalize3.c\
-	  rotations.c\
 	  hud.c\
 	  keyboard.c\
 	  mouse.c\
 	  ft_mini_dtoa.c\
-	  cam_move.c\
+	  camera.c\
 	  matrix.c
 
 OBJ = $(SRC:%.c=$(OBJDIR)/%.o)
