@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 19:24:53 by debby            ###   ########.fr       */
+/*   Updated: 2022/05/14 11:41:40 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,22 +40,6 @@ t_state		init_state(void)
 		.time_stats = (t_time_stats){ .min_drawing_usec = +INFINITY },
 	};
 	return (state);
-}
-
-int		init_zbuffer(t_things *things)
-{
-	t_zbuffer	zb;
-
-	zb.size = things->bitmap.x_dim * things->bitmap.y_dim;
-	zb.stride = things->bitmap.x_dim;
-	zb.z = malloc(sizeof(*zb.z) * zb.size);
-	if (!zb.z)
-	{
-		log_failure("failed to malloc z-buffer\n");
-		return (FAIL);
-	}
-	things->zbuffer = zb;
-	return (OK);
 }
 
 t_cam	init_cam(int window_x_dim, int window_y_dim, const t_map *map)
@@ -173,5 +157,18 @@ int		init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim
 	}
 	bitmap->x_dim = x_dim;
 	bitmap->y_dim = y_dim;
+	return (OK);
+}
+
+int		init_zbuffer(t_zbuffer *zb, int x_dim, int y_dim)
+{
+	zb->size = x_dim * y_dim;
+	zb->stride = x_dim;
+	zb->z = malloc(sizeof(zb->z[0]) * zb->size);
+	if (!zb->z)
+	{
+		log_failure("failed to malloc z-buffer\n");
+		return (FAIL);
+	}
 	return (OK);
 }

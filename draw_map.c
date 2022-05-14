@@ -6,14 +6,14 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/04/28 21:59:28 by debby            ###   ########.fr       */
+/*   Updated: 2022/05/14 12:07:12 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
 void	transform_vertices(t_vertex *result, const t_vertex *vertices,
-		int vertices_size, t_cam *cam, int x_dim, int y_dim)
+		int vertices_size, const t_cam *cam, int x_dim, int y_dim)
 {
 	int				i;
 
@@ -165,12 +165,12 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 		return (0);
 	}
 	//never get here
-	assert(0);
+	assert(!"must have returned earlier");
 	return (0);
 }
 
-void	draw_map(t_bitmap bmp, t_zbuffer zb, t_vertex *verts, t_edge *edges,
-			int edges_size, t_line_func line)
+void	draw_edges(t_bitmap bmp, t_zbuffer zb, const t_vertex *verts,
+			const t_edge *edges, int edges_size, t_line_func line)
 {
 	int	i;
 

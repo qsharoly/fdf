@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/23 21:48:05 by debby            ###   ########.fr       */
+/*   Updated: 2022/05/14 12:22:55 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,7 @@ int load_map_v2(const char *filename, t_map *map)
 	map->per_row = verts_per_line;
 	map->rows = vertex_count / verts_per_line;
 	printf("%dx%d ", map->rows, map->per_row);
+
 	map->vertices = malloc(vertex_count * sizeof(*map->vertices));
 	if (!map->vertices)
 	{
@@ -186,6 +187,7 @@ int load_map_v2(const char *filename, t_map *map)
 		munmap(file_memory, file_size);
 		return (FAIL);
 	}
+
 	int x = 0;
 	int y = 0;
 	int j = 0;

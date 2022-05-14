@@ -6,26 +6,28 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 15:28:03 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 21:57:05 by debby            ###   ########.fr       */
+/*   Updated: 2022/05/14 11:54:31 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	reset_cam(t_things *things)
+void	reset_cam(t_cam *cam, const t_map *map)
 {
-	if (things->map.vertices != NULL)
+	if (map->vertices != NULL)
 	{
-		things->cam.target.x = things->map.per_row / 2;
-		things->cam.target.y = things->map.rows / 2;
-		things->cam.target.z = (things->map.z_min + things->map.z_max) / 2;
+		cam->target = (t_vec3){
+			.x = map->per_row / 2,
+			.y = map->rows / 2,
+			.z = (map->z_min + map->z_max) / 2
+		};
 	}
 	else
 	{
-		things->cam.target = ORIGIN;
+		cam->target = ORIGIN;
 	}
-	things->cam.angle = ORIGIN;
-	things->cam.zoom = 1;
+	cam->angle = ORIGIN;
+	cam->zoom = 1;
 }
 
 void	cam_walk(t_cam *cam, int command)

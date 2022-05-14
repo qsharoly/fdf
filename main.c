@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 21:59:44 by debby            ###   ########.fr       */
+/*   Updated: 2022/05/14 12:07:33 by debby            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ static void	draw_geometry(t_things *th)
 	if (th->state.use_zbuf)
 	{
 		ft_memset32f(th->zbuffer.z, -INFINITY, th->zbuffer.size);
-		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
+		draw_edges(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
 				th->map.edges_size, line_gradient_zbuf);
 	}
 	else
 	{
-		draw_map(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
+		draw_edges(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
 			th->map.edges_size, line_gradient);
 	}
 	if (th->state.draw_helpers)
@@ -162,9 +162,9 @@ int			main(int argc, char **argv)
 	th.window = mlx_new_window(th.mlx, XDIM, YDIM, "fdf");
 	th.mlx_image = mlx_new_image(th.mlx, XDIM, YDIM);
 	init_bitmap(&th.bitmap, th.mlx_image, XDIM, YDIM);
+	init_zbuffer(&th.zbuffer, XDIM, YDIM);
 	init_color_table(color_table);
 	th.bitmap.color_table = color_table;
-	init_zbuffer(&th);
 	th.cam = init_cam(XDIM, YDIM, &th.map);
 	mlx_loop_hook(th.mlx, the_loop, &th);
 	mlx_hook(th.window, KeyPress, KeyPressMask, hook_key_press, &th);
