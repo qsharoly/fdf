@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 14:52:00 by qsharoly          #+#    #+#             */
-/*   Updated: 2021/06/30 13:32:09 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/10 16:03:22 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,5 @@
 # define MMB 3
 # define MWHEELUP 4
 # define MWHEELDOWN 5
-
-//as in X.h
-# define LMB_MASK (1<<8)
 
 #endif

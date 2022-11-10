@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/05/14 11:53:14 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/10 16:05:16 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,11 @@ int	hook_key_release(int keycode, t_things *th)
 {
 	if (keycode == L_SHIFT || keycode == R_SHIFT)
 	{
-		th->state.dragging &= ~SHIFT_MASK;
+		th->state.shift_is_down = 0;
+	}
+	if (keycode == L_CTRL || keycode == R_CTRL)
+	{
+		th->state.ctrl_is_down = 0;
 	}
 	return (0);
 }
@@ -74,7 +78,9 @@ int	hook_key_press(int keycode, t_things *th)
 	if (th->state.print_keycodes)
 		ft_putnbr_endl(keycode);
 	if (keycode == L_SHIFT || keycode == R_SHIFT)
-		th->state.dragging |= SHIFT_MASK;
+		th->state.shift_is_down = 1;
+	else if (keycode == L_CTRL || keycode == R_CTRL)
+		th->state.ctrl_is_down = 1;
 	else if (keycode == K_EXIT1 || keycode == K_EXIT2)
 	{
 		print_time_stats(th->state.frames, th->state.time_stats);

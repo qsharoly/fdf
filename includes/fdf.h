@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/07 20:28:31 by kith             ###   ########.fr       */
+/*   Updated: 2022/11/10 16:05:06 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,9 @@ typedef struct	s_state
 	t_time_stats	time_stats;
 	int				frames;
 	int				bench_max_frames;
-	unsigned int	dragging;
+	unsigned int	shift_is_down:1;
+	unsigned int	ctrl_is_down:1;
+	unsigned int	lmb_is_down:1;
 	int				mousex;
 	int				mousey;
 	unsigned int	stop_program:1;

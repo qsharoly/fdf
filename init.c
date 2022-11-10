@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/10 07:37:03 by kith             ###   ########.fr       */
+/*   Updated: 2022/11/10 16:05:01 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@ t_state		init_state(void)
 	t_state	state;
 
 	state = (t_state){
-		.dragging = 0,
+		.shift_is_down = 0,
+		.ctrl_is_down = 0,
+		.lmb_is_down = 0,
 		.bench_max_frames = BENCHMARK_FRAMES,
 		.bench = 0,
 		.stop_program = 0,
