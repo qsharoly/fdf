@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/05/14 12:00:28 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/07 20:28:31 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ typedef struct	s_time_stats
 	double	min_drawing_usec;
 	double	max_drawing_usec;
 	double	total_drawing_seconds;
+	double	*all;
+	int		count;
 }				t_time_stats;
 
 typedef struct	s_state

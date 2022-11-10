@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/05/14 12:07:12 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/09 22:52:39 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	transform_vertices(t_vertex *result, const t_vertex *vertices,
 	{
 		result[i] = (t_vertex){
 			.vec = geom_to_pixel(vertices[i].vec, cam, x_dim, y_dim),
-			.color_id = vertices[i].color_id
+			.altitude = vertices[i].altitude
 		};
 		i++;
 	}
@@ -30,10 +30,8 @@ void	transform_vertices(t_vertex *result, const t_vertex *vertices,
 
 int	is_inside(t_vec3 a, int x_dim, int y_dim)
 {
-	return (0.0 <= a.x && a.x <= x_dim && 0.0 <= a.y && a.y <= y_dim);
+	return (0.0 <= a.x && a.x < x_dim && 0.0 <= a.y && a.y < y_dim);
 }
-
-#include <assert.h>
 
 //stackoverflow.com//questions/4977491/determining-if-two-line-segments-intersect/4977569#4977569
 static int	segments_intersect(t_vec3 a, t_vec3 b, t_vec3 c, t_vec3 d,
@@ -60,22 +58,29 @@ static int	segments_intersect(t_vec3 a, t_vec3 b, t_vec3 c, t_vec3 d,
 	return 0;
 }
 
+//#include <stdio.h>
 // returns 0 if segment is fully outside
-static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
+static int	clamp(t_vertex *ap, t_vertex *bp, int xmax, int ymax)
 {
 	t_vec3 a = ap->vec;
 	t_vec3 b = bp->vec;
 
-	int a_in = is_inside(a, x_dim, y_dim);
-	int b_in = is_inside(b, x_dim, y_dim);
+	// these definitely do not intersect
+	if ((a.x < 0 && b.x < 0) || (a.x >= xmax && b.x >= xmax)
+			|| (a.y < 0 && b.y < 0) || (a.y >= ymax && b.y >= ymax))
+		return (0);
+
+	int a_in = is_inside(a, xmax, ymax);
+	int b_in = is_inside(b, xmax, ymax);
 	if (a_in && b_in)
 		return (1);
 	t_vec3	ul = (t_vec3){0, 0, 0};
-	t_vec3	ur = (t_vec3){x_dim, 0, 0};
-	t_vec3	dl = (t_vec3){0, y_dim, 0};
-	t_vec3	dr = (t_vec3){x_dim, y_dim, 0};
+	t_vec3	ur = (t_vec3){xmax-1, 0, 0};
+	t_vec3	dl = (t_vec3){0, ymax-1, 0};
+	t_vec3	dr = (t_vec3){xmax-1, ymax-1, 0};
 	if (a_in)
 	{
+		//printf("b");
 		t_vec3	inter;
 		if (segments_intersect(a, b, ul, ur, &inter))
 		{
@@ -102,6 +107,7 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 	}
 	else if (b_in)
 	{
+		//printf("a");
 		t_vec3	inter;
 		if (segments_intersect(a, b, ul, ur, &inter))
 		{
@@ -128,13 +134,10 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 	}
 	else
 	{
+		//printf("2");
 		//both a and b are out, but the middle part of the segment
 		//may still intersect with the rectangle.
 
-		// these definitely do not intersect
-		if ((a.x < 0 && b.x < 0) || (a.x > x_dim && b.x > x_dim)
-				|| (a.y < 0 && b.y < 0) || (a.y > y_dim && b.y > y_dim))
-			return (0);
 		t_vec3	intersections[4];
 		int found = 0;
 		found += segments_intersect(a, b, ul, ur, &intersections[found]);
@@ -146,8 +149,8 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 			ap->vec = intersections[0];
 			bp->vec = intersections[1];
 			//fixup inverted order of points
-			if ((b.x - a.x) * (bp->vec.x - ap->vec.x) < 0
-				&& (b.y - a.y) * (bp->vec.y - ap->vec.y) < 0)
+			if ((b.x - a.x) * (bp->x - ap->x) < 0
+				&& (b.y - a.y) * (bp->y - ap->y) < 0)
 			{
 				//dprintf(2, "inverted!\n");
 				t_vec3 tmp = ap->vec;
@@ -165,7 +168,6 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int x_dim, int y_dim)
 		return (0);
 	}
 	//never get here
-	assert(!"must have returned earlier");
 	return (0);
 }
 

@@ -6,27 +6,15 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:31:20 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 19:47:04 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/07 19:39:01 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DRAW_H
 # define DRAW_H
 
-# include "vector.h"
+# include "vertex.h"
 # include "camera.h"
-
-typedef struct	s_vertex
-{
-	t_vec3	vec;
-	float	color_id;
-}				t_vertex;
-
-typedef struct	s_edge
-{
-	unsigned int	start;
-	unsigned int	end;
-}				t_edge;
 
 typedef struct	s_bitmap
 {

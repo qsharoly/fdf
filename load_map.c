@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/05/14 12:22:55 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/07 08:27:01 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,7 +219,20 @@ int load_map_v2(const char *filename, t_map *map)
 	{
 		map->z_min = fmin(map->vertices[j].vec.z, map->z_min);
 		map->z_max = fmax(map->vertices[j].vec.z, map->z_max);
-		j++;
+		++j;
+	}
+	j = 0;
+	while (j < vertex_count)
+	{
+		if (map->z_max - map->z_min != 0.)
+		{
+			map->vertices[j].altitude = (map->vertices[j].z - map->z_min)/(map->z_max - map->z_min);
+		}
+		else
+		{
+			map->vertices[j].altitude = 0.5;
+		}
+		++j;
 	}
 	printf("ok.\n");
 	return (OK);

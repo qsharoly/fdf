@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/05/14 11:41:40 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/10 07:37:03 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,39 +67,13 @@ t_cam	init_cam(int window_x_dim, int window_y_dim, const t_map *map)
 	return (cam);
 }
 
-static void	map_assign_colors(t_map *map)
-{
-	int		i;
-	float	z;
-	float	relative_z;
-
-	if (map->z_max == map->z_min)
-	{
-		i = 0;
-		while (i < map->rows * map->per_row)
-		{
-			map->vertices[i].color_id = (COLOR_TABLE_SIZE - 1) / 2;
-			i++;
-		}
-		return;
-	}
-	i = 0;
-	while (i < map->rows * map->per_row)
-	{
-		z = map->vertices[i].vec.z;
-		relative_z = ((z - map->z_min) / (map->z_max - map->z_min));
-		map->vertices[i].color_id = (COLOR_TABLE_SIZE - 1) * relative_z;
-		i++;
-	}
-}
-
 static void	map_make_edges(t_edge **edgesptr, int *size, int map_per_row, int map_rows)
 {
 	int	i;
 	int	j;
 	int	current;
 	t_edge *edges;
-	
+
 	*size = (map_per_row - 1) * map_rows + map_per_row * (map_rows - 1);
 
 	(*edgesptr) = malloc(*size * sizeof(*edges));
@@ -136,7 +110,6 @@ int		init_map(t_map *map, const char *filename)
 	status = load_map_v2(filename, map);
 	if (status == FAIL)
 		return (FAIL);
-	map_assign_colors(map);
 	map->projected = malloc(map->per_row * map->rows * sizeof(*map->projected));
 	map_make_edges(&map->edges, &map->edges_size, map->per_row, map->rows);
 	return (OK);

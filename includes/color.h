@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:41:56 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/12 12:13:19 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/07 07:52:44 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct	s_argb
 int		mix(int col1, int col2, float ratio);
 t_argb	int_to_argb(int color);
 int		argb_to_int(t_argb color);
+int		color_gradient(float t, int bottom_color, int middle_color, int top_color);
 void	init_color_table(int table[COLOR_TABLE_SIZE]);
 
 #endif

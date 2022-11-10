@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/05/14 12:07:33 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/09 22:24:33 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,13 @@ void	print_time_stats(int frames, t_time_stats times)
 	printf(" Min: %8.1fus ", times.min_drawing_usec);
 	printf(" Avg: %8.1fus\n", times.avg_drawing_usec);
 	printf(" Max: %8.1fus\n", times.max_drawing_usec);
+	int print_all = 0;
+	if (print_all) {
+		printf(" All:\n");
+		for (int i = 0; i < times.count; ++i) {
+			printf("%.2f, ", times.all[i]);
+		}
+	}
 }
 
 void	free_things_and_exit(t_things *things)
@@ -116,6 +123,7 @@ static int	the_loop(t_things *th)
 		times->min_drawing_usec = fmin(microsec, times->min_drawing_usec);
 		times->max_drawing_usec = fmax(microsec, times->max_drawing_usec);
 		times->total_drawing_seconds += microsec / 1000000;
+		times->all[times->count++] = microsec;
 		draw_hud(th, microsec);
 	}
 	th->state.redraw = 0;
@@ -166,6 +174,7 @@ int			main(int argc, char **argv)
 	init_color_table(color_table);
 	th.bitmap.color_table = color_table;
 	th.cam = init_cam(XDIM, YDIM, &th.map);
+	th.state.time_stats.all = malloc(th.state.bench_max_frames* sizeof(*th.state.time_stats.all));
 	mlx_loop_hook(th.mlx, the_loop, &th);
 	mlx_hook(th.window, KeyPress, KeyPressMask, hook_key_press, &th);
 	mlx_hook(th.window, KeyRelease, KeyReleaseMask, hook_key_release, &th);
