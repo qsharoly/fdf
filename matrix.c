@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/04/28 22:06:15 by debby            ###   ########.fr       */
+/*   Updated: 2022/11/23 02:10:52 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,8 +240,8 @@ t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam, float x_dim, float y_dim)
 	point4(p4, point);
 	transform(cam->matrix, p4);
 	persp_divide(p4);
-	pixel.x = (p4[X] + 1.) * x_dim / 2.;
-	pixel.y = (p4[Y] + 1.) * y_dim / 2.;
+	pixel.x = (p4[X] + 1.0f) * x_dim / 2.;
+	pixel.y = (p4[Y] + 1.0f) * y_dim / 2.;
 	pixel.z = p4[Z];
 	return (pixel);
 }
