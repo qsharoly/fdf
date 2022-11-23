@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/09 22:24:33 by kith             ###   ########.fr       */
+/*   Updated: 2022/11/23 03:10:59 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ void	free_things_and_exit(t_things *things)
 {
 	mlx_destroy_window(things->mlx, things->window);
 	mlx_destroy_image(things->mlx, things->mlx_image);
+	mlx_closedown(things->mlx);
+	free(things->state.time_stats.all);
 	free(things->zbuffer.z);
 	free(things->map.edges);
 	free(things->map.projected);

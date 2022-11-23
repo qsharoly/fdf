@@ -6,7 +6,7 @@
 /*   By: gicamerl <gicamerl@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/19 19:13:12 by gicamerl          #+#    #+#             */
-/*   Updated: 2018/04/25 19:16:11 by gicamerl         ###   ########.fr       */
+/*   Updated: 2022/11/23 03:10:20 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void			*mlx_xpm_file_to_image(void *mlx_ptr, char *filename,
 		int *width, int *height);
 int				mlx_destroy_window(void *mlx_ptr, void *win_ptr);
 int				mlx_destroy_image(void *mlx_ptr, void *img_ptr);
+int				mlx_closedown(void *mlx_ptr);
 
 /*
 **	Note: generic hook system for all events, and minilibX functions that

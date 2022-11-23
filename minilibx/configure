@@ -6,7 +6,7 @@
 #    By: gicamerl <gicamerl@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/25 20:28:20 by gicamerl          #+#    #+#              #
-#    Updated: 2018/04/25 20:28:26 by gicamerl         ###   ########.fr        #
+#    Updated: 2022/11/23 03:14:06 by kith             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,14 +89,14 @@ echo "DOCP=$conf_docp" >> Makefile.gen
 cat Makefile.mk | grep -v %%%% >> Makefile.gen
 
 
-if [ -n "$1" -a "$1" = "clean" ]; 
+if [ -n "$1" -a "$1" = "clean" ];
 then
     make -f Makefile.gen clean
-elif [ -n "$1" -a "$1" = "fclean" ]; 
+elif [ -n "$1" -a "$1" = "fclean" ];
 then
     make -f Makefile.gen fclean
 elif [ -n "$1" -a "$1" = "norme" ];
-then	
+then
     make -f Makefile.gen norme
 else
 	make -f Makefile.gen all

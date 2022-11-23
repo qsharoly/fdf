@@ -6,7 +6,7 @@
 #    By: gicamerl <gicamerl@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/04/19 17:02:16 by gicamerl          #+#    #+#              #
-#    Updated: 2018/04/27 13:22:45 by gicamerl         ###   ########.fr        #
+#    Updated: 2022/11/23 03:14:38 by kith             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,6 +41,7 @@ OBJD		= 	obj/
 
 #Source and Objects
 SRC			= mlx_init.c \
+			  mlx_closedown.c \
 	  mlx_new_window.c \
 	  mlx_pixel_put.c \
 	  mlx_loop.c \
