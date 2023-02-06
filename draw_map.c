@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2022/11/09 22:52:39 by kith             ###   ########.fr       */
+/*   Updated: 2023/02/06 09:11:33 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ void	draw_edges(t_bitmap bmp, t_zbuffer zb, const t_vertex *verts,
 		t_vertex a = verts[edges[i].start];
 		t_vertex b = verts[edges[i].end];
 		if (clamp(&a, &b, bmp.x_dim, bmp.y_dim))
-			line(bmp, &zb, a, b);
+			line(bmp, zb.z, a, b);
 		i++;
 	}
 }

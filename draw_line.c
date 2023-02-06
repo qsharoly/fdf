@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/07 21:40:44 by kith             ###   ########.fr       */
+/*   Updated: 2023/02/06 09:15:19 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,53 +95,32 @@ void	set_pixel(t_bitmap bmp, int x, int y, int color)
 **	all elements of z_buf are set to -INFINITY
 */
 
-#include <xmmintrin.h>
-#include <stdalign.h>
-/*
-#include <stdio.h>
-void echo_ps(char *label, __m128 a)
+void	line_gradient_zbuf(t_bitmap bmp, void *zbuf, t_vertex aa, t_vertex bb)
 {
-	alignas(16) float f[4];
-	_mm_store_ps(f, a);
-	printf("%s=[%f, %f, %f, %f]\n", label, f[0], f[1], f[2], f[3]);
-}
+	float *zbuffer = zbuf;
 
-void echo_epi32(char *label, __m128i a)
-{
-	alignas(16) int i[4];
-	_mm_store_si128((__m128i *)i, a);
-	printf("%s=[%02x, %02x, %02x, %02x]\n", label, i[0], i[1], i[2], i[3]);
-}
-*/
-
-void	line_gradient_zbuf(t_bitmap bmp, void *zbuffer, t_vertex aa, t_vertex bb)
-{
     float dt1 = fabs(aa.x - bb.x);
     float dt2 = fabs(aa.y - bb.y);
-    float dt = dt1 > dt2 ? dt1 : dt2;
-	if (dt == 0)
+    float distance = fmax(dt1, dt2);
+	if (distance == 0)
 		return ;
-	dt = 1/dt;
-	__m128	a = _mm_load_ps((float*)&aa);
-	__m128	b = _mm_load_ps((float*)&bb);
-	__m128	dt_x4 = _mm_load_ps1(&dt);
-	__m128	step = _mm_mul_ps(_mm_sub_ps(b, a), dt_x4);
-	float t = 0;
-	while (t < 1)
+
+	float dx = (bb.x - aa.x)/distance;
+	float dy = (bb.y - aa.y)/distance;
+	float dz = (bb.z - aa.z)/distance;
+	float dw = (bb.w - aa.w)/distance;
+	int steps = distance + 1;
+	for (int i = 0; i < steps; ++i)
 	{
-		alignas(16) float *f = (float *)&a;;
-		int x = f[0];
-		int y = f[1];
-		float z = f[2];
-		float altitude = f[3];
-		int i = x + y * bmp.x_dim;
-		if (z > ((t_zbuffer *)zbuffer)->z[i])
+		int pixel = (int)aa.x + (int)aa.y * bmp.x_dim;
+		if (aa.z > zbuffer[pixel])
 		{
-			((t_zbuffer *)zbuffer)->z[i] = z;
-			bmp.data[i] = bmp.color_table[(int)((COLOR_TABLE_SIZE-1) * altitude)];
-			//bmp.data[i] = color_gradient(altitude, PURPLE, GRASS, PEACH);
+			zbuffer[pixel] = aa.z;
+			bmp.data[pixel] = bmp.color_table[(int)((COLOR_TABLE_SIZE-1) * aa.w)];
 		}
-		a = _mm_add_ps(a, step);
-		t += dt;
+		aa.x += dx;
+		aa.y += dy;
+		aa.z += dz;
+		aa.w += dw;
 	}
 }

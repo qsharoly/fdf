@@ -6,18 +6,19 @@
 /*   By: kith <marvin@42.fr>                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 00:53:36 by kith              #+#    #+#             */
-/*   Updated: 2022/11/07 08:12:53 by kith             ###   ########.fr       */
+/*   Updated: 2023/02/06 08:58:30 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VERTEX_H
 # define VERTEX_H
 
+# include <stdalign.h>
 # include "vector.h"
 
 typedef struct	s_vertex
 {
-	union {
+	alignas(16) union {
 		struct {
 			float	x;
 			float	y;
@@ -25,7 +26,10 @@ typedef struct	s_vertex
 		};
 		t_vec3 vec;
 	};
-	float altitude;
+	union {
+		float altitude;
+		float w;
+	};
 }				t_vertex;
 
 typedef struct	s_edge
