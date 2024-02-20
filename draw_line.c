@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2023/02/06 09:15:19 by kith             ###   ########.fr       */
+/*   Updated: 2024/02/20 09:55:25 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	line_gradient_zbuf(t_bitmap bmp, void *zbuf, t_vertex aa, t_vertex bb)
 	}
 }
 #else
-void	line_gradient_zbuf(t_bitmap bmp, void *zbuffer, t_vertex aa, t_vertex bb)
+void	line_gradient_zbuf(t_bitmap bmp, void *zbuf, t_vertex aa, t_vertex bb)
 {
 	float dt1 = fabs(aa.x - bb.x);
 	float dt2 = fabs(aa.y - bb.y);
@@ -144,9 +144,9 @@ void	line_gradient_zbuf(t_bitmap bmp, void *zbuffer, t_vertex aa, t_vertex bb)
 	while (t < 1)
 	{
 		int i = (int)aa.x + (int)aa.y * bmp.x_dim;
-		if (aa.z > ((t_zbuffer *)zbuffer)->z[i])
+		if (aa.z > ((float *)zbuf)[i])
 		{
-			((t_zbuffer *)zbuffer)->z[i] = aa.z;
+			((float *)zbuf)[i] = aa.z;
 			bmp.data[i] = bmp.color_table[(int)((COLOR_TABLE_SIZE-1) * aa.altitude)];
 			//bmp.data[i] = color_gradient(altitude, PURPLE, GRASS, PEACH);
 		}
