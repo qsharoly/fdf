@@ -21,6 +21,7 @@ WHITE="\033[1;37m"
 conf_inc=NO
 
 for inc in \
+    /data/data/com.termux/files/usr/include\
     /usr/X11/include          \
     /usr/X11R6/include        \
     /usr/X11R5/include        \

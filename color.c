@@ -12,8 +12,6 @@
 
 #include "color.h"
 #include <math.h>
-#include <xmmintrin.h>
-#include <stdalign.h>
 
 // mix: interpolate between colors
 // ratio is expected to be in range [0.0, 1.0]
@@ -32,6 +30,9 @@ int mix(int ai, int bi, float ratio)
 	return (argb_to_int(mix));
 }
 
+#if INTEL
+#include <xmmintrin.h>
+#include <stdalign.h>
 int mix_2(int ai, int bi, float ratio_in)
 {
 	__m128i a_argb = _mm_set_epi32((ai&0xff000000)>>24, (ai&0x00ff0000)>>16,
@@ -65,6 +66,7 @@ int mix_2(int ai, int bi, float ratio_in)
 				| ((int)extract[0]&0xff);
 	return (pack);
 }
+#endif //INTEL
 
 
 int		argb_to_int(t_argb color)

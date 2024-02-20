@@ -10,10 +10,14 @@ LFT = $(LFT_DIR)/libft.a
 LIB_FLAGS += -lft -lmlx
 
 UNAME_S := $(shell uname -s)
+UNAME_M := $(shell uname -m)
 ifeq ($(UNAME_S), Linux)
 	MLX_DIR = minilibx
 	MLX_INC = $(MLX_DIR)/include
 	LIB_FLAGS += -lm -lXext -lX11
+ifeq ($(UNAME_M), aarch64)
+	LIB_FLAGS += -landroid-shmem
+endif
 else
 	MLX_DIR = minilibx_macos
 	MLX_INC = $(MLX_DIR)

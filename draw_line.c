@@ -89,6 +89,7 @@ void	set_pixel(t_bitmap bmp, int x, int y, int color)
 	bmp.data[i] = color;
 }
 
+#if INTEL
 /*
 **  use on projected vertices a and b
 **	Implies that at the start of each frame
@@ -145,3 +146,36 @@ void	line_gradient_zbuf(t_bitmap bmp, void *zbuffer, t_vertex aa, t_vertex bb)
 		t += dt;
 	}
 }
+#else
+void	line_gradient_zbuf(t_bitmap bmp, void *zbuffer, t_vertex aa, t_vertex bb)
+{
+	float dt1 = fabs(aa.x - bb.x);
+	float dt2 = fabs(aa.y - bb.y);
+	float dt = dt1 > dt2 ? dt1 : dt2;
+	if (dt == 0)
+		return ;
+	dt = 1/dt;
+	t_vertex step = (t_vertex){
+		.x = dt * (bb.x - aa.x),
+			.y = dt * (bb.y - aa.y),
+			.z = dt * (bb.z - aa.z),
+			.altitude = dt * (bb.altitude - aa.altitude)
+	};
+	float t = 0;
+	while (t < 1)
+	{
+		int i = (int)aa.x + (int)aa.y * bmp.x_dim;
+		if (aa.z > ((t_zbuffer *)zbuffer)->z[i])
+		{
+			((t_zbuffer *)zbuffer)->z[i] = aa.z;
+			bmp.data[i] = bmp.color_table[(int)((COLOR_TABLE_SIZE-1) * aa.altitude)];
+			//bmp.data[i] = color_gradient(altitude, PURPLE, GRASS, PEACH);
+		}
+		aa.x += step.x;
+		aa.y += step.y;
+		aa.z += step.z;
+		aa.altitude += step.altitude;
+		t += dt;
+	}
+}
+#endif //INTEL
