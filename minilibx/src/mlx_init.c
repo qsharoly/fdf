@@ -16,9 +16,14 @@ void	*mlx_init(void)
 {
 	t_xvar	*xvar;
 
-	if (!(xvar = malloc(sizeof(*xvar)))
-			|| (xvar->display = XOpenDisplay("")) == 0)
+	if (!(xvar = malloc(sizeof(*xvar)))) {
+		printf("mlx_init: malloc failed\n");
+		return (void *)0;
+	}
+	if ((xvar->display = XOpenDisplay(NULL)) == 0) {
+		printf("mlx_init: XOpenDisplay failed\n");
 		return ((void *)0);
+	}
 	xvar->screen = DefaultScreen(xvar->display);
 	xvar->root = DefaultRootWindow(xvar->display);
 	xvar->cmap = DefaultColormap(xvar->display, xvar->screen);

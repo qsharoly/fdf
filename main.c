@@ -169,6 +169,11 @@ int			main(int argc, char **argv)
 	if (!ok)
 		return (-1);
 	th.mlx = mlx_init();
+	if (!th.mlx) {
+		ft_putstr_fd("mlx_init failed!\n", 2);
+		return -1;
+	}
+
 	th.window = mlx_new_window(th.mlx, XDIM, YDIM, "fdf");
 	th.mlx_image = mlx_new_image(th.mlx, XDIM, YDIM);
 	init_bitmap(&th.bitmap, th.mlx_image, XDIM, YDIM);
