@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/02/20 09:55:25 by kith             ###   ########.fr       */
+/*   Updated: 2024/02/20 10:25:31 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,18 +65,6 @@ void	line_gradient(t_bitmap bmp, void *user, t_vertex a, t_vertex b)
 	}
 }
 
-/*
-static float	get_zbuf(t_zbuffer *zbuf, int x, int y)
-{
-	return (zbuf->z[x + y * zbuf->stride]);
-}
-
-static void		set_zbuf(t_zbuffer *zbuf, int x, int y, float val)
-{
-	zbuf->z[x + y * zbuf->stride] = val;
-}
-*/
-
 int		get_pixel(t_bitmap bmp, int x, int y)
 {
 	int i = x + y * bmp.x_dim;
@@ -89,7 +77,6 @@ void	set_pixel(t_bitmap bmp, int x, int y, int color)
 	bmp.data[i] = color;
 }
 
-#if INTEL
 /*
 **  use on projected vertices a and b
 **	Implies that at the start of each frame
@@ -125,36 +112,3 @@ void	line_gradient_zbuf(t_bitmap bmp, void *zbuf, t_vertex aa, t_vertex bb)
 		aa.w += dw;
 	}
 }
-#else
-void	line_gradient_zbuf(t_bitmap bmp, void *zbuf, t_vertex aa, t_vertex bb)
-{
-	float dt1 = fabs(aa.x - bb.x);
-	float dt2 = fabs(aa.y - bb.y);
-	float dt = dt1 > dt2 ? dt1 : dt2;
-	if (dt == 0)
-		return ;
-	dt = 1/dt;
-	t_vertex step = (t_vertex){
-		.x = dt * (bb.x - aa.x),
-			.y = dt * (bb.y - aa.y),
-			.z = dt * (bb.z - aa.z),
-			.altitude = dt * (bb.altitude - aa.altitude)
-	};
-	float t = 0;
-	while (t < 1)
-	{
-		int i = (int)aa.x + (int)aa.y * bmp.x_dim;
-		if (aa.z > ((float *)zbuf)[i])
-		{
-			((float *)zbuf)[i] = aa.z;
-			bmp.data[i] = bmp.color_table[(int)((COLOR_TABLE_SIZE-1) * aa.altitude)];
-			//bmp.data[i] = color_gradient(altitude, PURPLE, GRASS, PEACH);
-		}
-		aa.x += step.x;
-		aa.y += step.y;
-		aa.z += step.z;
-		aa.altitude += step.altitude;
-		t += dt;
-	}
-}
-#endif //INTEL
