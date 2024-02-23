@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:26:50 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/02/20 10:25:31 by kith             ###   ########.fr       */
+/*   Updated: 2024/02/23 11:24:57 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,13 @@ void	line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color)
 	}
 }
 
-void	line_gradient(t_bitmap bmp, void *user, t_vertex a, t_vertex b)
+inline void	line_gradient(t_bitmap bmp, t_vertex a, t_vertex b)
 {
 	t_vec3	p;
 	t_vec3	step;
 	float	dt;
 	float	t;
 
-	(void)user;
 	p = a.vec;
 	dt = fmax(fabs(a.vec.x - b.vec.x), fabs(a.vec.y - b.vec.y));
 	if (dt == 0)
@@ -83,20 +82,21 @@ void	set_pixel(t_bitmap bmp, int x, int y, int color)
 **	all elements of z_buf are set to -INFINITY
 */
 
-void	line_gradient_zbuf(t_bitmap bmp, void *zbuf, t_vertex aa, t_vertex bb)
+inline void	line_gradient_zbuf(t_bitmap bmp, float *zbuf, t_vertex aa, t_vertex bb)
 {
 	float *zbuffer = zbuf;
 
-    float dt1 = fabs(aa.x - bb.x);
-    float dt2 = fabs(aa.y - bb.y);
-    float distance = fmax(dt1, dt2);
+    float dx_abs = fabs(aa.x - bb.x);
+    float dy_abs = fabs(aa.y - bb.y);
+    float distance = fmax(dx_abs, dy_abs);
 	if (distance == 0)
 		return ;
 
-	float dx = (bb.x - aa.x)/distance;
-	float dy = (bb.y - aa.y)/distance;
-	float dz = (bb.z - aa.z)/distance;
-	float dw = (bb.w - aa.w)/distance;
+	float dt = 1/distance;
+	float dx = (bb.x - aa.x) * dt;
+	float dy = (bb.y - aa.y) * dt;
+	float dz = (bb.z - aa.z) * dt;
+	float dw = (bb.w - aa.w) * dt;
 	int steps = distance + 1;
 	for (int i = 0; i < steps; ++i)
 	{

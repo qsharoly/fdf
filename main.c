@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/23 03:10:59 by kith             ###   ########.fr       */
+/*   Updated: 2024/02/23 11:04:27 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,12 @@ static void	draw_geometry(t_things *th)
 	if (th->state.use_zbuf)
 	{
 		ft_memset32f(th->zbuffer.z, -INFINITY, th->zbuffer.size);
-		draw_edges(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
-				th->map.edges_size, line_gradient_zbuf);
+		draw_edges_zbuf(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
+				th->map.edges_size);
 	}
 	else
 	{
-		draw_edges(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
-			th->map.edges_size, line_gradient);
+		draw_edges(th->bitmap, th->map.projected, th->map.edges, th->map.edges_size);
 	}
 	if (th->state.draw_helpers)
 		draw_helpers(th->bitmap, &th->cam);

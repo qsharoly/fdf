@@ -6,7 +6,7 @@
 /*   By: debby <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/21 07:59:27 by debby             #+#    #+#             */
-/*   Updated: 2023/02/06 09:11:33 by kith             ###   ########.fr       */
+/*   Updated: 2024/02/23 11:06:58 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,8 +171,8 @@ static int	clamp(t_vertex *ap, t_vertex *bp, int xmax, int ymax)
 	return (0);
 }
 
-void	draw_edges(t_bitmap bmp, t_zbuffer zb, const t_vertex *verts,
-			const t_edge *edges, int edges_size, t_line_func line)
+void	draw_edges(t_bitmap bmp, const t_vertex *verts,
+			const t_edge *edges, int edges_size)
 {
 	int	i;
 
@@ -182,7 +182,23 @@ void	draw_edges(t_bitmap bmp, t_zbuffer zb, const t_vertex *verts,
 		t_vertex a = verts[edges[i].start];
 		t_vertex b = verts[edges[i].end];
 		if (clamp(&a, &b, bmp.x_dim, bmp.y_dim))
-			line(bmp, zb.z, a, b);
+			line_gradient(bmp, a, b);
+		i++;
+	}
+}
+
+void	draw_edges_zbuf(t_bitmap bmp, t_zbuffer zb, const t_vertex *verts,
+			const t_edge *edges, int edges_size)
+{
+	int	i;
+
+	i = 0;
+	while (i < edges_size)
+	{
+		t_vertex a = verts[edges[i].start];
+		t_vertex b = verts[edges[i].end];
+		if (clamp(&a, &b, bmp.x_dim, bmp.y_dim))
+			line_gradient_zbuf(bmp, zb.z, a, b);
 		i++;
 	}
 }

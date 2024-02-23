@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/06 10:31:20 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/07 19:39:01 by kith             ###   ########.fr       */
+/*   Updated: 2024/02/23 11:06:37 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ int				inbounds3(t_vec3 point, t_bitmap bmp, const t_cam *cam);
 int				get_pixel(t_bitmap bmp, int x, int y);
 void			set_pixel(t_bitmap bmp, int x, int y, int color);
 void			line_solid(t_bitmap bmp, t_vec3 a, t_vec3 b, int color);
-void			line_gradient(t_bitmap bmp, void *user, t_vertex a, t_vertex b);
-void			line_gradient_zbuf(t_bitmap bmp, void *zb, t_vertex a, t_vertex b);
+void			line_gradient(t_bitmap bmp, t_vertex a, t_vertex b);
+void			line_gradient_zbuf(t_bitmap bmp, float *zb, t_vertex a, t_vertex b);
 void			reset_zbuf(t_zbuffer *zb);
 
 #endif
