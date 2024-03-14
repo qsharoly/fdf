@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/21 17:29:02 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/23 02:10:52 by kith             ###   ########.fr       */
+/*   Updated: 2024/02/23 12:58:59 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ void	perspective_mat4(t_mat4 m, const t_cam *cam)
 	float	n; //near: from eye to screen
 	float	f; //far: from eye to clipping plane
 
-	top = tan(0.5 * cam->fov) * cam->z_near;
+	top = tan(0.5f * cam->fov) * cam->z_near;
 	right = top * cam->aspect;
 	n = cam->z_near;
 	f = cam->z_far;
@@ -189,7 +189,7 @@ void	perspective_mat4(t_mat4 m, const t_cam *cam)
 	m[1][1] = n / right;
 	m[2][2] = f / (f - n);
 	m[2][3] = f * n / (f - n);
-	m[3][2] = -1;
+	m[3][2] = -1.0f;
 }
 
 void	calc_camera_transform(t_cam *cam)
@@ -204,11 +204,11 @@ void	calc_camera_transform(t_cam *cam)
 	static t_mat4	zoom;
 
 	translation_mat4(t, -cam->target.x, -cam->target.y, -cam->target.z);
-	scaling_mat4(zstretch, 1, 1, cam->altitude_scale);
+	scaling_mat4(zstretch, 1.0f, 1.0f, cam->altitude_scale);
 	rot_mat4_simple(rx, X, cam->angle.x);
 	rot_mat4_simple(ry, Y, cam->angle.y);
 	rot_mat4_simple(rz, Z, cam->angle.z);
-	translation_mat4(dist, 0, 0, -(cam->z_near + cam->dist));
+	translation_mat4(dist, 0.0f, 0.0f, -(cam->z_near + cam->dist));
 	if (cam->projection == Perspective)
 		perspective_mat4(proj, cam);
 	else
