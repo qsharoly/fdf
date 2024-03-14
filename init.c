@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/10 16:05:01 by kith             ###   ########.fr       */
+/*   Updated: 2024/03/14 10:56:11 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ t_state		init_state(void)
 		.draw_helpers = 1,
 		.draw_controls = 0,
 		.use_zbuf = 1,
-		.time_stats = (t_time_stats){ .min_drawing_usec = +INFINITY },
 	};
 	return (state);
 }

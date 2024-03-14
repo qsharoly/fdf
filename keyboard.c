@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 16:46:55 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/10 16:05:16 by kith             ###   ########.fr       */
+/*   Updated: 2024/03/14 10:57:28 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int	hook_key_press(int keycode, t_things *th)
 		th->state.ctrl_is_down = 1;
 	else if (keycode == K_EXIT1 || keycode == K_EXIT2)
 	{
-		print_time_stats(th->state.frames, th->state.time_stats);
+		print_stats(th->state.frame_count, th->time_stats);
 		free_things_and_exit(th);
 	}
 	else if (keycode == K_ANIM_PAUSE)

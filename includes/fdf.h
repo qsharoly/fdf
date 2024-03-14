@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/02/23 11:05:32 by kith             ###   ########.fr       */
+/*   Updated: 2024/03/14 11:00:31 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,17 @@ typedef struct	s_map
 
 typedef struct	s_time_stats
 {
-	double	avg_drawing_usec;
-	double	min_drawing_usec;
-	double	max_drawing_usec;
-	double	total_drawing_seconds;
+	double	drawing_avg_usec;
+	double	drawing_min_usec;
+	double	drawing_max_usec;
+	double	drawing_total_seconds;
 	double	*all;
 	int		count;
 }				t_time_stats;
 
 typedef struct	s_state
 {
-	t_time_stats	time_stats;
-	int				frames;
+	int				frame_count;
 	int				bench_max_frames;
 	unsigned int	shift_is_down:1;
 	unsigned int	ctrl_is_down:1;
@@ -76,9 +75,10 @@ typedef struct	s_things
 	void		*mlx;
 	void		*window;
 	void		*mlx_image;
+	t_state		state;
+	t_time_stats	time_stats;
 	t_bitmap	bitmap;
 	t_zbuffer	zbuffer;
-	t_state		state;
 	t_map		map;
 	t_cam		cam;
 }				t_things;
@@ -103,7 +103,7 @@ void			draw_helpers(t_bitmap bitmap, t_cam *cam);
 void			draw_hud(t_things *my, float frame);
 int				draw_controls(void *mlx_ptr, void *mlx_window);
 void			reset_cam(t_cam *cam, const t_map *map);
-void			print_time_stats(int frames, t_time_stats times);
+void			print_stats(int frame_count, t_time_stats st);
 void			free_things_and_exit(t_things *th);
 int				hook_key_press(int keycode, t_things *th);
 int				hook_key_release(int keycode, t_things *th);

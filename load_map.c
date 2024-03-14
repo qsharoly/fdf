@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2022/11/07 08:27:01 by kith             ###   ########.fr       */
+/*   Updated: 2024/03/13 13:02:51 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ int load_map_v2(const char *filename, t_map *map)
 		return (FAIL);
 	}
 	t_sv input = { .chars = file_memory, .size = file_size };
-	printf("Loading map: ");
+	printf("Loading '%s': ", filename);
 	vertex_count = 0;
 	int	line = 0;
 	int	verts_per_line = 0;
