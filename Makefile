@@ -30,7 +30,7 @@ CCFLAGS += -Wall -Wextra -Werror
 INC_PATHS = -I $(MLX_INC) -I $(LFT_INC) -I $(INCDIR)
 LIB_PATHS += -L $(MLX_DIR) -L $(LFT_DIR)
 
-debug ?= -g
+debug ?= -gdwarf-4
 optimize ?= -O2
 
 export debug
