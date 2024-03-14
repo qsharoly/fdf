@@ -226,10 +226,11 @@ void	calc_camera_transform(t_cam *cam)
 
 static void	persp_divide(t_vec4 v)
 {
-	v[X] /= v[W];
-	v[Y] /= v[W];
-	v[Z] /= v[W];
-	v[W] = 1.;
+	float recip_w = 1/v[W];
+	v[X] *= recip_w;
+	v[Y] *= recip_w;
+	v[Z] *= recip_w;
+	v[W] = 1.0f;
 }
 
 t_vec3	geom_to_pixel(t_vec3 point, const t_cam *cam, float x_dim, float y_dim)
