@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/03/13 13:02:51 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 00:11:59 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,12 @@ typedef struct
 	int			size;
 }	t_sv;
 
-static t_sv	chop_pred(t_sv *sv, int (*pred)(char c))
+static t_sv	chop_while(t_sv *sv, int (*condition)(char c))
 {
 	t_sv	out;
 
 	int		i = 0;
-	while (i < (*sv).size && pred((*sv).chars[i]))
+	while (i < (*sv).size && condition((*sv).chars[i]))
 		i++;
 	out = (t_sv){ (*sv).chars, i };
 	*sv = (t_sv){ (*sv).chars + i, (*sv).size - i };
@@ -68,7 +68,7 @@ static t_sv	chop_pred(t_sv *sv, int (*pred)(char c))
 
 static t_sv	chop_int(t_sv *sv)
 {
-	return (chop_pred(sv, is_signed_int));
+	return (chop_while(sv, is_signed_int));
 }
 
 static int	parse_int(t_sv sv)
@@ -90,10 +90,10 @@ static int	parse_int(t_sv sv)
 	return (n * neg);
 }
 
-static void	skip_pred(t_sv *sv, int (*pred)(char c))
+static void	skip_while(t_sv *sv, int (*condition)(char c))
 {
 	int	i = 0;
-	while (i < (*sv).size && pred((*sv).chars[i]))
+	while (i < (*sv).size && condition((*sv).chars[i]))
 		i++;
 	*sv = (t_sv){ (*sv).chars + i, (*sv).size - i };
 }
@@ -151,8 +151,8 @@ int load_map_v2(const char *filename, t_map *map)
 			munmap(file_memory, file_size);
 			return (FAIL);
 		}
-		chop_pred(&input, is_space);
-		t_sv sv = chop_pred(&input, is_vertex);
+		skip_while(&input, is_space);
+		t_sv sv = chop_while(&input, is_vertex);
 		if (sv.size)
 			vertex_count++;
 		if (input.size == 0 || is_newline(input.chars[0]))
@@ -194,8 +194,8 @@ int load_map_v2(const char *filename, t_map *map)
 	input = (t_sv){ .chars = file_memory, .size = file_size };
 	while (input.size)
 	{
-		skip_pred(&input, is_space);
-		t_sv sv_vert = chop_pred(&input, is_vertex);
+		skip_while(&input, is_space);
+		t_sv sv_vert = chop_while(&input, is_vertex);
 		t_sv sv_z = chop_int(&sv_vert);
 		if (sv_z.size)
 		{
