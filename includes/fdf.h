@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/09/03 01:33:30 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 02:03:22 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,7 @@ t_cam			init_cam(int window_x_dim, int window_y_dim, const t_map *map);
 int				init_map(t_map *map, const char *filename);
 int				init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim);
 int				init_zbuffer(t_zbuffer *zb, int x_dim, int y_dim);
-int 			load_map_v2(const char *filename, t_map *map);
-void			map_find_height_range(t_map *map);
+int 			load_map(const char *filename, t_map *map);
 void			map_make_colors(t_map *map);
 void			transform_vertices(t_vertex *result, const t_vertex *vertices,
 					int vertices_size, const t_cam *cam, int x_dim, int y_dim);

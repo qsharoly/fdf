@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/09/03 01:32:58 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 02:02:29 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ static void	skip_single_char(t_sv *sv)
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
-int load_map_v2(const char *filename, t_map *map)
+int load_map(const char *filename, t_map *map)
 {
 	int			ok;
 	int			fd;
@@ -138,47 +138,49 @@ int load_map_v2(const char *filename, t_map *map)
 		dprintf(2, "cannot load map: mmap failed.\n");
 		return (FAIL);
 	}
-	t_sv input = { .chars = file_memory, .size = file_size };
 	printf("Loading '%s': ", filename);
-	vertex_count = 0;
-	int	line = 0;
-	int	verts_per_line = 0;
 	// first pass: calculate map dimensions
-	while (input.size)
 	{
-		if (!is_map_character(input.chars[0]))
+		t_sv input = { .chars = file_memory, .size = file_size };
+		vertex_count = 0;
+		int	line = 0;
+		int	verts_per_line = 0;
+		while (input.size)
 		{
-			dprintf(2, "error: bad character in map file: '%c'\n", input.chars[0]);
-			munmap(file_memory, file_size);
-			return (FAIL);
-		}
-		skip_while(&input, is_space);
-		t_sv sv = chop_while(&input, is_vertex);
-		if (sv.size)
-			vertex_count++;
-		if (input.size == 0 || is_newline(input.chars[0]))
-		{
-			if (line == 0)
-				verts_per_line = vertex_count;
-			if (line > 0 && (vertex_count % verts_per_line != 0))
+			if (!is_map_character(input.chars[0]))
 			{
-				dprintf(2, "error: Map is not rectangular: Line %d has %d entries (want %d)\n",
-						line, vertex_count % verts_per_line, verts_per_line);
+				dprintf(2, "error: bad character in map file: '%c'\n", input.chars[0]);
 				munmap(file_memory, file_size);
 				return (FAIL);
 			}
-			line++;
-			skip_single_char(&input);
+			skip_while(&input, is_space);
+			t_sv sv = chop_while(&input, is_vertex);
+			if (sv.size)
+				vertex_count++;
+			if (input.size == 0 || is_newline(input.chars[0]))
+			{
+				if (line == 0)
+					verts_per_line = vertex_count;
+				if (line > 0 && (vertex_count % verts_per_line != 0))
+				{
+					dprintf(2, "error: Map is not rectangular: Line %d has %d entries (want %d)\n",
+							line, vertex_count % verts_per_line, verts_per_line);
+					munmap(file_memory, file_size);
+					return (FAIL);
+				}
+				line++;
+				skip_single_char(&input);
+			}
 		}
+		if (vertex_count == 0)
+		{
+			dprintf(2, "error: Map is empty.\n");
+			munmap(file_memory, file_size);
+			return (FAIL);
+		}
+		map->per_row = verts_per_line;
+		map->rows = vertex_count / verts_per_line;
 	}
-	if (vertex_count == 0)
-	{
-		dprintf(2, "error: Map is empty.\n");
-		munmap(file_memory, file_size);
-		return (FAIL);
-	}
-	map->per_row = verts_per_line;
-	map->rows = vertex_count / verts_per_line;
 	printf("%dx%d ", map->rows, map->per_row);
 
 	int vertices_size = vertex_count * sizeof(*map->vertices);
@@ -195,52 +197,93 @@ int load_map_v2(const char *filename, t_map *map)
 	map->projected = (t_vertex *)(map_memory + vertices_size);
 	map->edges = (t_edge *)(map_memory + vertices_size + projected_size);
 
-	int x = 0;
-	int y = 0;
-	int j = 0;
-	input = (t_sv){ .chars = file_memory, .size = file_size };
-	// second pass: actually parse the map
-	while (input.size)
+	// second pass: actually parse the map & load into vertices array
 	{
-		skip_while(&input, is_space);
-		t_sv sv_vert = chop_while(&input, is_vertex);
-		t_sv sv_z = chop_int(&sv_vert);
-		if (sv_z.size)
+		int x = 0;
+		int y = 0;
+		int j = 0;
+		t_sv input = (t_sv){ .chars = file_memory, .size = file_size };
+		while (input.size)
 		{
-			int z = parse_int(sv_z);
-			map->vertices[j] = (t_vertex){ .vec = {x, y, z} };
-			j++;
-			x++;
-		}
-		if (is_newline(input.chars[0]))
-		{
-			x = 0;
-			y++;
-			skip_single_char(&input);
+			skip_while(&input, is_space);
+			t_sv sv_vert = chop_while(&input, is_vertex);
+			t_sv sv_z = chop_int(&sv_vert);
+			if (sv_z.size)
+			{
+				int z = parse_int(sv_z);
+				map->vertices[j] = (t_vertex){ .vec = {x, y, z} };
+				j++;
+				x++;
+			}
+			if (is_newline(input.chars[0]))
+			{
+				x = 0;
+				y++;
+				skip_single_char(&input);
+			}
 		}
 	}
 	munmap(file_memory, file_size);
+	// find z value range
 	map->z_min = +INFINITY;
 	map->z_max = -INFINITY;
-	j = 0;
-	while (j < vertex_count)
 	{
-		map->z_min = fmin(map->vertices[j].vec.z, map->z_min);
-		map->z_max = fmax(map->vertices[j].vec.z, map->z_max);
-		++j;
+		int j = 0;
+		while (j < vertex_count)
+		{
+			map->z_min = fmin(map->vertices[j].vec.z, map->z_min);
+			map->z_max = fmax(map->vertices[j].vec.z, map->z_max);
+			++j;
+		}
 	}
-	j = 0;
-	while (j < vertex_count)
+	// setup relative altitudes of verts, scaled to [0.0, 1.0] interval
 	{
-		if (map->z_max - map->z_min != 0.)
+		int j = 0;
+		while (j < vertex_count)
 		{
-			map->vertices[j].altitude = (map->vertices[j].z - map->z_min)/(map->z_max - map->z_min);
+			if (map->z_max - map->z_min != 0.)
+			{
+				map->vertices[j].altitude = (map->vertices[j].z - map->z_min)/(map->z_max - map->z_min);
+			}
+			else
+			{
+				map->vertices[j].altitude = 0.5;
+			}
+			++j;
 		}
-		else
+	}
+	// setup edges
+	{
+		int	i;
+		int	j;
+		int	current;
+		t_edge *edges = map->edges;
+		int map_per_row = map->per_row;
+		int map_rows = map->rows;
+
+		current = 0;
+		j = 0;
+		while (j < map_rows)
 		{
-			map->vertices[j].altitude = 0.5;
+			i = 0;
+			while (i < map_per_row)
+			{
+				if (i < map_per_row - 1)
+				{
+					edges[current].start = i + j * map_per_row;
+					edges[current].end = (i + 1) + j * map_per_row;
+					current++;
+				}
+				if (j < map_rows - 1)
+				{
+					edges[current].start = i + j * map_per_row;
+					edges[current].end = i + (j + 1) * map_per_row;
+					current++;
+				}
+				i++;
+			}
+			j++;
 		}
-		++j;
 	}
 	printf("ok.\n");
 	return (OK);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/09/03 01:30:50 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 01:53:11 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,48 +66,6 @@ t_cam	init_cam(int window_x_dim, int window_y_dim, const t_map *map)
 		.altitude_scale = 1
 	};
 	return (cam);
-}
-
-static void	map_make_edges(t_edge *edges, int map_per_row, int map_rows)
-{
-	int	i;
-	int	j;
-	int	current;
-
-	current = 0;
-	j = 0;
-	while (j < map_rows)
-	{
-		i = 0;
-		while (i < map_per_row)
-		{
-			if (i < map_per_row - 1)
-			{
-				edges[current].start = i + j * map_per_row;
-				edges[current].end = (i + 1) + j * map_per_row;
-				current++;
-			}
-			if (j < map_rows - 1)
-			{
-				edges[current].start = i + j * map_per_row;
-				edges[current].end = i + (j + 1) * map_per_row;
-				current++;
-			}
-			i++;
-		}
-		j++;
-	}
-}
-
-int		init_map(t_map *map, const char *filename)
-{
-	int	status;
-
-	status = load_map_v2(filename, map);
-	if (status == FAIL)
-		return (FAIL);
-	map_make_edges(map->edges, map->per_row, map->rows);
-	return (OK);
 }
 
 int		init_bitmap(t_bitmap *bitmap, const void *mlx_img_ptr, int x_dim, int y_dim)

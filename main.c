@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/09/03 01:34:46 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 02:02:36 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@ int			main(int argc, char **argv)
 		put_usage_and_exit();
 	th.state = init_state();
 	get_options(&th.state, argc, argv);
-	ok = init_map(&th.map, argv[argc - 1]);
+	ok = load_map(argv[argc - 1], &th.map);
 	if (!ok)
 		return (-1);
 	th.mlx = mlx_init();
