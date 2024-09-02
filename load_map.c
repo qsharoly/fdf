@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 17:20:43 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/09/03 00:11:59 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 01:32:58 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ int load_map_v2(const char *filename, t_map *map)
 	vertex_count = 0;
 	int	line = 0;
 	int	verts_per_line = 0;
+	// first pass: calculate map dimensions
 	while (input.size)
 	{
 		if (!is_map_character(input.chars[0]))
@@ -180,18 +181,25 @@ int load_map_v2(const char *filename, t_map *map)
 	map->rows = vertex_count / verts_per_line;
 	printf("%dx%d ", map->rows, map->per_row);
 
-	map->vertices = malloc(vertex_count * sizeof(*map->vertices));
-	if (!map->vertices)
-	{
+	int vertices_size = vertex_count * sizeof(*map->vertices);
+	int projected_size = vertex_count * sizeof(*map->projected);
+	map->edges_count = map->per_row * (map->rows - 1) + (map->per_row - 1) * map->rows;
+	int edges_size = map->edges_count * sizeof(*map->edges);
+	char *map_memory = malloc(vertices_size + projected_size + edges_size);
+	if (!map_memory) {
 		dprintf(2, "error: allocation failed\n");
 		munmap(file_memory, file_size);
 		return (FAIL);
 	}
+	map->vertices = (t_vertex *)map_memory;
+	map->projected = (t_vertex *)(map_memory + vertices_size);
+	map->edges = (t_edge *)(map_memory + vertices_size + projected_size);
 
 	int x = 0;
 	int y = 0;
 	int j = 0;
 	input = (t_sv){ .chars = file_memory, .size = file_size };
+	// second pass: actually parse the map
 	while (input.size)
 	{
 		skip_while(&input, is_space);

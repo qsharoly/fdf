@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 15:18:34 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/03/14 10:56:11 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 01:30:50 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,17 +68,12 @@ t_cam	init_cam(int window_x_dim, int window_y_dim, const t_map *map)
 	return (cam);
 }
 
-static void	map_make_edges(t_edge **edgesptr, int *size, int map_per_row, int map_rows)
+static void	map_make_edges(t_edge *edges, int map_per_row, int map_rows)
 {
 	int	i;
 	int	j;
 	int	current;
-	t_edge *edges;
 
-	*size = (map_per_row - 1) * map_rows + map_per_row * (map_rows - 1);
-
-	(*edgesptr) = malloc(*size * sizeof(*edges));
-	edges = *edgesptr;
 	current = 0;
 	j = 0;
 	while (j < map_rows)
@@ -111,8 +106,7 @@ int		init_map(t_map *map, const char *filename)
 	status = load_map_v2(filename, map);
 	if (status == FAIL)
 		return (FAIL);
-	map->projected = malloc(map->per_row * map->rows * sizeof(*map->projected));
-	map_make_edges(&map->edges, &map->edges_size, map->per_row, map->rows);
+	map_make_edges(map->edges, map->per_row, map->rows);
 	return (OK);
 }
 

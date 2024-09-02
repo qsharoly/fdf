@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/15 16:39:07 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/03/14 10:56:53 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 01:34:46 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,6 @@ void	free_things_and_exit(t_things *things)
 	mlx_closedown(things->mlx);
 	free(things->time_stats.all);
 	free(things->zbuffer.z);
-	free(things->map.edges);
-	free(things->map.projected);
 	free(things->map.vertices);
 	exit(0);
 }
@@ -66,11 +64,11 @@ static void	draw_geometry(t_things *th)
 	{
 		ft_memset32f(th->zbuffer.z, -INFINITY, th->zbuffer.size);
 		draw_edges_zbuf(th->bitmap, th->zbuffer, th->map.projected, th->map.edges,
-				th->map.edges_size);
+				th->map.edges_count);
 	}
 	else
 	{
-		draw_edges(th->bitmap, th->map.projected, th->map.edges, th->map.edges_size);
+		draw_edges(th->bitmap, th->map.projected, th->map.edges, th->map.edges_count);
 	}
 	if (th->state.draw_helpers)
 		draw_helpers(th->bitmap, &th->cam);

@@ -6,7 +6,7 @@
 /*   By: qsharoly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/03 18:00:09 by qsharoly          #+#    #+#             */
-/*   Updated: 2024/03/14 11:00:31 by kith             ###   ########.fr       */
+/*   Updated: 2024/09/03 01:33:30 by kith             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ typedef struct	s_map
 	int			rows;
 	int			per_row;
 	t_edge		*edges;
-	int			edges_size;
+	int			edges_count;
 	int 		color_table[COLOR_TABLE_SIZE];
 }				t_map;
 
